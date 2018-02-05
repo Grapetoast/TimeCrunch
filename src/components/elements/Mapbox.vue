@@ -1,17 +1,15 @@
 <template>
-  <div class="main"></div>
+  <div class="main">
+    <h1>mapbox</h1>
+  </div>
 </template>
-
 <script>
   export default {
-    data () {
-      return {}
-    }
+    name: 'Mapbox'
   }
 </script>
-
 <style scoped lang="less">
   .main {
-
+    margin-top: 160px;
   }
 </style>
