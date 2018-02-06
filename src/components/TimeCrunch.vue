@@ -5,7 +5,9 @@
     <div class="clockOut" v-on:click="clockOut">Out</div>
     <div class="lunchOut" v-on:click="lunchOut">Lunch Start</div>
     <div class="lunchIn" v-on:click="lunchIn">Lunch End</div>
-    <div class="mapContainer"><mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox></div>
+    <div class="mapContainer">
+      <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
+    </div>
   </div>
 </template>
 
@@ -34,16 +36,6 @@ export default {
       this.locationError = true
     }
   },
-  /*   let vue = this
-   axios.get('https://', {
-
-    })
-      .then(response => {
-        vue.lastClockType = response.data.lastClockType
-      })
-      .catch(response => {
-        console.log(response)
-      }) */
   data () {
     return {
       time: '',
@@ -57,7 +49,14 @@ export default {
       longitude: '',
       altitude: '',
       accuracy: '',
-      altitudeAccuracy: ''
+      altitudeAccuracy: '',
+      mapboxToken: 'pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag',
+      mapOptions: {
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v9',
+        center: [0, 0],
+        zoom: 1
+      }
     }
   },
   methods: {
@@ -68,81 +67,69 @@ export default {
         center: [vue.longitude, vue.latitude],
         zoom: 15
       })
-    }
-  },
-  clock () {
-    let vue = this
-    navigator.geolocation.getCurrentPosition(vue.locationSuccess, vue.locationFail)
-    this.time = new Date()
-    vue.hours = vue.time.getHours()
-    vue.minutes = vue.time.getMinutes()
-    vue.seconds = vue.time.getSeconds()
-    vue.clockTime = vue.hours + ' ' + vue.minutes + ' ' + vue.seconds
-  /*  axios.post('https://', {
-      user: vue.user,
-      time: vue.clockTime,
-      location: 'latitude: ' + vue.latitude + 'longitude: ' + vue.longitude,
-      clockType: vue.clockType
-    })
-      .then(response => {
-
-      })
-      .catch(response => {
-        console.log(response)
-      }) */
-  },
-  locationSuccess (position) {
-    let vue = this
-    vue.latitude = position.coords.latitude
-    vue.longitude = position.coords.longitude
-    vue.altitude = position.coords.altitude
-    vue.accuracy = position.coords.accuracy
-    vue.altitudeAccuracy = position.coords.altitudeAccuracy
-  },
-  locationFail () {
-    alert('It seems we cant find you, please reload the page and try again.')
-    this.locationError = true
-  },
-  clockIn () {
-    if (this.lastClockType !== 'in') {
-      this.clockType = 'in'
-      this.clock()
-    }
-    else {
-      alert('You are already clocked in!')
-    }
-  },
-  clockOut () {
-    if (this.lastClockType !== 'out') {
-      this.clockType = 'out'
-      this.clock()
-    }
-    else {
-      alert('You are not clocked in!')
-    }
-  },
-  lunchOut () {
-    if (this.lastClockType === 'in') {
-      this.clockType = 'lunch out'
-      this.clock()
-    }
-    else if (this.lastClockType === 'lunch out') {
-      alert('You are already out to lunch!')
-    }
-    else if (this.lastClockType === 'lunch in') {
-      alert('You already had lunch!')
-    }
-    else {
-      alert('You are not clocked in!')
-    }
-  },
-  lunchIn () {
-    if (this.lastClockType !== 'lunch in') {
-      this.clockType = 'lunch in'
-      this.clock()
-    }
-    else {
-      alert('You are already back from lunch!')
+    },
+    clock () {
+      let vue = this
+      navigator.geolocation.getCurrentPosition(vue.locationSuccess, vue.locationFail)
+      this.time = new Date()
+      vue.hours = vue.time.getHours()
+      vue.minutes = vue.time.getMinutes()
+      vue.seconds = vue.time.getSeconds()
+      vue.clockTime = vue.hours + ' ' + vue.minutes + ' ' + vue.seconds
+    },
+    locationSuccess (position) {
+      let vue = this
+      vue.latitude = position.coords.latitude
+      vue.longitude = position.coords.longitude
+      vue.altitude = position.coords.altitude
+      vue.accuracy = position.coords.accuracy
+      vue.altitudeAccuracy = position.coords.altitudeAccuracy
+    },
+    locationFail () {
+      alert('It seems we cant find you, please reload the page and try again.')
+      this.locationError = true
+    },
+    clockIn () {
+      if (this.lastClockType !== 'in') {
+        this.clockType = 'in'
+        this.clock()
+      }
+      else {
+        alert('You are already clocked in!')
+      }
+    },
+    clockOut () {
+      if (this.lastClockType !== 'out') {
+        this.clockType = 'out'
+        this.clock()
+      }
+      else {
+        alert('You are not clocked in!')
+      }
+    },
+    lunchOut () {
+      if (this.lastClockType === 'in') {
+        this.clockType = 'lunch out'
+        this.clock()
+      }
+      else if (this.lastClockType === 'lunch out') {
+        alert('You are already out to lunch!')
+      }
+      else if (this.lastClockType === 'lunch in') {
+        alert('You already had lunch!')
+      }
+      else {
+        alert('You are not clocked in!')
+      }
+    },
+    lunchIn () {
+      if (this.lastClockType !== 'lunch in') {
+        this.clockType = 'lunch in'
+        this.clock()
+      }
+      else {
+        alert('You are already back from lunch!')
+      }
     }
   }
 }
@@ -168,19 +155,25 @@ setInterval(clock, 1000)
 .main {
   display: grid;
   grid-template-columns: 10px 1fr 1fr 10px;
-  grid-template-rows: repeat(60px, 6);
+  grid-template-rows: repeat(7, 100px);
+}
+
+#map {
+	width: 100%;
+	height: 300px;
 }
 
 .clock {
   margin-top: 10px;
-text-align: center;
-font-family: @font-face;
-font-size: 4em;
-grid-row: 1;
-grid-column-start: 2;
-grid-column-end: 4;
-border: solid 3px #fbdd21;
-border-radius: 7px;
+  text-align: center;
+  font-family: @font-face;
+  font-size: 4em;
+  grid-row-start: 1;
+  grid-row-end: 1;
+  grid-column-start: 2;
+  grid-column-end: 4;
+  border: solid 3px #fbdd21;
+  border-radius: 7px;
 }
 
 .clockIn {
@@ -251,5 +244,12 @@ border-radius: 7px;
   background-color: @buttonColor;
   grid-row: 3;
   grid-column: 3;
+}
+
+.mapContainer {
+  grid-row-start: 4;
+  grid-row-end: 7;
+  grid-column-start: 2;
+  grid-column-end: 4;
 }
 </style>
