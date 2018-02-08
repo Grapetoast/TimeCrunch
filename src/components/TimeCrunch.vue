@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import Mapbox from 'mapbox-gl-vue'
+import axios from 'axios'
 
 export default {
   name: 'timecrunch',
@@ -117,11 +119,9 @@ export default {
     locationFail () {
       alert('It seems we cant find you, please reload the page and try again.')
       this.locationError = true
->>>>>>> master
     },
     created () {
       let vue = this
-<<<<<<< HEAD
       vue.geojson = {
         type: 'FeatureCollection',
         features: [{
@@ -146,11 +146,9 @@ export default {
             description: 'San Francisco, California'
           }
         }]
-=======
       if (this.lastClockType !== 'in') {
         vue.clockType = 'in'
         vue.clock()
->>>>>>> master
       }
       if (this.logged === false) {
         this.$router.push('/login')
