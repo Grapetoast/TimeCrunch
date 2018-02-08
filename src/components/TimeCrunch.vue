@@ -12,8 +12,10 @@
 <script>
 import Mapbox from 'mapbox-gl-vue'
 import axios from 'axios'
+
 export default {
   name: 'timecrunch',
+  props: ['logged', 'user'],
   components: {
     'mapbox': Mapbox
   },
@@ -22,6 +24,7 @@ export default {
     if (this.logged === false) {
       this.$router.push('/login')
     }
+    vue.userId = vue.user.id
     navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
     function locationSuccess (position) {
       vue.latitude = position.coords.latitude
@@ -37,7 +40,7 @@ export default {
   },
   data () {
     return {
-      userId: '5a7ccbf8ff399d3ff86cbe20',
+      userId: '',
       time: '',
       month: '',
       day: '',
@@ -85,7 +88,7 @@ export default {
       vue.hours = vue.time.getHours()
       vue.minutes = vue.time.getMinutes()
       vue.seconds = vue.time.getSeconds()
-      axios.post('http://localhost:81/clocks', {
+      axios.post('http://54.186.69.46:81/clocks', {
         userId: vue.userId,
         clockType: vue.clockType,
         month: vue.month,

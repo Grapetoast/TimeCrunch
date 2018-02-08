@@ -43,7 +43,7 @@ router.post("/login", (req, res) => {
         if (isMatch === true) {
           var payload = {"id": users.id};
           var token = jwt.sign(payload, jwtOptions.secretOrKey);
-          res.json({userId: users.id, token: token, admin: users.admin, employee: users.employee});
+          res.json({userId: users.id, token: token, admin: users.admin});
         } else {
           res.status(401).send(false);
         }
@@ -116,7 +116,7 @@ router.put("/:id", passport.authenticate('jwt', { session: false }), (req, res) 
         user.password = req.body.password || user.password;
         user.name = req.body.name || user.name;
         user.admin = req.body.admin || user.admin;
-        
+
         user.save(function (err, user) {
             if (err) {
               res.status(500).send(err)

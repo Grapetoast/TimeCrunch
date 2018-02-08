@@ -12,7 +12,7 @@ var users = require("./users.js");
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect("mongodb://user:123@ds125068.mlab.com:25068/thumbnail", {
+mongoose.connect("mongodb://user:123@ds229878.mlab.com:29878/timecrunch", {
   useMongoClient: true
 }, function (error) {
   console.log(error);
