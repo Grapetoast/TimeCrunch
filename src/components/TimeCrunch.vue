@@ -11,16 +11,117 @@
 </template>
 
 <script>
-  import Mapbox from 'mapbox-gl-vue'
-  import axios from 'axios'
 
-  export default {
-    name: 'timecrunch',
-    components: {
-      'mapbox': Mapbox
+export default {
+  name: 'timecrunch',
+  props: ['logged', 'user'],
+  components: {
+    'mapbox': Mapbox
+  },
+  created () {
+    let vue = this
+    if (this.logged === false) {
+      this.$router.push('/login')
+    }
+    vue.userId = vue.user.id
+    navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
+    function locationSuccess (position) {
+      vue.latitude = position.coords.latitude
+      vue.longitude = position.coords.longitude
+      vue.altitude = position.coords.altitude
+      vue.accuracy = position.coords.accuracy
+      vue.altitudeAccuracy = position.coords.altitudeAccuracy
+    }
+    function locationFail () {
+      alert('It seems we cant find you, please reload the page and try again.')
+      this.locationError = true
+    }
+  },
+  data () {
+    return {
+      userId: '',
+      time: '',
+      month: '',
+      day: '',
+      hours: '',
+      minutes: '',
+      seconds: '',
+      clockType: '',
+      lastClockType: '',
+      latitude: '',
+      longitude: '',
+      altitude: '',
+      accuracy: '',
+      altitudeAccuracy: '',
+      mapboxToken: 'pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag',
+      mapOptions: {
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v9',
+        center: [0, 0],
+        zoom: 1
+      }
+    }
+  },
+  methods: {
+    mapLoaded (map) {
+      let vue = this
+      vue.map = map
+      vue.map.jumpTo({
+        center: [vue.longitude, vue.latitude],
+        zoom: 15
+      })
+    },
+    mapJump () {
+      let vue = this
+      vue.map.jumpTo({
+        center: [vue.longitude, vue.latitude],
+        zoom: 15
+      })
+    },
+    clock () {
+      let vue = this
+      navigator.geolocation.getCurrentPosition(vue.locationSuccess, vue.locationFail)
+      this.time = new Date()
+      vue.month = vue.time.getMonth()
+      vue.day = vue.time.getDay()
+      vue.hours = vue.time.getHours()
+      vue.minutes = vue.time.getMinutes()
+      vue.seconds = vue.time.getSeconds()
+      axios.post('http://54.186.69.46:81/clocks', {
+        userId: vue.userId,
+        clockType: vue.clockType,
+        month: vue.month,
+        day: vue.day,
+        hours: vue.hours,
+        minutes: vue.minutes,
+        seconds: vue.seconds,
+        latitude: vue.latitude,
+        longitude: vue.longitude,
+        altitude: vue.altitude
+      })
+        .then(function () {
+          console.log('clocked')
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+    locationSuccess (position) {
+      let vue = this
+      vue.latitude = position.coords.latitude
+      vue.longitude = position.coords.longitude
+      vue.altitude = position.coords.altitude
+      vue.accuracy = position.coords.accuracy
+      vue.altitudeAccuracy = position.coords.altitudeAccuracy
+    },
+    locationFail () {
+      alert('It seems we cant find you, please reload the page and try again.')
+      this.locationError = true
+>>>>>>> master
     },
     created () {
       let vue = this
+<<<<<<< HEAD
       vue.geojson = {
         type: 'FeatureCollection',
         features: [{
@@ -45,6 +146,11 @@
             description: 'San Francisco, California'
           }
         }]
+=======
+      if (this.lastClockType !== 'in') {
+        vue.clockType = 'in'
+        vue.clock()
+>>>>>>> master
       }
       if (this.logged === false) {
         this.$router.push('/login')

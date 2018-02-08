@@ -26,6 +26,7 @@ export default new VueRouter({
 
   routes: [
     { path: '/', component: load('TimeCrunch') },
+<<<<<<< HEAD
     { path: '/Mapbox', component: load('Mapbox') },
     { path: '/Marker', component: load('Marker') },
     // Always leave this last one
