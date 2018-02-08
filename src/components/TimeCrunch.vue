@@ -37,13 +37,15 @@ export default {
   },
   data () {
     return {
+      userId: '5a7ccbf8ff399d3ff86cbe20',
       time: '',
+      month: '',
+      day: '',
       hours: '',
       minutes: '',
       seconds: '',
       clockType: '',
       lastClockType: '',
-      clockTime: '',
       latitude: '',
       longitude: '',
       altitude: '',
@@ -78,10 +80,29 @@ export default {
       let vue = this
       navigator.geolocation.getCurrentPosition(vue.locationSuccess, vue.locationFail)
       this.time = new Date()
+      vue.month = vue.time.getMonth()
+      vue.day = vue.time.getDay()
       vue.hours = vue.time.getHours()
       vue.minutes = vue.time.getMinutes()
       vue.seconds = vue.time.getSeconds()
-      vue.clockTime = vue.hours + ' ' + vue.minutes + ' ' + vue.seconds
+      axios.post('http://localhost:81/clocks', {
+        userId: vue.userId,
+        clockType: vue.clockType,
+        month: vue.month,
+        day: vue.day,
+        hours: vue.hours,
+        minutes: vue.minutes,
+        seconds: vue.seconds,
+        latitude: vue.latitude,
+        longitude: vue.longitude,
+        altitude: vue.altitude
+      })
+        .then(function () {
+          console.log('clocked')
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     locationSuccess (position) {
       let vue = this
@@ -98,12 +119,8 @@ export default {
     clockIn () {
       let vue = this
       if (this.lastClockType !== 'in') {
-        this.clockType = 'in'
-        this.clock()
-        axios.post('http://13.57.57.81:81/leads', {
-          longitude: vue.longitude,
-          latitude: vue.latitude
-        })
+        vue.clockType = 'in'
+        vue.clock()
       }
       else {
         alert('You are already clocked in!')
