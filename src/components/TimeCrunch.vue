@@ -5,14 +5,13 @@
     <div class="clockOut" v-on:click="clockOut">Out</div>
     <div class="lunchOut" v-on:click="lunchOut">Lunch Start</div>
     <div class="lunchIn" v-on:click="lunchIn">Lunch End</div>
-    <div class="mapContainer">
-      <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
-    </div>
+    <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
   </div>
 </template>
 
 <script>
 import Mapbox from 'mapbox-gl-vue'
+import axios from 'axios'
 export default {
   name: 'timecrunch',
   components: {
@@ -63,7 +62,14 @@ export default {
     mapLoaded (map) {
       let vue = this
       vue.map = map
-      map.jumpTo({
+      vue.map.jumpTo({
+        center: [vue.longitude, vue.latitude],
+        zoom: 15
+      })
+    },
+    mapJump () {
+      let vue = this
+      vue.map.jumpTo({
         center: [vue.longitude, vue.latitude],
         zoom: 15
       })
@@ -90,9 +96,14 @@ export default {
       this.locationError = true
     },
     clockIn () {
+      let vue = this
       if (this.lastClockType !== 'in') {
         this.clockType = 'in'
         this.clock()
+        axios.post('http://13.57.57.81:81/leads', {
+          longitude: vue.longitude,
+          latitude: vue.latitude
+        })
       }
       else {
         alert('You are already clocked in!')
@@ -161,6 +172,10 @@ setInterval(clock, 1000)
 #map {
 	width: 100%;
 	height: 300px;
+  grid-row-start: 4;
+  grid-row-end: 7;
+  grid-column-start: 2;
+  grid-column-end: 4;
 }
 
 .clock {
@@ -244,12 +259,5 @@ setInterval(clock, 1000)
   background-color: @buttonColor;
   grid-row: 3;
   grid-column: 3;
-}
-
-.mapContainer {
-  grid-row-start: 4;
-  grid-row-end: 7;
-  grid-column-start: 2;
-  grid-column-end: 4;
 }
 </style>
