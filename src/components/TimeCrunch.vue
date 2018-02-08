@@ -120,52 +120,6 @@ export default {
       alert('It seems we cant find you, please reload the page and try again.')
       this.locationError = true
     },
-    created () {
-      let vue = this
-      vue.geojson = {
-        type: 'FeatureCollection',
-        features: [{
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [vue.latitude, vue.longitude]
-          },
-          properties: {
-            title: 'Mapbox',
-            description: 'Washington, D.C.'
-          }
-        },
-        {
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [-122.414, 37.776]
-          },
-          properties: {
-            title: 'Mapbox',
-            description: 'San Francisco, California'
-          }
-        }]
-      if (this.lastClockType !== 'in') {
-        vue.clockType = 'in'
-        vue.clock()
-      }
-      if (this.logged === false) {
-        this.$router.push('/login')
-      }
-      navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
-      function locationSuccess (position) {
-        vue.latitude = position.coords.latitude
-        vue.longitude = position.coords.longitude
-        vue.altitude = position.coords.altitude
-        vue.accuracy = position.coords.accuracy
-        vue.altitudeAccuracy = position.coords.altitudeAccuracy
-      }
-      function locationFail () {
-        alert('It seems we cant find you, please reload the page and try again.')
-        this.locationError = true
-      }
-    },
     data () {
       return {
         geojson: {},
@@ -274,26 +228,14 @@ export default {
       }
     }
   }
-  function clock () {
-    this.time = new Date()
-    this.hours = this.time.getHours()
-    this.minutes = this.time.getMinutes()
-    this.seconds = this.time.getSeconds()
-    document.querySelectorAll('.clock')[0].innerHTML = harold(this.hours) + ':' + harold(this.minutes) + ':' + harold(this.seconds)
-    function harold (standIn) {
-      if (standIn < 10) {
-        standIn = '0' + standIn
-      }
-      return standIn
-    }
-  }
-  setInterval(clock, 1000)
+}
 </script>
 
 <style scoped lang="less">
 @buttonColor: #fbdd21;
 @font-face: tahoma;
 .main {
+  margin-top: 100px;
   display: grid;
   grid-template-columns:5%  1fr 1fr 5%;
   grid-template-rows: repeat(3, 100px) px repeat(4, 100px);
