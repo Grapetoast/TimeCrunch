@@ -90,6 +90,7 @@
 
   .logged {
     font-size: 1.5em;
+
   }
 
   button {
@@ -102,9 +103,15 @@
   input {
     border: 1px solid #000;
     margin-top: 5px;
+    margin-left: 5px;
     height: 30px;
   }
-
+ .email {
+   width: 90%;
+ }
+ .password {
+   width: 90%;
+ }
   @media (min-width: 700px) {
   }
 </style>
