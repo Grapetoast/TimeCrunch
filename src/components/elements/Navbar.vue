@@ -122,6 +122,12 @@
     font-size: 2em;
     font-weight: 400;
   }
+  .Logout {
+    height: 100px;
+    color: #fff;
+    font-size: 2em;
+    font-weight: 400;
+  }
   .navbar {
     width: 100%;
     height: 100px;
