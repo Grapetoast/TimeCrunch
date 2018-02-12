@@ -293,7 +293,7 @@ setInterval(clock, 1000)
   box-shadow: 0px 1.5px 5px #000;
 }
 
-.clockOut {
+.lunchIn {
   z-index: 1;
   font-size: 1em;
   font-weight: bold;
@@ -310,7 +310,7 @@ setInterval(clock, 1000)
   box-shadow: 0px 1.5px 5px #000;
 }
 
-.lunchIn {
+.lunchOut {
   z-index: 1;
   color: white;
   font-size: 1.1em;
@@ -328,7 +328,7 @@ setInterval(clock, 1000)
   box-shadow: 0px 1.5px 5px #000;
 }
 
-.lunchOut {
+.clockOut {
   z-index: 1;
   color: white;
   font-size: 1.1em;
