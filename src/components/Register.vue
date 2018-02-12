@@ -46,10 +46,8 @@
 </script>
 
 <style scoped lang="less">
-  @nvmgrey: #dae5ed;
-  @nvmblue: #005389;
-  @nvmred: #b20938;
-  @nvmlightred: #e21b3c;
+@red: #d83406;
+@grey: #323d38;
 
   .main {
     height: 500px;
@@ -58,7 +56,7 @@
   }
 
   h1 {
-    color: @nvmlightred;
+    color: @red;
     text-align: center;
   }
 
@@ -67,21 +65,21 @@
   }
 
   button {
-    background: linear-gradient(#005DA6, #014271);
+    background:  @grey;
     color: #fff;
     border: none;
     font-size: 1.5em;
     margin-left: 10px;
   }
   input {
-    border: 1px solid @nvmblue;
+    border: 1px solid @grey;
     width: 90%;
     margin-left: 5%;
     height: 40px;
     margin-bottom: 10px;
   }
   .role {
-    border: 1px solid @nvmblue;
+    border: 1px solid @grey;
     width: 90%;
     margin-left: 5%;
     height: 40px;

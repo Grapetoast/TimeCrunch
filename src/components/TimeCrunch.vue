@@ -1,8 +1,8 @@
 <template>
   <div class="main">
     <div class="clock"></div>
-    <div class="clockIn" v-on:click="clockIn">In</div>
-    <div class="clockOut" v-on:click="clockOut">Out</div>
+    <div class="clockIn" v-on:click="clockIn"> Clock In</div>
+    <div class="clockOut" v-on:click="clockOut">Clock Out</div>
     <div class="lunchOut" v-on:click="lunchOut">Lunch Start</div>
     <div class="lunchIn" v-on:click="lunchIn">Lunch End</div>
     <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
@@ -228,12 +228,15 @@ setInterval(clock, 1000)
 </script>
 
 <style scoped lang="less">
-@buttonColor: #fbdd21;
-@font-face: tahoma;
+@red: #d83406;
+@grey: #323d38;
+
 .main {
+  position: absolute;
+  width: 100%;
   margin-top: 100px;
   display: grid;
-  grid-template-columns: 10px 1fr 1fr 10px;
+  grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(7, 100px);
 }
 
@@ -249,93 +252,97 @@ setInterval(clock, 1000)
 
 #map {
 	width: 100%;
-	height: 300px;
-  grid-row-start: 4;
+	height: 100%;
+  margin-top: 50px;
+  grid-row-start: 2;
   grid-row-end: 7;
-  grid-column-start: 2;
-  grid-column-end: 4;
+  grid-column-start: 1;
+  grid-column-end: 7;
+  z-index: 0;
+  position: absolute;
 }
 
 .clock {
-  margin-top: 10px;
+  z-index: 2;
   text-align: center;
-  font-family: @font-face;
   font-size: 4em;
   grid-row-start: 1;
   grid-row-end: 1;
-  grid-column-start: 2;
-  grid-column-end: 4;
-  border: solid 3px #fbdd21;
-  border-radius: 7px;
+  grid-column-start: 1;
+  grid-column-end: 7;
+  background-color: @red;
+  line-height: 100px;
+  color: #fff;
+  box-shadow: 0px 1.5px 5px #000;
 }
 
 .clockIn {
-  font-size: 2em;
+  z-index: 1;
+  font-size: 1em;
   font-weight: bold;
-  font-family: @font-face;
   text-align: center;
-  margin-top: 20px;
-  margin-left: 20px;
-  width: 100px;
-  height: 80px;
-  line-height: 80px;
-  border-radius: 6px;
-  background-color: @buttonColor;
+  width: 100%;
+  height: 50px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background-color: @grey;
   grid-row: 2;
-  grid-column: 2;
+  grid-column: 1;
   color: white;
+  line-height: 50px;
+  box-shadow: 0px 1.5px 5px #000;
 }
 
 .clockOut {
-  font-size: 2em;
+  z-index: 1;
+  font-size: 1em;
   font-weight: bold;
-  font-family: @font-face;
   text-align: center;
-  margin-top: 20px;
-  margin-left: 20px;
-  width: 100px;
-  height: 80px;
-  line-height: 80px;
-  border-radius: 6px;
-  background-color: @buttonColor;
+  width: 100%;
+  height: 50px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background-color: @grey;
   grid-row: 2;
-  grid-column: 3;
+  grid-column: 2;
   color: white;
+  line-height: 50px;
+  box-shadow: 0px 1.5px 5px #000;
 }
 
 .lunchIn {
+  z-index: 1;
   color: white;
   font-size: 1.1em;
   font-weight: bold;
   font-size: 1em;
-  font-family: @font-face;
   text-align: center;
-  margin-top: 20px;
-  margin-left: 20px;
-  width: 100px;
-  height: 80px;
-  line-height: 80px;
-  border-radius: 6px;
-  background-color: @buttonColor;
-  grid-row: 3;
-  grid-column: 2;
+  width: 100%;
+  height: 50px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background-color: @grey;
+  grid-row: 2;
+  grid-column: 3;
+  line-height: 50px;
+  box-shadow: 0px 1.5px 5px #000;
 }
 
 .lunchOut {
+  z-index: 1;
   color: white;
   font-size: 1.1em;
   font-weight: bold;
   font-size: 1em;
-  font-family: @font-face;
   text-align: center;
-  margin-top: 20px;
-  margin-left: 20px;
-  width: 100px;
-  height: 80px;
-  line-height: 80px;
-  border-radius: 5px;
-  background-color: @buttonColor;
-  grid-row: 3;
-  grid-column: 3;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background-color: @grey;
+  grid-row: 2;
+  grid-column: 4;
+  box-shadow: 0px 1.5px 5px #000;
 }
 </style>
