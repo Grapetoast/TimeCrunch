@@ -1,29 +1,15 @@
 <template>
   <div class="main">
     <div class="accountView" v-if="modal==='view'">
-      <h2 class="name">Name: {{activeUser.firstName}} {{activeUser.middleName}} {{activeUser.lastName}}</h2>
-      <h2 class="phone">Phone Number: {{activeUser.phone}}</h2>
-      <h2 class="address">Address: {{activeUser.address1}}<br/>{{activeUser.address2}}</h2>
+      <h2 class="name">Name: {{activeUser.name}}</h2>
       <h2 class="email">Email: {{activeUser.email}}</h2>
-      <h2 class="role">I am a {{activeUser.role}}</h2>
       <button class="accountEditButton" v-on:click="modal='edit'">Edit Account</button>
       <button class="passwordEditButton" v-on:click="modal='pass'">Update Password</button>
       <button class="back" v-on:click="modal=''">Back</button>
     </div>
     <div class="accountEdit" v-else-if="modal==='edit'">
-      <input class="firstNameEdit" v-model="activeUser.firstName" placeholder="First Name"></input>
-      <input class="middleNameEdit" v-model="activeUser.middleName" placeholder="Middle Name"></input>
-      <input class="lastNameEdit" v-model="activeUser.lastName" placeholder="Last Name"></input>
-      <input class="phoneEdit" v-model="activeUser.phone" placeholder="(***)-***-****"></input>
-      <input class="addressOneEdit" v-model="activeUser.address1" placeholder="Address One"></input>
-      <input class="addressTwoEdit" v-model="activeUser.address2" placeholder="Address Two"></input>
+      <input class="nameEdit" v-model="activeUser.name" placeholder="Name"></input>
       <input class="emailEdit" v-model="activeUser.email" placeholder="user@example.com"></input>
-      <select class="role" v-model="activeUser.role">
-        <option value='' selected data-default>Ownership Status</option>
-        <option value="tenant">Tenant</option>
-        <option value="owner">Home Owner</option>
-        <option value="landlord">Landlord / Property Manager</option>
-      </select>
       <button class="submitEdit" v-on:click="updateUser">Submit</button>
       <button class="back" v-on:click="modal='view'">Back</button>
     </div>
@@ -61,13 +47,7 @@
           id: '',
           email: '',
           password: '',
-          role: '',
-          firstName: '',
-          middleName: '',
-          lastName: '',
-          phone: '',
-          address1: '',
-          address2: ''
+          name: ''
         }
       }
     },
@@ -81,23 +61,11 @@
         let vue = this
         axios.put('http://54.186.69.46:81/users/' + vue.activeUser.id, {
           email: vue.activeUser.email,
-          role: vue.activeUser.role,
-          firstName: vue.activeUser.firstName,
-          middleName: vue.activeUser.middleName,
-          lastName: vue.activeUser.lastName,
-          phone: vue.activeUser.phone,
-          address1: vue.activeUser.address1,
-          address2: vue.activeUser.address2
+          name: vue.activeUser.name
         }, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
           .then(function (user) {
             vue.activeUser.email = user.data.email
-            vue.activeUser.role = user.data.role
-            vue.activeUser.firstName = user.data.firstName
-            vue.activeUser.middleName = user.data.middleName
-            vue.activeUser.lastName = user.data.lastName
-            vue.activeUser.phone = user.data.phone
-            vue.activeUser.address1 = user.data.address1
-            vue.activeUser.address2 = user.data.address2
+            vue.activeUser.name = user.data.name
             vue.modal = 'view'
           })
           .catch(function (error) {
@@ -119,26 +87,14 @@
       clearActiveUser () {
         let vue = this
         vue.activeUser.email = ''
-        vue.activeUser.role = ''
-        vue.activeUser.firstName = ''
-        vue.activeUser.middleName = ''
-        vue.activeUser.lastName = ''
-        vue.activeUser.phone = ''
-        vue.activeUser.address1 = ''
-        vue.activeUser.address2 = ''
+        vue.activeUser.name = ''
       },
       populateActiveUser () {
         let vue = this
         axios.get('http://54.186.69.46:81/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
           .then(function (response) {
             vue.activeUser.email = response.data.email
-            vue.activeUser.role = response.data.role
-            vue.activeUser.firstName = response.data.firstName
-            vue.activeUser.middleName = response.data.middleName
-            vue.activeUser.lastName = response.data.lastName
-            vue.activeUser.phone = response.data.phone
-            vue.activeUser.address1 = response.data.address1
-            vue.activeUser.address2 = response.data.address2
+            vue.activeUser.firstName = response.data.name
           })
           .catch(function (error) {
             console.log(error)
