@@ -242,11 +242,12 @@ setInterval(clock, 1000)
 
 
 .marker {
-    display: block;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    padding: 0;
+  background-image: url('/assets/mapbox-icon.png');
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 
