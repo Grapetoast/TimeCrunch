@@ -119,30 +119,29 @@
 </script>
 
 <style scoped lang="less">
-  @nvmgrey: #dae5ed;
-  @nvmblue: #005389;
-  @nvmred: #b20938;
-  @nvmlightred: #e21b3c;
+@red: #d83406;
+@grey: #323d38;
 
   .main {
     margin-top: 120px;
   }
 
   h1 {
-    color: @nvmlightred;
+    color: @red;
     text-align: center;
   }
 
   h2 {
     font-size: 2em;
-    background-color: @nvmgrey;
+    border: 2px solid @grey;
     padding-left: 5%;
   }
 
   input {
     width: 90%;
     font-size: 1.5em;
-    background-color: @nvmgrey;
+    background-color: #fff;
+    border: 2px solid @red;
     padding-left: 5%;
     margin-left: 5%;
   }
@@ -152,7 +151,7 @@
   }
 
   button {
-    background: linear-gradient(#e21b3c, #b20938);
+    background: @grey;
     border: none;
     color: #fff;
     font-size: 2em;
@@ -163,10 +162,10 @@
 
   .accountEditButton {
     margin-bottom: 20px;
-    background-color: @nvmblue;
+    background-color: @grey;
   }
 
   .submitEdit {
-    background-color: @nvmblue;
+    background-color: @grey;
   }
 </style>
