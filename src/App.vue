@@ -19,7 +19,7 @@
       vue.user.id = localStorage.getItem('userId')
       vue.user.admin = localStorage.getItem('admin')
       if (vue.user.token !== null) {
-        vue.loggedIn = true
+        vue.logged = true
       }
     },
     data: function () {
