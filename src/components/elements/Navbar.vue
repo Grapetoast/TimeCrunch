@@ -1,13 +1,14 @@
 <template>
   <div class="main">
     <div class="navbar">
+      <div class="logo"></div>
       <div v-bind:class="nvLogic" v-on:click="navToggle"></div>
       <div v-bind:class="navpaneLogic">
-        <button class="Login" v-on:click="navToggle(); $router.push('/')" v-if="logged">Home</button>
+        <button class="Home" v-on:click="navToggle(); $router.push('/')" v-if="logged">Home</button>
         <button class="Login" v-on:click="navToggle(); $router.push('/Login')" v-if="!logged">Login</button>
-        <button class="Login" v-on:click="navToggle(); $router.push('/Register')" v-if="!logged">Register</button>
-        <button class="Login" v-on:click="navToggle(); $router.push('/Account')" v-if="logged">Account</button>
-        <button class="Login" v-on:click="navToggle(); $emit('logout')" v-if="logged">Logout</button>
+        <button class="Reg" v-on:click="navToggle(); $router.push('/Register')" v-if="!logged">Register</button>
+        <button class="Account" v-on:click="navToggle(); $router.push('/Account')" v-if="logged">Account</button>
+        <button class="Logout" v-on:click="navToggle(); $emit('logout')" v-if="logged">Logout</button>
     </div>
   </div>
 </div>
@@ -63,9 +64,8 @@
 </script>
 
 <style scoped lang="less">
-@nvmgrey: #dae5ed;
-@nvmblue: #005389;
-@nvmred: #b20938;
+
+@red: #d83406;
 
   .navpane {
     display: none;
@@ -76,28 +76,56 @@
     width: 100%;
   }
 
+  .logo {
+    background-image: url('../../assets/TClogo.svg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 80px;
+    width: 200px;
+    margin: 10px;
+  }
+
   .nv {
-    margin-top: 20px;
     width: 80px;
     height: 80px;
     overflow: hidden;
     margin-top: 10px;
     margin-right: 10px;
-    grid-column: 4;
+    margin-left: 20%;
+    grid-column: 3;
     z-index: 8;
     background-repeat: no-repeat;
-    background-image: url("../../assets/navbuttonAnimationWhite.svg");
+    background-image: url("../../assets/navbuttonAnimationWhiteBorder.svg");
   }
 
   .Login {
-    grid-column: 2;
     height: 100px;
+    color: #fff;
+    font-size: 2em;
+    font-weight: 400;
   }
-
+  .Reg {
+    height: 100px;
+    color: #fff;
+    font-size: 2em;
+    font-weight: 400;
+  }
+  .Account {
+    height: 100px;
+    color: #fff;
+    font-size: 2em;
+    font-weight: 400;
+  }
+  .Home {
+    height: 100px;
+    color: #fff;
+    font-size: 2em;
+    font-weight: 400;
+  }
   .navbar {
     width: 100%;
     height: 100px;
-    background: linear-gradient(#005DA6, #014271);
+    border-bottom: 2px solid #d83406;
     position: fixed;
     top: 0;
     left: 0;
@@ -112,26 +140,22 @@
   }
 
   .navpaneAnimation {
-    animation: navpaneAnimation .3s steps(9);
+    animation: navpaneAnimation .35s steps(9);
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
-    grid-column-start: 2;
-    grid-column-end: 5;
+    grid-column-start: 1;
+    grid-column-end: 4;
     z-index: 10;
     width: 100%;
-    height: 400px;
-    margin-top: 1px;
-    background: linear-gradient(#e21b3c, #b20938);
+    height: 100px;
+    background: #d83406;
     color: #fff;
-    outline: solid 1px ;
-    outline-color: #fff;
-    box-shadow: 0px 1px 1px 2px #fff;
-    display: grid;
-    grid-template-columns: .1fr 1fr .1fr;
+    box-shadow: 0px 1px 2px #000;
+
   }
 
   .navpaneAnimationExit {
-    animation: navpaneAnimationReverse .3s steps(9);
+    animation: navpaneAnimationReverse .35s steps(9);
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
     display: none;
@@ -176,17 +200,4 @@
     display: none;
   }
 
-  @media (min-width: 700px) {
-    .navpane {
-      width: 100%;
-      height: 120px;
-      z-index: 3;
-      text-align: center;
-      line-height: 70px;
-      font-weight: lighter;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr) 220px repeat(2,1fr);
-      grid-template-rows: 100px;
-    }
-  }
 </style>
