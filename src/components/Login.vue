@@ -69,10 +69,9 @@
 </script>
 
 <style scoped lang="less">
-  @nvmgrey: #dae5ed;
-  @nvmblue: #005389;
-  @nvmred: #b20938;
-  @nvmlightred: #e21b3c;
+  @red: #d83406;
+  @grey: #323d38;
+
   .main {
     height: 500px;
     width: 100%;
@@ -81,7 +80,7 @@
   }
 
   h1 {
-    color: @nvmlightred;
+    color: @red;
   }
 
   .registerlink {
@@ -94,14 +93,14 @@
   }
 
   button {
-    background: linear-gradient(#005DA6, #014271);
+    background: @grey;
     color: #fff;
     border: none;
     font-size: 1.7em;
   }
 
   input {
-    border: 1px solid @nvmblue;
+    border: 1px solid #000;
     margin-top: 5px;
     height: 30px;
   }
