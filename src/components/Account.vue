@@ -4,7 +4,6 @@
       <h2 class="name">Name: {{activeUser.name}}</h2>
       <h2 class="email">Email: {{activeUser.email}}</h2>
       <button class="accountEditButton" v-on:click="modal='edit'">Edit Account</button>
-      <button class="passwordEditButton" v-on:click="modal='pass'">Update Password</button>
       <button class="back" v-on:click="modal=''">Back</button>
     </div>
     <div class="accountEdit" v-else-if="modal==='edit'">
@@ -55,11 +54,12 @@
       if (this.logged !== true) {
         this.$router.push('/login')
       }
+      this.populateActiveUser()
     },
     methods: {
       updateUser () {
         let vue = this
-        axios.put('http://54.186.69.46:81/users/' + vue.activeUser.id, {
+        axios.put('http://54.186.69.46:81/users/' + vue.user.id, {
           email: vue.activeUser.email,
           name: vue.activeUser.name
         }, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
@@ -94,7 +94,7 @@
         axios.get('http://54.186.69.46:81/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
           .then(function (response) {
             vue.activeUser.email = response.data.email
-            vue.activeUser.firstName = response.data.name
+            vue.activeUser.name = response.data.name
           })
           .catch(function (error) {
             console.log(error)

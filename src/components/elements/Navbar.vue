@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="navbar">
-      <div class="logo"></div>
+      <div class="logo" v-on:click="$router.push('/')"></div>
       <div v-bind:class="nvLogic" v-on:click="navToggle"></div>
       <div v-bind:class="navpaneLogic">
         <button class="Home" v-on:click="navToggle(); $router.push('/')" v-if="logged">Home</button>
