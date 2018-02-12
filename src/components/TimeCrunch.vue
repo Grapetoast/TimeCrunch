@@ -55,53 +55,53 @@ export default {
       accuracy: '',
       altitudeAccuracy: '',
       mapboxToken: 'pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag',
-      var geojson = {
-    "type": "FeatureCollection",
-    "features": [
-        {
-            "type": "Feature",
-            "properties": {
-                "message": "Foo",
-                "iconSize": [60, 60]
+      geojson: {
+        'type': 'FeatureCollection',
+        'features': [
+          {
+            'type': 'Feature',
+            'properties': {
+              'message': 'Foo',
+              'iconSize': [60, 60]
             },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -66.324462890625,
-                    -16.024695711685304
-                ]
+            'geometry': {
+              'type': 'Point',
+              'coordinates': [
+                -66.324462890625,
+                -16.024695711685304
+              ]
             }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "message": "Bar",
-                "iconSize": [50, 50]
+          },
+          {
+            'type': 'Feature',
+            'properties': {
+              'message': 'Bar',
+              'iconSize': [50, 50]
             },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -61.2158203125,
-                    -15.97189158092897
-                ]
+            'geometry': {
+              'type': 'Point',
+              'coordinates': [
+                -61.2158203125,
+                -15.97189158092897
+              ]
             }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "message": "Baz",
-                "iconSize": [40, 40]
+          },
+          {
+            'type': 'Feature',
+            'properties': {
+              'message': 'Baz',
+              'iconSize': [40, 40]
             },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -63.29223632812499,
-                    -18.28151823530889
-                ]
+            'geometry': {
+              'type': 'Point',
+              'coordinates': [
+                -63.29223632812499,
+                -18.28151823530889
+              ]
             }
-        }
-    ]
-};
+          }
+        ]
+      },
       mapOptions: {
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v9',
