@@ -305,7 +305,7 @@ setInterval(clock, 1000)
   border-bottom-right-radius: 5px;
   background-color: @grey;
   grid-row: 2;
-  grid-column: 4;
+  grid-column: 3;
   color: white;
   line-height: 50px;
   box-shadow: 0px 1.5px 5px #000;
@@ -324,7 +324,7 @@ setInterval(clock, 1000)
   border-bottom-right-radius: 5px;
   background-color: @grey;
   grid-row: 2;
-  grid-column: 3;
+  grid-column: 2;
   line-height: 50px;
   box-shadow: 0px 1.5px 5px #000;
 }
@@ -343,7 +343,7 @@ setInterval(clock, 1000)
   border-bottom-right-radius: 5px;
   background-color: @grey;
   grid-row: 2;
-  grid-column: 2;
+  grid-column: 4;
   box-shadow: 0px 1.5px 5px #000;
 }
 </style>
