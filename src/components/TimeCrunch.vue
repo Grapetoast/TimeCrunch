@@ -32,7 +32,7 @@ export default {
       vue.altitude = position.coords.altitude
       vue.accuracy = position.coords.accuracy
       vue.altitudeAccuracy = position.coords.altitudeAccuracy
-      vue.coordinates = [position.coords.latitude, position.coords.longitude]
+      vue.coordinates = [vue.latitude, vue.longitude]
     }
     function locationFail () {
       alert('It seems we cant find you, please reload the page and try again.')
