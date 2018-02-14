@@ -1,7 +1,7 @@
 <template>
   <div id="q-app">
     <navbar v-on:logout="logOut" :logged="logged" :user="user"></navbar>
-    <router-view v-on:login="log" :logged="logged" :user="user"/>
+    <router-view v-on:login="log" v-on:register="register" :logged="logged" :user="user"/>
   </div>
 </template>
 
@@ -24,7 +24,7 @@
     },
     data: function () {
       return {
-        logged: true,
+        logged: false,
         user: {
           id: '',
           token: '',
@@ -46,12 +46,28 @@
           vue.logged = false
         }
       },
+      register (user) {
+        let vue = this
+        if (user.token !== null) {
+          vue.user.token = user.data.token
+          vue.user.id = user.data.id
+          vue.user.admin = user.data.admin
+          vue.logged = true
+          vue.$router.push('/')
+        }
+        else {
+          vue.logged = false
+        }
+      },
       logOut () {
         let vue = this
         vue.user.token = ''
         vue.user.id = ''
         vue.user.admin = false
         vue.logged = false
+        localStorage.removeItem('token')
+        localStorage.removeItem('userId')
+        localStorage.removeItem('admin')
         vue.$router.push('/login')
       }
     }
