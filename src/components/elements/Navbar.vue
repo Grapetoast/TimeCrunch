@@ -82,7 +82,8 @@
     background-size: contain;
     height: 80px;
     width: 200px;
-    margin: 10px;
+    margin-top: 16px;
+    margin-left: 10px;
   }
 
   .nv {
