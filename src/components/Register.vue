@@ -1,14 +1,32 @@
 <template>
   <div class="main">
-    <h1>Register</h1>
-    <input class="name" v-model="name" placeholder="First Name"></input>
-    <input class="email" v-model="email" placeholder="user@example.com"></input>
-    <input class="password" v-model="password" placeholder="*********" type="password" v-if="!showPass" v-on:keypress.enter="registerUser">
-    <input class="password" v-model="password" placeholder="*********" v-if="showPass" v-on:keypress.enter="registerUser">
-    <button class="togglePass" v-on:click="showPass = !showPass" v-if="!showPass">Show Password</button>
-    <button class="togglePass" v-on:click="showPass = !showPass" v-if="showPass">Hide Password</button>
-    <button class="submitRegister" v-on:click="registerUser">Submit</button>
-    <button class="back" v-on:click="$router.push('/Login')">Back</button>
+    <div class="registerModal" v-if="modal==='register'">
+      <h1>Register</h1>
+      <input class="name" v-model="name" placeholder="First Name"></input>
+      <input class="email" v-model="email" placeholder="user@example.com"></input>
+      <input class="password" v-model="password" placeholder="*********" type="password" v-if="!showPass" v-on:keypress.enter="registerUser">
+      <input class="password" v-model="password" placeholder="*********" v-if="showPass" v-on:keypress.enter="registerUser">
+      <button class="togglePass" v-on:click="showPass = !showPass" v-if="!showPass">Show Password</button>
+      <button class="togglePass" v-on:click="showPass = !showPass" v-if="showPass">Hide Password</button>
+      <button class="submitRegister" v-on:click="registerUser">Submit</button>
+      <button class="back" v-on:click="$router.push('/Login')">Back</button>
+    </div>
+    <div class="employeeRegister" v-else-if="modal==='employee'">
+      <h1>Enter Company Code</h1>
+      <input class="companyCode" v-model="companyId" placeholder="Company Code"></input>
+      <button class="submitEmployee" v-on:click="submitCompanyId">Submit</button>
+    </div>
+    <div class="companyRegister" v-else-if="modal==='company'">
+      <h1>Enter Company Information</h1>
+      <input class="companyCode" v-model="companyId" placeholder="Company Code"></input>
+      <input class="companyName" v-model="companyName" placeholder="Company Name"></input>
+      <button class="submitCompany" v-on:click="submitCompany">Submit</button>
+    </div>
+    <div class="chooseRegister" v-else>
+      <h1>Are you registering a new Company?</h1>
+      <button class="companyRegisterButton" v-on:click="modal='company'">Yes</button>
+      <button class="employeeRegisterButton" v-on:click="modal='employee'">No (Must have a company Code)</button>
+    </div>
   </div>
 </template>
 
@@ -20,10 +38,13 @@
     props: ['logged', 'user'],
     data () {
       return {
+        modal: '',
         showPass: false,
         email: '',
         password: '',
-        name: ''
+        name: '',
+        companyId: '',
+        companyName: ''
       }
     },
     methods: {
@@ -32,7 +53,8 @@
         axios.post('http://54.186.69.46:81/users', {
           email: vue.email,
           password: vue.password,
-          name: vue.name
+          name: vue.name,
+          companyId: vue.companyId
         })
           .then(function (user) {
             vue.$emit('login', user)
@@ -40,6 +62,14 @@
           .catch(function (error) {
             console.log(error)
           })
+      },
+      submitCompanyId () {
+        let vue = this
+        vue.modal = 'register'
+      },
+      submitCompany () {
+        let vue = this
+        vue.modal = 'register'
       }
     }
   }

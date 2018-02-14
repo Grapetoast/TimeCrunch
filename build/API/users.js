@@ -59,6 +59,7 @@ router.post("/", (req,res) => {
   email: req.body.email,
   password: req.body.password,
   name: req.body.name,
+  companyId: req.body.companyId,
   admin: req.body.admin
   })
 
@@ -115,6 +116,7 @@ router.put("/:id", passport.authenticate('jwt', { session: false }), (req, res) 
         user.email = req.body.email || user.email;
         user.password = req.body.password || user.password;
         user.name = req.body.name || user.name;
+        user.companyId = req.body.companyId || user.companyId;
         user.admin = req.body.admin || user.admin;
 
         user.save(function (err, user) {
