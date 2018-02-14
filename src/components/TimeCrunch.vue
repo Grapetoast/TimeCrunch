@@ -232,7 +232,7 @@ setInterval(clock, 1000)
 @grey: #323d38;
 
 .main {
-  position: absolute;
+  position: fixed;
   width: 100%;
   margin-top: 100px;
   display: grid;
@@ -260,7 +260,7 @@ setInterval(clock, 1000)
   grid-column-start: 1;
   grid-column-end: 7;
   z-index: 0;
-  position: absolute;
+  position: fixed;
 }
 
 .clock {

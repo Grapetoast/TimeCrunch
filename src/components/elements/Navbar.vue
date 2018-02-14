@@ -90,8 +90,7 @@
     height: 80px;
     overflow: hidden;
     margin-top: 10px;
-    margin-right: 10px;
-    margin-left: 20%;
+    margin-right: 20px;
     grid-column: 3;
     z-index: 8;
     background-repeat: no-repeat;
@@ -103,30 +102,35 @@
     color: #fff;
     font-size: 2em;
     font-weight: 400;
+    grid-column: 1;
   }
   .Reg {
     height: 100px;
     color: #fff;
     font-size: 2em;
     font-weight: 400;
+    grid-column: 3;
   }
   .Account {
     height: 100px;
     color: #fff;
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight: 400;
+    grid-column: 2;
   }
   .Home {
     height: 100px;
     color: #fff;
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight: 400;
+    grid-column: 1;
   }
   .Logout {
     height: 100px;
     color: #fff;
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight: 400;
+    grid-column: 3;
   }
   .navbar {
     width: 100%;
@@ -141,8 +145,9 @@
     line-height: 70px;
     font-weight: lighter;
     display: grid;
-    grid-template-columns: repeat(2, 1fr) 220px repeat(2,1fr);
+    grid-template-columns: repeat(2, 1fr);
     grid-template-rows: 100px;
+    background-color: #fff;
   }
 
   .navpaneAnimation {
@@ -156,7 +161,10 @@
     height: 100px;
     background: #d83406;
     color: #fff;
-    box-shadow: 0px 1px 2px #000;
+    box-shadow: 0px 1px #000;
+    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 
   }
 
