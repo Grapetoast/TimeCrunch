@@ -64,7 +64,6 @@
 </script>
 
 <style scoped lang="less">
-
   @red: #c90c2e;
 
   button {
@@ -104,6 +103,7 @@
   }
 
   .Login {
+    z-index: 11;
     height: 100px;
     color: #fff;
     font-size: 2em;
@@ -112,6 +112,7 @@
   }
 
   .Reg {
+    z-index: 11;
     height: 100px;
     color: #fff;
     font-size: 2em;
@@ -120,6 +121,7 @@
   }
 
   .Account {
+    z-index: 11;
     height: 100px;
     color: #fff;
     font-size: 1.5em;
@@ -128,6 +130,7 @@
   }
 
   .Home {
+    z-index: 11;
     height: 100px;
     color: #fff;
     font-size: 1.5em;
@@ -136,6 +139,7 @@
   }
 
   .Logout {
+    z-index: 11;
     height: 100px;
     color: #fff;
     font-size: 1.5em;
@@ -167,7 +171,8 @@
     animation-fill-mode: forwards;
     grid-column-start: 1;
     grid-column-end: 4;
-    z-index: 10;
+    z-index: 12;
+    opacity: 1;
     width: 100%;
     height: 100px;
     background: @red;
@@ -176,7 +181,7 @@
     text-align: center;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-
+    position: relative;
   }
 
   .navpaneAnimationExit {

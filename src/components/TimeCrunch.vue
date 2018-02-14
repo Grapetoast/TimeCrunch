@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="timecrunch">
     <div class="clock"></div>
     <div class="clockIn" v-on:click="clockIn"> Clock In</div>
     <div class="clockOut" v-on:click="clockOut">Clock Out</div>
@@ -196,7 +196,7 @@ setInterval(clock, 1000)
 @red: #c90c2e;
 @grey: #323d38;
 
-.main {
+.timecrunch {
   position: fixed;
   width: 100%;
   margin-top: 100px;
@@ -230,6 +230,7 @@ setInterval(clock, 1000)
 
 
 .clock {
+  position: relative;
   z-index: 2;
   text-align: center;
   font-size: 4em;
