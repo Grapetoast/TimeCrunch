@@ -228,7 +228,7 @@ setInterval(clock, 1000)
 </script>
 
 <style scoped lang="less">
-@red: #d83406;
+@red: #c90c2e;
 @grey: #323d38;
 
 .main {

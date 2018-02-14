@@ -65,7 +65,7 @@
 
 <style scoped lang="less">
 
-@red: #d83406;
+@red: #c90c2e;
 
   .navpane {
     display: none;
@@ -159,7 +159,7 @@
     z-index: 10;
     width: 100%;
     height: 100px;
-    background: #d83406;
+    background: @red;
     color: #fff;
     box-shadow: 0px 1px #000;
     text-align: center;
