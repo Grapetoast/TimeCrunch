@@ -65,7 +65,13 @@
 
 <style scoped lang="less">
 
-@red: #c90c2e;
+  @red: #c90c2e;
+
+  button {
+    border: none;
+    background: none;
+    color: #fff;
+  }
 
   .navpane {
     display: none;
@@ -104,6 +110,7 @@
     font-weight: 400;
     grid-column: 1;
   }
+
   .Reg {
     height: 100px;
     color: #fff;
@@ -111,6 +118,7 @@
     font-weight: 400;
     grid-column: 3;
   }
+
   .Account {
     height: 100px;
     color: #fff;
@@ -118,6 +126,7 @@
     font-weight: 400;
     grid-column: 2;
   }
+
   .Home {
     height: 100px;
     color: #fff;
@@ -125,6 +134,7 @@
     font-weight: 400;
     grid-column: 1;
   }
+
   .Logout {
     height: 100px;
     color: #fff;
@@ -132,6 +142,7 @@
     font-weight: 400;
     grid-column: 3;
   }
+
   .navbar {
     width: 100%;
     height: 100px;
