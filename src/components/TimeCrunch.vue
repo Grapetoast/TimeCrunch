@@ -11,6 +11,7 @@
 
 <script>
 import Mapbox from 'mapbox-gl-vue'
+import mapboxgl from 'mapbox-gl'
 import axios from 'axios'
 
 export default {
@@ -21,6 +22,7 @@ export default {
   },
   created () {
     let vue = this
+    vue.marker.classname = 'marker'
     if (this.logged === false) {
       this.$router.push('/login')
     }
@@ -32,6 +34,7 @@ export default {
       vue.altitude = position.coords.altitude
       vue.accuracy = position.coords.accuracy
       vue.altitudeAccuracy = position.coords.altitudeAccuracy
+      vue.coordinates = [vue.longitude, vue.latitude]
     }
     function locationFail () {
       alert('It seems we cant find you, please reload the page and try again.')
@@ -40,6 +43,7 @@ export default {
   },
   data () {
     return {
+      marker: document.createElement('div'),
       userId: '',
       time: '',
       month: '',
@@ -51,57 +55,11 @@ export default {
       lastClockType: '',
       latitude: '',
       longitude: '',
+      coordinates: [0, 0],
       altitude: '',
       accuracy: '',
       altitudeAccuracy: '',
       mapboxToken: 'pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag',
-      geojson: {
-        'type': 'FeatureCollection',
-        'features': [
-          {
-            'type': 'Feature',
-            'properties': {
-              'message': 'Foo',
-              'iconSize': [60, 60]
-            },
-            'geometry': {
-              'type': 'Point',
-              'coordinates': [
-                -66.324462890625,
-                -16.024695711685304
-              ]
-            }
-          },
-          {
-            'type': 'Feature',
-            'properties': {
-              'message': 'Bar',
-              'iconSize': [50, 50]
-            },
-            'geometry': {
-              'type': 'Point',
-              'coordinates': [
-                -61.2158203125,
-                -15.97189158092897
-              ]
-            }
-          },
-          {
-            'type': 'Feature',
-            'properties': {
-              'message': 'Baz',
-              'iconSize': [40, 40]
-            },
-            'geometry': {
-              'type': 'Point',
-              'coordinates': [
-                -63.29223632812499,
-                -18.28151823530889
-              ]
-            }
-          }
-        ]
-      },
       mapOptions: {
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v9',
@@ -118,6 +76,7 @@ export default {
         center: [vue.longitude, vue.latitude],
         zoom: 15
       })
+      vue.addMarker()
     },
     mapJump () {
       let vue = this
@@ -125,6 +84,12 @@ export default {
         center: [vue.longitude, vue.latitude],
         zoom: 15
       })
+    },
+    addMarker () {
+      let vue = this
+      new mapboxgl.Marker(vue.marker)
+        .setLngLat(vue.coordinates)
+        .addTo(vue.map)
     },
     clock () {
       let vue = this
@@ -227,7 +192,7 @@ function clock () {
 setInterval(clock, 1000)
 </script>
 
-<style scoped lang="less">
+<style lang="less">
 @red: #c90c2e;
 @grey: #323d38;
 
@@ -238,16 +203,6 @@ setInterval(clock, 1000)
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(7, 100px);
-}
-
-
-.marker {
-  background-image: url('/assets/mapbox-icon.png');
-  background-size: cover;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  cursor: pointer;
 }
 
 
@@ -262,6 +217,17 @@ setInterval(clock, 1000)
   z-index: 0;
   position: fixed;
 }
+
+.mapboxgl-marker {
+  background-image: url('../assets/mapbox-icon.png');
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  z-index: 4;
+  cursor: pointer;
+}
+
 
 .clock {
   z-index: 2;

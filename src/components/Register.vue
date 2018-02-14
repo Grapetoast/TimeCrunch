@@ -29,7 +29,7 @@
       <button class="back" v-on:click="modal=''; error=false">Back</button>
     </div>
     <div class="chooseRegister" v-else>
-      <h1>Are you registering a new Company?</h1>
+      <h1>Are you Registering a New Company?</h1>
       <button class="companyRegisterButton" v-on:click="modal='company'">Yes</button>
       <button class="employeeRegisterButton" v-on:click="modal='employee'">No (Must have a company Code)</button>
       <button class="back" v-on:click="$router.push('/login')">Back</button>
@@ -173,6 +173,31 @@
 
   .submitRegister {
     width: 35%;
+  }
+
+  .submitCompany {
+    width: 90%;
+    height: 50px;
+    margin-left: 5%;
+  }
+
+  .submitEmployee {
+    width: 90%;
+    height: 50px;
+    margin-left: 5%;
+  }
+
+  .companyRegisterButton {
+    width: 90%;
+    height: 50px;
+    margin-left: 5%;
+  }
+
+  .employeeRegisterButton {
+    width: 90%;
+    height: 50px;
+    margin-top: 20px;
+    margin-left: 5%;
   }
 
   .back {

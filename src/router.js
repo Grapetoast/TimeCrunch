@@ -29,6 +29,7 @@ export default new VueRouter({
     { path: '/Login', component: load('Login') },
     { path: '/Register', component: load('Register') },
     { path: '/Account', component: load('Account') },
+    { path: '/elements/Mapbox', component: load('Mapbox') },
     // Always leave this last one
     { path: '*', component: load('Error404') } // Not found
   ]
