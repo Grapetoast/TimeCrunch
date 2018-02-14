@@ -24,7 +24,7 @@
     },
     data: function () {
       return {
-        logged: false,
+        logged: true,
         user: {
           id: '',
           token: '',

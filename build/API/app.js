@@ -7,6 +7,8 @@ var router = express.Router();
 var path = __dirname + "/views/";
 require("./clock");
 var clocks = require("./clocks.js");
+require("./company");
+var companys = require("./companys.js");
 require("./user");
 var users = require("./users.js");
 
@@ -30,6 +32,7 @@ app.use(function(req, res, next) {
 })
 
 app.use("/clocks", clocks);
+app.use("/companys", companys);
 app.use("/users", users);
 
 router.get("/", (req,res) => {

@@ -119,8 +119,8 @@
 </script>
 
 <style scoped lang="less">
-@red: #d83406;
-@grey: #323d38;
+  @red: #c90c2e;
+  @grey: #323d38;
 
   .main {
     margin-top: 120px;
