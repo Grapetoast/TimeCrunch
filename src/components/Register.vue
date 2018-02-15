@@ -81,9 +81,7 @@
           admin: vue.company
         })
           .then(function (user) {
-            console.log(user)
-            console.log(user.token)
-            console.log(user.data[0].token)
+            console.log(user.data.token)
             vue.$emit('register', user)
           })
           .catch(function (error) {
