@@ -158,6 +158,11 @@
     position: fixed;
   }
 
+  .clockMapView {
+    width: 100%;
+    height: 50%;
+  }
+
   .mapboxgl-marker {
     background-image: url('../../assets/mapbox-icon.png');
     background-size: cover;
