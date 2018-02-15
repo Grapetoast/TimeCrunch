@@ -44,6 +44,7 @@ export default {
   data () {
     return {
       marker: document.createElement('div'),
+      endMarker: document.createElement('div'),
       userId: '',
       time: '',
       month: '',
@@ -56,6 +57,7 @@ export default {
       latitude: '',
       longitude: '',
       coordinates: [0, 0],
+      endcoordinates: [-112, 34],
       altitude: '',
       accuracy: '',
       altitudeAccuracy: '',
@@ -69,6 +71,14 @@ export default {
     }
   },
   methods: {
+    submitDirections () {
+      axios.post('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag', {
+      })
+    },
+    submitDirections () {
+      axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag', {
+      })
+    },
     mapLoaded (map) {
       let vue = this
       vue.map = map
@@ -76,7 +86,8 @@ export default {
         center: [vue.longitude, vue.latitude],
         zoom: 15
       })
-      vue.addMarker()
+      vue.startMarker()
+      vue.endMarkerMethod()
     },
     mapJump () {
       let vue = this
@@ -85,10 +96,17 @@ export default {
         zoom: 15
       })
     },
-    addMarker () {
+    startMarker () {
       let vue = this
+      console.log(vue.coordinates)
       new mapboxgl.Marker(vue.marker)
         .setLngLat(vue.coordinates)
+        .addTo(vue.map)
+    },
+    endMarkerMethod () {
+      let vue = this
+      new mapboxgl.Marker(vue.endMarker)
+        .setLngLat(vue.endcoordinates)
         .addTo(vue.map)
     },
     clock () {
@@ -215,7 +233,9 @@ setInterval(clock, 1000)
   grid-column-start: 1;
   grid-column-end: 7;
   z-index: 0;
-  position: fixed;
+  position: absolute;
+  top:0;
+  bottom:0;
 }
 
 .mapboxgl-marker {
@@ -228,6 +248,10 @@ setInterval(clock, 1000)
   cursor: pointer;
 }
 
+
+.mapboxgl-control-container {
+
+}
 
 .clock {
   position: relative;
