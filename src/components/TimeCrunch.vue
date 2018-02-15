@@ -5,6 +5,10 @@
       <h4>Clocked {{lastClockType}}</h4>
       <button class="back" v-on:click="modal=''">Back</button>
     </div>
+    <div class="prettyModal" v-else-if="modal==='pretty'">
+      <h2>{{prettyMessage}}</h2>
+      <button class="back" v-on:click="modal=''">Back</button>
+    </div>
     <div class="clockIn" v-on:click="clockIn"> Clock In</div>
     <div class="clockOut" v-on:click="clockOut">Clock Out</div>
     <div class="lunchOut" v-on:click="lunchOut">Lunch Start</div>
@@ -47,7 +51,7 @@ export default {
       vue.coordinates = [vue.longitude, vue.latitude]
     }
     function locationFail () {
-      alert('It seems we cant find you, please reload the page and try again.')
+      vue.prettyModal('It seems we cant find you, please reload the page and try again.')
       this.locationError = true
     }
   },
@@ -55,6 +59,7 @@ export default {
     return {
       marker: document.createElement('div'),
       modal: '',
+      prettyMessage: '',
       endMarker: document.createElement('div'),
       userId: '',
       time: '',
@@ -83,6 +88,11 @@ export default {
     }
   },
   methods: {
+    prettyModal (message) {
+      let vue = this
+      vue.prettyMessage = message
+      vue.modal = 'pretty'
+    },
     submitDirections () {
       axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag', {
       })
@@ -92,7 +102,6 @@ export default {
       axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag')
         .then(function (response) {
           vue.distance = response.data.routes[0].distance
-          console.log(vue.distance)
         })
         .catch(function (error) {
           console.log(error)
@@ -178,7 +187,8 @@ export default {
       vue.altitudeAccuracy = position.coords.altitudeAccuracy
     },
     locationFail () {
-      alert('It seems we cant find you, please reload the page and try again.')
+      let vue = this
+      vue.prettyModal('It seems we cant find you, please reload the page and try again.')
       this.locationError = true
     },
     clockIn () {
@@ -188,49 +198,52 @@ export default {
         vue.clock()
       }
       else {
-        alert('You are already clocked in!')
+        vue.prettyModal('You are already clocked in!')
       }
     },
     clockOut () {
+      let vue = this
       if (this.lastClockType === 'in' || this.lastClockType === 'lunch in') {
         this.clockType = 'out'
         this.clock()
       }
       else if (this.lastClockType === 'lunch out') {
-        alert('You are out to lunch!')
+        vue.prettyModal('You are out to lunch!')
       }
       else {
-        alert('You are not clocked in!')
+        vue.prettyModal('You are not clocked in!')
       }
     },
     lunchOut () {
+      let vue = this
       if (this.lastClockType === 'in') {
         this.clockType = 'lunch out'
         this.clock()
       }
       else if (this.lastClockType === 'lunch out') {
-        alert('You are already out to lunch!')
+        vue.prettyModal('You are already out to lunch!')
       }
       else if (this.lastClockType === 'lunch in') {
-        alert('You already had lunch!')
+        vue.prettyModal('You already had lunch!')
       }
       else {
-        alert('You are not clocked in!')
+        vue.prettyModal('You are not clocked in!')
       }
     },
     lunchIn () {
+      let vue = this
       if (this.lastClockType === 'lunch out') {
         this.clockType = 'lunch in'
         this.clock()
       }
       else if (this.lastClockType === 'out') {
-        alert('You are not clocked in!')
+        vue.prettyModal('You are not clocked in!')
       }
       else if (this.lastClockType === 'in') {
-        alert('You never clocked off for lunch!')
+        vue.prettyModal('You never clocked off for lunch!')
       }
       else {
-        alert('You are already back from lunch!')
+        vue.prettyModal('You are already back from lunch!')
       }
     }
   }
@@ -264,11 +277,21 @@ setInterval(clock, 1000)
   grid-template-rows: repeat(7, 100px);
 }
 
+.prettyModal {
+  position: absolute;
+  z-index: 12;
+  background-color: @red;
+  border-radius: 10px;
+  width: 80%;
+  height: 80%;
+  margin-left: 10%;
+}
 
 #map {
 	width: 100%;
 	height: 100%;
   margin-top: 50px;
+  padding-top: none;
   grid-row-start: 2;
   grid-row-end: 7;
   grid-column-start: 1;
@@ -312,7 +335,8 @@ setInterval(clock, 1000)
   grid-column-start: 1;
   grid-column-end: 7;
   background-color: @red;
-  line-height: 100px;
+  padding-top: 20px;
+  line-height: 80px;
   color: #fff;
   box-shadow: 0px 1.5px 5px #000;
 }

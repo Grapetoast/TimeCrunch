@@ -87,7 +87,7 @@
     },
     created () {
       let vue = this
-      axios.get('http://54.186.69.46:81/users/all/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+      axios.get('http://54.186.69.46:81/users/all/' + vue.user.companyId, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
         .then(function (response) {
           vue.users = response.data
         })
@@ -158,10 +158,14 @@
   }
   #map {
     width: 100%;
-    height: 100%;
-    margin-top: 50px;
+    height: 50%;
+    margin-top: 100%;
+    padding-top: 4%;
     z-index: 0;
-    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
   }
 
   .clockMapView {

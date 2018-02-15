@@ -43,7 +43,7 @@ router.post("/login", (req, res) => {
         if (isMatch === true) {
           var payload = {"id": users.id};
           var token = jwt.sign(payload, jwtOptions.secretOrKey);
-          res.json({userId: users.id, token: token, admin: users.admin});
+          res.json({userId: users.id, token: token, companyId: users.companyId, admin: users.admin});
         } else {
           res.status(401).send(false);
         }
@@ -70,27 +70,19 @@ router.post("/", (req,res) => {
       User.findOne({"email": req.body.email}, function (err, users) {
         var payload = {"id": users.id};
         var token = jwt.sign(payload, jwtOptions.secretOrKey);
-        res.status(201).json({userId: payload.id, token: token});
+        res.status(201).json({userId: users.id, token: token, companyId: users.companyId, admin: users.admin});
       })
     }
   })
 })
 
-router.get("/all/:id", passport.authenticate('jwt', { session: false }),(req, res) => {
-  var userid = new mongodb.ObjectID(req.params["id"]);
-  User.find({},function (err, users) {
+router.get("/all/:companyId", passport.authenticate('jwt', { session: false }),(req, res) => {
+  var companyId = req.params["companyId"];
+  User.find({"companyId": companyId},function (err, users) {
     if (err) {
       res.send(err);
     } else {
-      User.findOne({"_id": userid},function (err, user) {
-        if (err) {
-          res.send(err);
-        } else if (user.admin === true) {
-          res.send(users);
-        } else {
-          res.status(401).send('Unauthorized')
-        }
-      })
+      res.send(users);
     }
   })
 })

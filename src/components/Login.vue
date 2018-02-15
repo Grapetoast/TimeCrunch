@@ -25,6 +25,7 @@
         user: {
           token: '',
           id: '',
+          companyId: '',
           admin: false
         }
       }
@@ -45,15 +46,18 @@
             if (response.status !== 401) {
               vue.user.token = response.data.token
               vue.user.id = response.data.userId
+              vue.user.companyId = response.data.companyId
               vue.user.admin = response.data.admin
               if (vue.stayLogged === true) {
                 localStorage.setItem('token', response.data.token)
                 localStorage.setItem('userId', response.data.userId)
+                localStorage.setItem('companyId', response.data.companyId)
                 localStorage.setItem('admin', response.data.admin)
               }
               else {
                 localStorage.removeItem('token')
                 localStorage.removeItem('userId')
+                localStorage.removeItem('companyId')
                 localStorage.removeItem('admin')
               }
               vue.$emit('login', vue.user)
