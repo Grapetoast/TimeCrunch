@@ -19,6 +19,11 @@ var UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  lastClockType: {
+    type: String,
+    required: false,
+    default: 'out'
+  },
   admin: {
     type: Boolean,
     required: false,

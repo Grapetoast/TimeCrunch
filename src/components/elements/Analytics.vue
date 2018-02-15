@@ -133,7 +133,7 @@
         vue.map = map
         vue.addMarker()
         vue.map.jumpTo({
-          center: [vue.activeClock.longitude, (vue.activeClock.latitude - '.007')],
+          center: [vue.activeClock.longitude, (vue.activeClock.latitude - 0.007)],
           zoom: 14
         })
       },
@@ -162,6 +162,11 @@
     margin-top: 50px;
     z-index: 0;
     position: fixed;
+  }
+
+  .clockMapView {
+    width: 100%;
+    height: 50%;
   }
 
   .mapboxgl-marker {

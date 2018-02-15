@@ -1,6 +1,10 @@
 <template>
   <div class="timecrunch">
     <div class="clock"></div>
+    <div class="success" v-if="modal==='success'">
+      <h4>Clocked {{lastClockType}}</h4>
+      <button class="back" v-on:click="modal=''">Back</button>
+    </div>
     <div class="clockIn" v-on:click="clockIn"> Clock In</div>
     <div class="clockOut" v-on:click="clockOut">Clock Out</div>
     <div class="lunchOut" v-on:click="lunchOut">Lunch Start</div>
@@ -22,10 +26,16 @@ export default {
   },
   created () {
     let vue = this
-    vue.marker.classname = 'marker'
     if (this.logged === false) {
       this.$router.push('/login')
     }
+    axios.get('http://54.186.69.46:81/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+      .then(function (response) {
+        vue.lastClockType = response.data.lastClockType
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
     vue.userId = vue.user.id
     navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
     function locationSuccess (position) {
@@ -44,6 +54,7 @@ export default {
   data () {
     return {
       marker: document.createElement('div'),
+      modal: '',
       endMarker: document.createElement('div'),
       userId: '',
       time: '',
@@ -73,14 +84,14 @@ export default {
   },
   methods: {
     submitDirections () {
-      axios.post('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag', {
+      axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag', {
       })
     },
     getDirections () {
       let vue = this
       axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag')
         .then(function (response) {
-          vue.distance = response.data
+          vue.distance = response.data.routes[0].distance
           console.log(vue.distance)
         })
         .catch(function (error) {
@@ -107,10 +118,21 @@ export default {
     },
     startMarker () {
       let vue = this
-      console.log(vue.coordinates)
       new mapboxgl.Marker(vue.marker)
         .setLngLat(vue.coordinates)
         .addTo(vue.map)
+    },
+    updateLastClockType () {
+      let vue = this
+      axios.put('http://54.186.69.46:81/users/' + vue.user.id, {
+        lastClockType: vue.lastClockType
+      }, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+        .then(function (user) {
+          vue.modal = 'success'
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     endMarkerMethod () {
       let vue = this
@@ -140,7 +162,8 @@ export default {
         altitude: vue.altitude
       })
         .then(function () {
-          console.log('clocked')
+          vue.lastClockType = vue.clockType
+          vue.updateLastClockType()
         })
         .catch(function (error) {
           console.log(error)
@@ -160,7 +183,7 @@ export default {
     },
     clockIn () {
       let vue = this
-      if (this.lastClockType !== 'in') {
+      if (this.lastClockType === 'out') {
         vue.clockType = 'in'
         vue.clock()
       }
@@ -169,9 +192,12 @@ export default {
       }
     },
     clockOut () {
-      if (this.lastClockType !== 'out') {
+      if (this.lastClockType === 'in' || this.lastClockType === 'lunch in') {
         this.clockType = 'out'
         this.clock()
+      }
+      else if (this.lastClockType === 'lunch out') {
+        alert('You are out to lunch!')
       }
       else {
         alert('You are not clocked in!')
@@ -193,9 +219,15 @@ export default {
       }
     },
     lunchIn () {
-      if (this.lastClockType !== 'lunch in') {
+      if (this.lastClockType === 'lunch out') {
         this.clockType = 'lunch in'
         this.clock()
+      }
+      else if (this.lastClockType === 'out') {
+        alert('You are not clocked in!')
+      }
+      else if (this.lastClockType === 'in') {
+        alert('You never clocked off for lunch!')
       }
       else {
         alert('You are already back from lunch!')
@@ -226,7 +258,7 @@ setInterval(clock, 1000)
 .timecrunch {
   position: fixed;
   width: 100%;
-  margin-top: 100px;
+  margin-top: 78px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(7, 100px);
@@ -257,6 +289,14 @@ setInterval(clock, 1000)
   cursor: pointer;
 }
 
+.success {
+  position: absolute;
+  z-index: 12;
+  background-color: @grey;
+  width: 100%;
+  height: 160px;
+  top: 0;
+}
 
 .mapboxgl-control-container {
 
@@ -278,7 +318,7 @@ setInterval(clock, 1000)
 }
 
 .clockIn {
-  z-index: 1;
+  z-index: 3;
   font-size: 1em;
   font-weight: bold;
   text-align: center;
@@ -295,7 +335,7 @@ setInterval(clock, 1000)
 }
 
 .lunchIn {
-  z-index: 1;
+  z-index: 3;
   font-size: 1em;
   font-weight: bold;
   text-align: center;
@@ -312,7 +352,7 @@ setInterval(clock, 1000)
 }
 
 .lunchOut {
-  z-index: 1;
+  z-index: 3;
   color: white;
   font-size: 1.1em;
   font-weight: bold;
@@ -330,7 +370,7 @@ setInterval(clock, 1000)
 }
 
 .clockOut {
-  z-index: 1;
+  z-index: 3;
   color: white;
   font-size: 1.1em;
   font-weight: bold;
