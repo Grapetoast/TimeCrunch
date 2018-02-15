@@ -133,7 +133,7 @@
         vue.map = map
         vue.addMarker()
         vue.map.jumpTo({
-          center: [vue.activeClock.longitude, (vue.activeClock.latitude - 0.007)],
+          center: [vue.activeClock.longitude, (vue.activeClock.latitude - '.007')],
           zoom: 14
         })
       },
@@ -162,11 +162,6 @@
     margin-top: 50px;
     z-index: 0;
     position: fixed;
-  }
-
-  .clockMapView {
-    width: 100%;
-    height: 50%;
   }
 
   .mapboxgl-marker {
@@ -209,6 +204,7 @@
     grid-column-start: 1;
     grid-column-end: 5;
     width: 100%;
+
   }
   .graphsPane {
     grid-row-start: 3;
@@ -217,10 +213,5 @@
     grid-column-end: 5;
     border: 1px dashed #000;
   }
-  .adminView {
-    grid-row: 2;
-    grid-column-start: 1;
-    grid-column-end: 5;
-    width: 100%;
-  }
+
 </style>
