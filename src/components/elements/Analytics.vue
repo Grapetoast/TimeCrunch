@@ -135,7 +135,7 @@
         vue.map = map
         vue.addMarker()
         vue.map.jumpTo({
-          center: [vue.activeClock.longitude, (vue.activeClock.latitude - .007)],
+          center: [vue.activeClock.longitude, (vue.activeClock.latitude - 0.007)],
           zoom: 14
         })
       },

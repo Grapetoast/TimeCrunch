@@ -1,6 +1,10 @@
 <template>
   <div class="timecrunch">
     <div class="clock"></div>
+    <div class="success" v-if="modal==='success'">
+      <h4>Clocked {{lastClockType}}</h4>
+      <button class="back" v-on:click="modal=''">Back</button>
+    </div>
     <div class="clockIn" v-on:click="clockIn"> Clock In</div>
     <div class="clockOut" v-on:click="clockOut">Clock Out</div>
     <div class="lunchOut" v-on:click="lunchOut">Lunch Start</div>
@@ -22,10 +26,16 @@ export default {
   },
   created () {
     let vue = this
-    vue.marker.classname = 'marker'
     if (this.logged === false) {
       this.$router.push('/login')
     }
+    axios.get('http://54.186.69.46:81/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+      .then(function (response) {
+        vue.lastClockType = response.data.lastClockType
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
     vue.userId = vue.user.id
     navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
     function locationSuccess (position) {
@@ -44,6 +54,7 @@ export default {
   data () {
     return {
       marker: document.createElement('div'),
+      modal: '',
       userId: '',
       time: '',
       month: '',
@@ -91,6 +102,18 @@ export default {
         .setLngLat(vue.coordinates)
         .addTo(vue.map)
     },
+    updateLastClockType () {
+      let vue = this
+      axios.put('http://54.186.69.46:81/users/' + vue.user.id, {
+        lastClockType: vue.lastClockType
+      }, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+        .then(function (user) {
+          vue.modal = 'success'
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
     clock () {
       let vue = this
       navigator.geolocation.getCurrentPosition(vue.locationSuccess, vue.locationFail)
@@ -113,7 +136,8 @@ export default {
         altitude: vue.altitude
       })
         .then(function () {
-          console.log('clocked')
+          vue.lastClockType = vue.clockType
+          vue.updateLastClockType()
         })
         .catch(function (error) {
           console.log(error)
@@ -228,6 +252,14 @@ setInterval(clock, 1000)
   cursor: pointer;
 }
 
+.success {
+  position: absolute;
+  z-index: 12;
+  background-color: @grey;
+  width: 100%;
+  height: 160px;
+  top: 0;
+}
 
 .clock {
   position: relative;
