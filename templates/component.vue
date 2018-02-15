@@ -3,16 +3,16 @@
 </template>
 
 <script>
-export default {
-  name: '',
-  data () {
-    return {}
+  export default {
+    name: '',
+    data () {
+      return {}
+    }
   }
-}
 </script>
 
 <style scoped lang="less">
-.main {
+  .main {
 
-}
+  }
 </style>

@@ -1,0 +1,170 @@
+<template>
+  <div class="main">
+    <div class="graphsPane">
+      <div class="timeGraphsPane" v-if="pane==='time'">
+        <h1>Time Graphs Go Here</h1>
+      </div>
+      <div class="readouts" v-else-if="pane==='readout'">
+        <h3>User: {{activeUser.name}}</h3>
+        <h3>Clock {{activeClock.clockType}} {{(activeClock.month + 1)}}/{{activeClock.day}} {{activeClock.hours}}:{{activeClock.minutes}}</h3>
+      </div>
+      <div class="mileGraphsPane" v-else>
+        <h1>Mile Graphs Go Here</h1>
+      </div>
+    </div>
+    <div class="timeTab" v-on:click="pane='time'" v-if="pane!=='readout'">time</div>
+    <div class="mileTab" v-on:click="pane=''" v-if="pane!=='readout'">space</div>
+    <div class="modals">
+      <div class="userView" v-if="modal==='user'">
+        <h4>{{activeUser.name}}'s Time Clocks</h4>
+        <input class="userSearch" v-model="userSearch" placeholder="search"></input>
+        <div class="clocks" v-for="clock in clocks">
+          <h5 v-on:click="viewClock(clock)">clock {{clock.clockType}}  {{(clock.month + 1)}}/{{clock.day}} {{clock.hours}}:{{clock.minutes}}</h5>
+        </div>
+        <button class="back" v-on:click="modal=''">Back</button>
+      </div>
+      <div class="clockMapView" v-else-if="modal==='clock'">
+        <button class="back" v-on:click="modal='user'; pane='time'">Back</button>
+        <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
+      </div>
+      <div class="adminView" v-else>
+        <input class="globalSearch" v-model="search" placeholder="search"></input>
+        <div class="user" v-for="user in users">
+          <h5 v-on:click="viewUser(user)">{{user.name}}</h5>
+        </div>
+        <button class="back" v-on:click="$emit('back')">Back</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import Mapbox from 'mapbox-gl-vue'
+  import mapboxgl from 'mapbox-gl'
+  import axios from 'axios'
+
+  export default {
+    name: 'analytics',
+    props: ['user'],
+    components: {
+      'mapbox': Mapbox
+    },
+    data () {
+      return {
+        marker: document.createElement('div'),
+        coordinates: [0, 0],
+        pane: 'time',
+        modal: '',
+        search: '',
+        userSearch: '',
+        users: [],
+        clocks: [],
+        activeUser: {
+          id: '',
+          name: '',
+          companyId: '',
+          email: '',
+          admin: false
+        },
+        activeClock: {
+          userId: '',
+          clockType: '',
+          month: '',
+          day: '',
+          hours: '',
+          minutes: '',
+          seconds: '',
+          latitude: '',
+          longitude: '',
+          altitude: ''
+        },
+        mapboxToken: 'pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag',
+        mapOptions: {
+          container: 'map',
+          style: 'mapbox://styles/mapbox/streets-v9',
+          center: [0, 0],
+          zoom: 1
+        }
+      }
+    },
+    created () {
+      let vue = this
+      axios.get('http://54.186.69.46:81/users/all/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+        .then(function (response) {
+          vue.users = response.data
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+    methods: {
+      viewUser (user) {
+        let vue = this
+        vue.activeUser.id = user._id
+        vue.activeUser.name = user.name
+        vue.activeUser.companyId = user.companyId
+        vue.activeUser.email = user.email
+        vue.activeUser.admin = user.admin
+        axios.get('http://54.186.69.46:81/clocks/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+          .then(function (response) {
+            vue.clocks = response.data
+            vue.modal = 'user'
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      },
+      viewClock (clock) {
+        let vue = this
+        vue.activeClock.userId = clock.userId
+        vue.activeClock.clockType = clock.clockType
+        vue.activeClock.month = clock.month
+        vue.activeClock.day = clock.day
+        vue.activeClock.hours = clock.hours
+        vue.activeClock.minutes = clock.minutes
+        vue.activeClock.seconds = clock.seconds
+        vue.activeClock.latitude = clock.latitude
+        vue.activeClock.longitude = clock.longitude
+        vue.activeClock.altitude = clock.altitude
+        vue.coordinates = [vue.activeClock.longitude, vue.activeClock.latitude]
+        vue.pane = 'readout'
+        vue.modal = 'clock'
+      },
+      mapLoaded (map) {
+        let vue = this
+        vue.map = map
+        vue.addMarker()
+        vue.map.jumpTo({
+          center: [vue.activeClock.longitude, (vue.activeClock.latitude - .007)],
+          zoom: 14
+        })
+      },
+      addMarker () {
+        let vue = this
+        new mapboxgl.Marker(vue.marker)
+          .setLngLat(vue.coordinates)
+          .addTo(vue.map)
+      }
+    }
+  }
+</script>
+
+<style lang="less">
+  #map {
+    width: 100%;
+    height: 100%;
+    margin-top: 50px;
+    z-index: 0;
+    position: fixed;
+  }
+
+  .mapboxgl-marker {
+    background-image: url('../../assets/mapbox-icon.png');
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    z-index: 4;
+    cursor: pointer;
+  }
+</style>
