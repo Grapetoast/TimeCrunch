@@ -54,6 +54,7 @@ export default {
       seconds: '',
       clockType: '',
       lastClockType: '',
+      distance: 0,
       latitude: '',
       longitude: '',
       coordinates: [0, 0],
@@ -75,9 +76,16 @@ export default {
       axios.post('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag', {
       })
     },
-    submitDirections () {
-      axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag', {
-      })
+    getDirections () {
+      let vue = this
+      axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag')
+        .then(function (response) {
+          vue.distance = response.data
+          console.log(vue.distance)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     mapLoaded (map) {
       let vue = this
@@ -88,6 +96,7 @@ export default {
       })
       vue.startMarker()
       vue.endMarkerMethod()
+      vue.getDirections()
     },
     mapJump () {
       let vue = this
