@@ -2,18 +2,16 @@
   <div class="main">
     <div class="graphsPane">
       <div class="timeGraphsPane" v-if="pane==='time'">
-        <h1>Time Graphs Go Here</h1>
       </div>
       <div class="readouts" v-else-if="pane==='readout'">
         <h3>User: {{activeUser.name}}</h3>
         <h3>Clock {{activeClock.clockType}} {{(activeClock.month + 1)}}/{{activeClock.day}} {{activeClock.hours}}:{{activeClock.minutes}}</h3>
       </div>
       <div class="mileGraphsPane" v-else>
-        <h1>Mile Graphs Go Here</h1>
       </div>
     </div>
-    <div class="timeTab" v-on:click="pane='time'" v-if="pane!=='readout'">time</div>
-    <div class="mileTab" v-on:click="pane=''" v-if="pane!=='readout'">space</div>
+    <div class="timeTab" v-on:click="pane='time'" v-if="pane!=='readout'">Time</div>
+    <div class="mileTab" v-on:click="pane=''" v-if="pane!=='readout'">Distance</div>
     <div class="modals">
       <div class="userView" v-if="modal==='user'">
         <h4>{{activeUser.name}}'s Time Clocks</h4>
@@ -149,7 +147,15 @@
   }
 </script>
 
-<style lang="less">
+<style scoped lang="less">
+  @red: #c90c2e;
+  .main {
+    display: grid;
+    width: 100%;
+    margin: 0;
+    grid-template-rows: repeat(5, 100px);
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
   #map {
     width: 100%;
     height: 100%;
@@ -166,5 +172,50 @@
     border-radius: 50%;
     z-index: 4;
     cursor: pointer;
+  }
+  .timeTab {
+    margin-top: -40px;
+    line-height: 100px;
+    height: 100px;
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: 400;
+    text-align: center;
+    grid-row: 1;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    background-color: @red;
+  }
+  .mileTab {
+    margin-top: -40px;
+    line-height: 100px;
+    height: 100px;
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: 400;
+    text-align: center;
+    grid-row: 1;
+    grid-column-start: 3;
+    grid-column-end: 5;
+    background-color: @red;
+  }
+  .globalSearch {
+    grid-row: 2;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    width: 100%;
+  }
+  .graphsPane {
+    grid-row-start: 3;
+    grid-row-end: 5;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    border: 1px dashed #000;
+  }
+  .adminView {
+    grid-row: 2;
+    grid-column-start: 1;
+    grid-column-end: 5;
+    width: 100%;
   }
 </style>
