@@ -2,11 +2,36 @@ var express = require("express");
 var mongodb = require("mongodb");
 var _ = require("lodash");
 var bodyParser = require("body-parser");
+var passport = require("passport");
+var passportJWT = require("passport-jwt");
+var jwt = require('jsonwebtoken');
 var app = express();
 var router = express.Router();
 var mongoose = require("mongoose");
 var Clock = mongoose.model("Clock");
+var bcrypt = require('bcryptjs');
+var ExtractJwt = passportJWT.ExtractJwt;
+var JwtStrategy = passportJWT.Strategy;
 
+var jwtOptions = {}
+jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("JWT");
+jwtOptions.secretOrKey = 'LokisBreath-420';
+
+var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
+  User.findOne({"_id": jwt_payload.id}, function(err, user) {
+    if (err) {
+          return next(err, false);
+      }
+      if (user) {
+          return next(null, user);
+      } else {
+          return next(null, false);
+      }
+  });
+});
+
+app.use(passport.initialize());
+passport.use(strategy);
 app.use(bodyParser.json());
 
 router.post("/", (req,res) => {
@@ -32,7 +57,7 @@ router.post("/", (req,res) => {
   });
 })
 
-router.get("/:userId",(req, res) => {
+router.get("/:userId", passport.authenticate('jwt', { session: false }),(req, res) => {
   var userId = req.params["userId"];
   Clock.find({"userId": {$regex: '^' + userId}},function (err, clocks) {
     if (err) {
