@@ -110,12 +110,15 @@
     margin-left: 5px;
     height: 30px;
   }
+
  .email {
    width: 90%;
  }
+
  .password {
    width: 90%;
  }
+ 
   @media (min-width: 700px) {
   }
 </style>

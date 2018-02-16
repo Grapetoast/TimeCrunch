@@ -156,6 +156,7 @@
     grid-template-rows: repeat(5, 100px);
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
+
   #map {
     width: 100%;
     height: 50%;
@@ -182,6 +183,7 @@
     z-index: 4;
     cursor: pointer;
   }
+
   .timeTab {
     margin-top: -40px;
     line-height: 100px;
@@ -195,6 +197,7 @@
     grid-column-end: 3;
     background-color: @red;
   }
+
   .mileTab {
     margin-top: -40px;
     line-height: 100px;
@@ -208,12 +211,14 @@
     grid-column-end: 5;
     background-color: @red;
   }
+
   .globalSearch {
     grid-row: 2;
     grid-column-start: 1;
     grid-column-end: 5;
     width: 100%;
   }
+
   .graphsPane {
     grid-row-start: 3;
     grid-row-end: 5;
@@ -221,6 +226,7 @@
     grid-column-end: 5;
     border: 1px dashed #000;
   }
+  
   .adminView {
     grid-row: 2;
     grid-column-start: 1;
