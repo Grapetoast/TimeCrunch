@@ -26,11 +26,12 @@
         <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
       </div>
       <div class="adminView" v-else>
+        <button class="back" v-on:click="$emit('back')">Back to Account Page</button>
         <input class="globalSearch" v-model="search" placeholder="search"></input>
         <div class="user" v-for="user in users">
           <h5 v-on:click="viewUser(user)">{{user.name}}</h5>
         </div>
-        <button class="back" v-on:click="$emit('back')">Back</button>
+
       </div>
     </div>
   </div>
@@ -186,6 +187,12 @@
     grid-column-end: 3;
     background-color: @red;
   }
+  .timeTab:active {
+    background-color: grey;
+  }
+  .mileTab:active {
+    background-color: grey;
+  }
   .mileTab {
     margin-top: -40px;
     line-height: 100px;
@@ -208,10 +215,24 @@
   }
   .graphsPane {
     grid-row-start: 3;
-    grid-row-end: 5;
+    grid-row-end: 6;
     grid-column-start: 1;
     grid-column-end: 5;
     border: 1px dashed #000;
   }
 
+  .modals {
+    grid-column-start: 1;
+    grid-column-end: 5;
+    width: 90%;
+    margin-left: 5%;
+  }
+  .back {
+    width: 100%;
+    margin-bottom: 20px;
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: 400;
+    background-color: @red;
+  }
 </style>
