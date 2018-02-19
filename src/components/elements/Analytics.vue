@@ -26,11 +26,12 @@
         <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
       </div>
       <div class="adminView" v-else>
+        <button class="back" v-on:click="$emit('back')">Back to Account Page</button>
         <input class="globalSearch" v-model="search" placeholder="search"></input>
         <div class="user" v-for="user in users">
           <h5 v-on:click="viewUser(user)">{{user.name}}</h5>
         </div>
-        <button class="back" v-on:click="$emit('back')">Back</button>
+
       </div>
     </div>
   </div>
@@ -133,7 +134,7 @@
         vue.map = map
         vue.addMarker()
         vue.map.jumpTo({
-          center: [vue.activeClock.longitude, (vue.activeClock.latitude - 0.007)],
+          center: [vue.activeClock.longitude, (vue.activeClock.latitude - '.007')],
           zoom: 14
         })
       },
@@ -168,11 +169,6 @@
     position: absolute;
   }
 
-  .clockMapView {
-    width: 100%;
-    height: 50%;
-  }
-
   .mapboxgl-marker {
     background-image: url('../../assets/mapbox-icon.png');
     background-size: cover;
@@ -195,6 +191,12 @@
     grid-column-end: 3;
     background-color: @red;
   }
+  .timeTab:active {
+    background-color: grey;
+  }
+  .mileTab:active {
+    background-color: grey;
+  }
   .mileTab {
     margin-top: -40px;
     line-height: 100px;
@@ -213,18 +215,28 @@
     grid-column-start: 1;
     grid-column-end: 5;
     width: 100%;
+
   }
   .graphsPane {
     grid-row-start: 3;
-    grid-row-end: 5;
+    grid-row-end: 6;
     grid-column-start: 1;
     grid-column-end: 5;
     border: 1px dashed #000;
   }
-  .adminView {
-    grid-row: 2;
+
+  .modals {
     grid-column-start: 1;
     grid-column-end: 5;
+    width: 90%;
+    margin-left: 5%;
+  }
+  .back {
     width: 100%;
+    margin-bottom: 20px;
+    color: #fff;
+    font-size: 1.5em;
+    font-weight: 400;
+    background-color: @red;
   }
 </style>
