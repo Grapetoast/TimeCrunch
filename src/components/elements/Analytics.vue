@@ -150,6 +150,7 @@
 
 <style scoped lang="less">
   @red: #c90c2e;
+  @grey: #323d38;
   .main {
     display: grid;
     width: 100%;
@@ -215,6 +216,8 @@
     grid-column-start: 1;
     grid-column-end: 5;
     width: 100%;
+    height: 30px;
+    border: 1px solid black;
 
   }
   .graphsPane {
@@ -237,6 +240,6 @@
     color: #fff;
     font-size: 1.5em;
     font-weight: 400;
-    background-color: @red;
+    background-color: @grey;
   }
 </style>
