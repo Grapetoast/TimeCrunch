@@ -151,7 +151,7 @@
   .navbar {
     width: 100%;
     height: 100px;
-    border-bottom: 2px solid #d83406;
+    border-bottom: 2px solid @red;
     position: fixed;
     top: 0;
     left: 0;
