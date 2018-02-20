@@ -15,11 +15,12 @@
     <div class="modals">
       <div class="userView" v-if="modal==='user'">
         <h4>{{activeUser.name}}'s Time Clocks</h4>
+        <h4>{{totalHours}} hours clocked</h4>
         <input class="userSearch" v-model="userSearch" placeholder="search"></input>
         <div class="clocks" v-for="clock in clocks">
           <h5 v-on:click="viewClock(clock)">clock {{clock.clockType}}  {{(clock.month + 1)}}/{{clock.day}} {{clock.hours}}:{{clock.minutes}}</h5>
         </div>
-        <button class="back" v-on:click="modal=''">Back</button>
+        <button class="back" v-on:click="modal=''; resetTime(); populateCompanyClocks()">Back</button>
       </div>
       <div class="clockMapView" v-else-if="modal==='clock'">
         <button class="back" v-on:click="modal='user'; pane='time'">Back</button>
@@ -27,6 +28,7 @@
       </div>
       <div class="adminView" v-else>
         <button class="back" v-on:click="$emit('back')">Back to Account Page</button>
+        <h4>{{totalHours}} hours clocked</h4>
         <input class="globalSearch" v-model="search" placeholder="search"></input>
         <div class="user" v-for="user in users">
           <h5 v-on:click="viewUser(user)">{{user.name}}</h5>
@@ -54,6 +56,22 @@
         coordinates: [0, 0],
         pane: 'time',
         modal: '',
+        startTime: {
+          hours: 0,
+          minutes: 0,
+          seconds: 0
+        },
+        endTime: {
+          hours: 0,
+          minutes: 0,
+          seconds: 0
+        },
+        totalTime: {
+          hours: 0,
+          minutes: 0,
+          seconds: 0
+        },
+        totalHours: 0,
         search: '',
         userSearch: '',
         users: [],
@@ -91,6 +109,7 @@
       axios.get('http://54.186.69.46:81/users/all/' + vue.user.companyId, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
         .then(function (response) {
           vue.users = response.data
+          vue.populateCompanyClocks()
         })
         .catch(function (error) {
           console.log(error)
@@ -99,6 +118,12 @@
     methods: {
       viewUser (user) {
         let vue = this
+        vue.totalHours = 0
+        vue.totalTime = {
+          hours: 0,
+          minutes: 0,
+          seconds: 0
+        }
         vue.activeUser.id = user._id
         vue.activeUser.name = user.name
         vue.activeUser.companyId = user.companyId
@@ -106,12 +131,72 @@
         vue.activeUser.admin = user.admin
         axios.get('http://54.186.69.46:81/clocks/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
           .then(function (response) {
+            vue.clocks = []
             vue.clocks = response.data
+            vue.countClocks()
             vue.modal = 'user'
           })
           .catch(function (error) {
             console.log(error)
           })
+      },
+      resetTime () {
+        let vue = this
+        vue.totalHours = 0
+        vue.totalTime = {
+          hours: 0,
+          minutes: 0,
+          seconds: 0
+        }
+      },
+      populateCompanyClocks () {
+        let vue = this
+        let i = 0
+        vue.clocks = []
+        for (i = 0; i < vue.users.length; i++) {
+          vue.activeUser.id = vue.users[i]._id
+          axios.get('http://54.186.69.46:81/clocks/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+            .then(function (response) {
+              let j = 0
+              for (j = 0; j < response.data.length; j++) {
+                vue.clocks.push(response.data[j])
+                if (vue.clocks.length === response.data.length) {
+                  vue.countClocks()
+                }
+              }
+              vue.clocks = []
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
+        }
+      },
+      countClocks () {
+        let vue = this
+        let i = 0
+        for (i = 0; i < vue.clocks.length; i++) {
+          let clockType = vue.clocks[i].clockType
+          if (clockType === 'in' || clockType === 'lunch in') {
+            vue.startTime = {
+              hours: vue.clocks[i].hours,
+              minutes: vue.clocks[i].minutes,
+              seconds: vue.clocks[i].seconds
+            }
+          }
+          else if (clockType === 'out' || clockType === 'lunch out') {
+            vue.endTime = {
+              hours: vue.clocks[i].hours,
+              minutes: vue.clocks[i].minutes,
+              seconds: vue.clocks[i].seconds
+            }
+            vue.totalTime = {
+              hours: (vue.endTime.hours - vue.startTime.hours) + vue.totalTime.hours,
+              minutes: (vue.endTime.minutes - vue.startTime.minutes) + vue.totalTime.minutes,
+              seconds: (vue.endTime.seconds - vue.startTime.seconds) + vue.totalTime.seconds
+            }
+          }
+        }
+        vue.totalHours = vue.totalTime.hours + Math.floor((vue.totalTime.minutes / 60) + Math.floor(vue.totalTime.seconds / 60))
       },
       viewClock (clock) {
         let vue = this
