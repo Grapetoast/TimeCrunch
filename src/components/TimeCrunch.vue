@@ -410,4 +410,37 @@ setInterval(clock, 1000)
   grid-column: 4;
   box-shadow: 0px 1.5px 5px #000;
 }
+
+.prettyModal {
+  color: #fff;
+  background-color: @grey;
+  height: 130px;
+  font-size: 1em;
+  margin-top: 160px;
+  box-shadow: 1px 1px 1px @grey;
+}
+.prettyModal h2 {
+  font-size: 1.5em;
+  text-align: center;
+
+}
+.back {
+  color: #fff;
+}
+.success {
+  color: #fff;
+  background-color: @grey;
+  height: 100px;
+  font-size: 1em;
+  margin-top: 160px;
+  width: 80%;
+  margin-left: 10%;
+  border-radius: 5px;
+  font-size: 1em;
+  box-shadow: 1px 1px 1px @grey;
+}
+.success h4 {
+  font-size: 1.5em;
+  text-align: center;
+}
 </style>
