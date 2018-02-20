@@ -105,7 +105,6 @@
 
   .Login {
     z-index: 11;
-    height: 100px;
     color: #fff;
     font-size: 2em;
     font-weight: 400;
@@ -114,7 +113,6 @@
 
   .Reg {
     z-index: 11;
-    height: 100px;
     color: #fff;
     font-size: 2em;
     font-weight: 400;
@@ -123,7 +121,6 @@
 
   .Account {
     z-index: 11;
-    height: 100px;
     color: #fff;
     font-size: 1.5em;
     font-weight: 400;
@@ -132,7 +129,6 @@
 
   .Home {
     z-index: 11;
-    height: 100px;
     color: #fff;
     font-size: 1.5em;
     font-weight: 400;
@@ -141,7 +137,6 @@
 
   .Logout {
     z-index: 11;
-    height: 100px;
     color: #fff;
     font-size: 1.5em;
     font-weight: 400;
@@ -175,7 +170,7 @@
     z-index: 12;
     opacity: 1;
     width: 100%;
-    height: 100px;
+    height: 77px;
     background: @red;
     color: #fff;
     box-shadow: 1px 2px 2px @grey;
