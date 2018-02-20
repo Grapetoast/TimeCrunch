@@ -149,6 +149,7 @@
     border: none;
     font-size: 1.5em;
     margin-left: 10px;
+    border-radius: 5px;
   }
   input {
     border: 1px solid @grey;

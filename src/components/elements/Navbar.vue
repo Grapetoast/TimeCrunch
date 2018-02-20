@@ -65,7 +65,7 @@
 
 <style scoped lang="less">
   @red: #c90c2e;
-
+  @grey: #323d38;
   button {
     border: none;
     background: none;
@@ -178,7 +178,7 @@
     height: 100px;
     background: @red;
     color: #fff;
-    box-shadow: 0px 1px #000;
+    box-shadow: 1px 2px 2px @grey;
     text-align: center;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;

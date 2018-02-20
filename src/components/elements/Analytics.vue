@@ -218,7 +218,7 @@
         vue.map = map
         vue.addMarker()
         vue.map.jumpTo({
-          center: [vue.activeClock.longitude, (vue.activeClock.latitude - '.007')],
+          center: [vue.activeClock.longitude, vue.activeClock.latitude],
           zoom: 14
         })
       },
@@ -323,6 +323,7 @@
     font-weight: 400;
     background-color: @red;
     border: none;
+    border-radius: 5px;
   }
   .mapBack {
     background-color: @red;
@@ -331,6 +332,7 @@
     padding: 4px;
     width: 20%;
     position: fixed;
+    border-radius: 5px;
   }
   h4 {
     font-size: 1em;
