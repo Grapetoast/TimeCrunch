@@ -227,10 +227,6 @@
         new mapboxgl.Marker(vue.marker)
           .setLngLat(vue.coordinates)
           .addTo(vue.map)
-      },
-      onDeviceReady () {
-        let vue = this
-        cordova.plugins.backgroundMode.enable()
       }
     }
   }
