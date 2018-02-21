@@ -5,12 +5,16 @@ var port = 81;
 var app = express();
 var router = express.Router();
 var path = __dirname + "/views/";
-require("./clock");
-var clocks = require("./clocks.js");
-require("./company");
-var companys = require("./companys.js");
 require("./user");
 var users = require("./users.js");
+require("./clock");
+var clocks = require("./clocks.js");
+require("./trip");
+var trips = require("./trips.js");
+require("./company");
+var companys = require("./companys.js");
+require("./lead");
+var leads = require("./leads.js");
 
 mongoose.Promise = global.Promise;
 
@@ -33,6 +37,8 @@ app.use(function(req, res, next) {
 
 app.use("/clocks", clocks);
 app.use("/companys", companys);
+app.use("/leads", leads);
+app.use("/trips", trips);
 app.use("/users", users);
 
 router.get("/", (req,res) => {

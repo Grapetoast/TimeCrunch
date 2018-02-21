@@ -2,13 +2,14 @@ var express = require("express");
 var mongodb = require("mongodb");
 var _ = require("lodash");
 var bodyParser = require("body-parser");
+var app = express();
+var router = express.Router();
 var passport = require("passport");
 var passportJWT = require("passport-jwt");
 var jwt = require('jsonwebtoken');
-var app = express();
-var router = express.Router();
 var mongoose = require("mongoose");
-var Trip = mongoose.model("Trip");
+var Lead = mongoose.model("Lead");
+var User = mongoose.model("User");
 var bcrypt = require('bcryptjs');
 var ExtractJwt = passportJWT.ExtractJwt;
 var JwtStrategy = passportJWT.Strategy;
@@ -35,31 +36,11 @@ passport.use(strategy);
 app.use(bodyParser.json());
 
 router.post("/", (req,res) => {
-  console.log(req.body.start.second)
-  var newTrip = new Trip({
-    userId: req.body.userId,
-    start: {
-      latitude: req.body.start.latitude,
-      longitude: req.body.start.longitude,
-      month: req.body.start.month,
-      day: req.body.start.day,
-      hour: req.body.start.hour,
-      minute: req.body.start.minute,
-      second: req.body.start.second
-    },
-    end: {
-      latitude: req.body.end.latitude,
-      longitude: req.body.end.longitude,
-      month: req.body.end.month,
-      day: req.body.end.day,
-      hour: req.body.end.hour,
-      minute: req.body.end.minute,
-      second: req.body.end.second
-    },
-    distance: req.body.distance
+  var newLead = new Lead({
+    email: req.body.email
   })
 
-  newTrip.save((err, result) => {
+  newLead.save((err, result) => {
     if(err) {
       res.send(err);
     } else {
@@ -68,14 +49,21 @@ router.post("/", (req,res) => {
   });
 })
 
-router.get("/:userId", passport.authenticate('jwt', { session: false }),(req, res) => {
-  var userId = req.params["userId"];
-  Trip.find({"userId": {$regex: '^' + userId}},function (err, trips) {
+router.get("/:leadId", passport.authenticate('jwt', { session: false }), (req, res) => {
+  var leadId = req.params["leadId"];
+  Lead.find({"leadId": {$regex: '^' + leadId}},function (err, leads) {
     if (err) {
       res.send(err);
     } else {
-      res.send(trips);
+      res.send(leads);
     }
+  })
+})
+
+router.delete("/:id", passport.authenticate('jwt', { session: false }), (req, res) => {
+  var leadid = new mongodb.ObjectID(req.params["id"]);
+  Lead.find({_id: leadid}).remove().then(() => {
+    res.send("success");
   })
 })
 
