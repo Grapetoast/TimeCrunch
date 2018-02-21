@@ -2,12 +2,16 @@
   <div class="analytics">
     <div class="graphsPane">
       <div class="timeGraphsPane" v-if="pane==='time'">
+        <h4 v-if="modal==='user'">{{activeUser.name}}'s Time Record</h4>
+        <h4>{{totalHours}} Total Hours Clocked</h4>
       </div>
       <div class="readouts" v-else-if="pane==='readout'">
         <h3>User: {{activeUser.name}}</h3>
         <h3>Clock {{activeClock.clockType}} {{(activeClock.month + 1)}}/{{activeClock.day}} {{activeClock.hours}}:{{activeClock.minutes}}</h3>
       </div>
       <div class="mileGraphsPane" v-else>
+        <h4 v-if="modal==='user'">{{activeUser.name}}'s Mileage Record</h4>
+        <h4>{{totalDistance}} Total Distance Driven</h4>
       </div>
     </div>
     <div class="timeTab" v-on:click="pane='time'" v-if="pane!=='readout'">Time</div>
@@ -15,8 +19,6 @@
     <div class="modals">
       <div class="userView" v-if="modal==='user'">
         <button class="back" v-on:click="modal=''; resetTime(); populateCompanyClocks()">Back</button>
-        <h4>{{activeUser.name}}'s Time Record</h4>
-        <h4>{{totalHours}} Total Hours Clocked</h4>
         <input class="userSearch" v-model="userSearch" placeholder="search"></input>
         <div class="clocks" v-for="clock in clocks">
           <h5 v-on:click="viewClock(clock)">clock {{clock.clockType}}  {{(clock.month + 1)}}/{{clock.day}} {{clock.hours}}:{{clock.minutes}}</h5>
@@ -27,12 +29,10 @@
         <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
       </div>
       <div class="adminView" v-else>
-        <h4>{{totalHours}} Total Hours Clocked</h4>
         <input class="globalSearch" v-model="search" placeholder="search"></input>
         <div class="user" v-for="user in users">
           <h5 v-on:click="viewUser(user)">{{user.name}}</h5>
         </div>
-
       </div>
     </div>
   </div>
@@ -53,6 +53,8 @@
       return {
         marker: document.createElement('div'),
         coordinates: [0, 0],
+        startCoordinates: [0, 0],
+        endCoordinates: [0, 0],
         pane: 'time',
         modal: '',
         startTime: {
@@ -71,10 +73,12 @@
           seconds: 0
         },
         totalHours: 0,
+        totalDistance: 0,
         search: '',
         userSearch: '',
         users: [],
         clocks: [],
+        trips: [],
         activeUser: {
           id: '',
           name: '',
@@ -94,6 +98,26 @@
           longitude: '',
           altitude: ''
         },
+        activeTrip: {
+          userId: '',
+          distance: 0,
+          start: {
+            latitude: '',
+            longitude: '',
+            month: 0,
+            hour: 0,
+            minute: 0,
+            second: 0
+          },
+          end: {
+            latitude: '',
+            longitude: '',
+            month: 0,
+            hour: 0,
+            minute: 0,
+            second: 0
+          }
+        },
         mapboxToken: 'pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag',
         mapOptions: {
           container: 'map',
@@ -109,6 +133,7 @@
         .then(function (response) {
           vue.users = response.data
           vue.populateCompanyClocks()
+          vue.populateCompanyTrips()
         })
         .catch(function (error) {
           console.log(error)
@@ -212,6 +237,45 @@
         vue.coordinates = [vue.activeClock.longitude, vue.activeClock.latitude]
         vue.pane = 'readout'
         vue.modal = 'clock'
+      },
+      populateCompanyTrips () {
+        let vue = this
+        let i = 0
+        vue.trips = []
+        for (i = 0; i < vue.users.length; i++) {
+          vue.activeUser.id = vue.users[i]._id
+          axios.get('http://54.186.69.46:81/trips/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+            .then(function (response) {
+              let j = 0
+              for (j = 0; j < response.data.length; j++) {
+                vue.trips.push(response.data[j])
+                if (vue.trips.length === response.data.length) {
+                  vue.countTrips()
+                }
+              }
+              vue.trips = []
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
+        }
+      },
+      countTrips () {
+        let vue = this
+        let i = 0
+        for (i = 0; i < vue.trips.length; i++) {
+          let distance = vue.trips[i].distance
+          vue.totalDistance = vue.totalDistance + distance
+        }
+      },
+      viewTrip (trip) {
+        let vue = this
+        vue.activeTrip.userId = trip._id
+        vue.activeTrip.distance = trip.distance
+        vue.startCoordinates = [vue.trip.start.longitude, vue.trip.start.latitude]
+        vue.endCoordinates = [vue.trip.end.longitude, vue.trip.end.latitude]
+        vue.pane = 'readout'
+        vue.modal = 'trip'
       },
       mapLoaded (map) {
         let vue = this
