@@ -1,5 +1,6 @@
 <template>
   <div class="analytics">
+    <div>{{count}}</div>
     <div class="graphsPane">
       <div class="timeGraphsPane" v-if="pane==='time'">
       </div>
@@ -50,6 +51,7 @@
     },
     data () {
       return {
+        count: 0,
         marker: document.createElement('div'),
         coordinates: [0, 0],
         pane: 'time',
@@ -227,6 +229,13 @@
         new mapboxgl.Marker(vue.marker)
           .setLngLat(vue.coordinates)
           .addTo(vue.map)
+      },
+      onDeviceReady () {
+        let vue = this
+        cordova.plugins.backgroundMode.enable()
+        for (var i = 0; i <= 10000; i++) {
+          vue.count = [i]
+        }
       }
     }
   }
