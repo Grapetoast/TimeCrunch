@@ -102,6 +102,7 @@
     color: #fff;
     border: none;
     font-size: 1.7em;
+    border-radius: 5px;
   }
 
   input {

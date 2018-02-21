@@ -164,6 +164,7 @@
     width: 90%;
     margin-bottom: 20px;
     margin-left: 5%;
+    border-radius: 5px;
   }
 
   .accountEditButton {
