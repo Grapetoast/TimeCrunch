@@ -6,66 +6,62 @@ var TripSchema = new mongoose.Schema({
   },
   start: {
     latitude: {
-      type: Number,
+      type: String,
       required: true
     },
     longitude: {
+      type: String,
+      required: true
+    },
+    month: {
       type: Number,
       required: true
     },
-    time: {
-      month: {
-        type: Number,
-        required: true
-      },
-      day: {
-        type: Number,
-        required: true
-      },
-      hour: {
-        type: Number,
-        required: true
-      },
-      minute: {
-        type: Number,
-        required: true
-      },
-      second: {
-        type: Number,
-        required: true
-      }
+    day: {
+      type: Number,
+      required: true
+    },
+    hour: {
+      type: Number,
+      required: true
+    },
+    minute: {
+      type: Number,
+      required: true
+    },
+    second: {
+      type: Number,
+      required: true
     }
   },
   end: {
     latitude: {
-      type: Number,
+      type: String,
       required: true
     },
     longitude: {
+      type: String,
+      required: true
+    },
+    month: {
       type: Number,
       required: true
     },
-    time: {
-      month: {
-        type: Number,
-        required: true
-      },
-      day: {
-        type: Number,
-        required: true
-      },
-      hour: {
-        type: Number,
-        required: true
-      },
-      minute: {
-        type: Number,
-        required: true
-      },
-      second: {
-        type: Number,
-        required: true
-      }
+    day: {
+      type: Number,
+      required: true
+    },
+    hour: {
+      type: Number,
+      required: true
+    },
+    minute: {
+      type: Number,
+      required: true
+    },
+    second: {
+      type: Number,
+      required: true
     }
   },
   distance: {
