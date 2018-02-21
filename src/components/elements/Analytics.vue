@@ -108,6 +108,7 @@
         .then(function (response) {
           vue.users = response.data
           vue.populateCompanyClocks()
+          vue.onDeviceReady()
         })
         .catch(function (error) {
           console.log(error)
@@ -226,6 +227,10 @@
         new mapboxgl.Marker(vue.marker)
           .setLngLat(vue.coordinates)
           .addTo(vue.map)
+      },
+      onDeviceReady () {
+        let vue = this
+        cordova.plugins.backgroundMode.enable()
       }
     }
   }
