@@ -54,6 +54,7 @@ export default {
       vue.prettyModal('It seems we cant find you, please reload the page and try again.')
       this.locationError = true
     }
+    vue.onDeviceReady()
   },
   data () {
     return {
@@ -74,7 +75,27 @@ export default {
       latitude: '',
       longitude: '',
       coordinates: [0, 0],
-      endcoordinates: [-112, 34],
+      pastCoordinates: [0, 0],
+      trip: {
+        userId: '',
+        distance: 0,
+        start: {
+          latitude: '',
+          longitude: '',
+          month: 0,
+          hour: 0,
+          minute: 0,
+          second: 0
+        },
+        end: {
+          latitude: '',
+          longitude: '',
+          month: 0,
+          hour: 0,
+          minute: 0,
+          second: 0
+        }
+      },
       altitude: '',
       accuracy: '',
       altitudeAccuracy: '',
@@ -241,8 +262,30 @@ export default {
       else {
         vue.prettyModal('You are already back from lunch!')
       }
+    },
+    onDeviceReady () {
+      let vue = this
+      cordova.plugins.backgroundMode.enable()
+      vue.tripLogic()
+    },
+    tripLogic () {
+      let vue = this
+      setInterval(
+        vue.coordinates = vue.pastCoordinates
+        navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
+        function locationSuccess (position) {
+          vue.coordinates = [position.coords.latitude, position.coords.longitude]
+          if (vue.coordinates != vue.pastCoordinates) {
+            [vue.trip.start.latitude, vue.trip.start.longitude] = vue.pastCoordinates
+            [vue.trip.end.latitude, vue.trip.end.longitude] = vue.Coordinates
+          }
+        }
+        function locationFail () {
+          vue.prettyModal('It seems we cant find you, please reload the page and try again.')
+          this.locationError = true
+        }
+      300000)
     }
-  }
 }
 function clock () {
   this.time = new Date()
@@ -256,6 +299,7 @@ function clock () {
     }
     return standIn
   }
+}
 }
 setInterval(clock, 1000)
 </script>
