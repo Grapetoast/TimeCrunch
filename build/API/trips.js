@@ -9,9 +9,12 @@ var app = express();
 var router = express.Router();
 var mongoose = require("mongoose");
 var Trip = mongoose.model("Trip");
+var User = mongoose.model("User");
 var bcrypt = require('bcryptjs');
 var ExtractJwt = passportJWT.ExtractJwt;
 var JwtStrategy = passportJWT.Strategy;
+var csv_export=require('csv-export');
+var fs = require('fs');
 
 var jwtOptions = {}
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("JWT");
@@ -75,6 +78,40 @@ router.get("/:userId", passport.authenticate('jwt', { session: false }),(req, re
       res.send(err);
     } else {
       res.send(trips);
+    }
+  })
+})
+
+router.get("/trips/:companyId", passport.authenticate('jwt', { session: false }),(req, res) => {
+  var companyId = req.params["companyId"];
+  User.find({"companyId": {$regex: '^' + companyId}},function (err, users) {
+    if (err) {
+      console.log(err);
+      res.send(err);
+    }
+    else {
+      console.log(users);
+      let i = 0
+      let totalTrips = []
+      for (i=0; i < users.length; i++) {
+        var userId = users[i]._id;
+        Trip.find({"userId": {$regex: '^' + userId}},function (err, trips) {
+          if (err) {
+            res.send(err);
+          }
+          else {
+            let j = 0
+            for (j=0; j < trips.length; j++) {
+              totalTrips.push(trips[j]);
+            }
+          }
+        });
+      }
+      console.log(totalTrips);
+      csv_export.export(totalTrips,function(buffer){
+        let file = fs.writeFileSync('./data.zip',buffer);
+        res.sendFile('/var/www/API/data.zip');
+      })
     }
   })
 })
