@@ -115,7 +115,7 @@ export default {
     },
     getDirections () {
       let vue = this
-      axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/' + vue.trip.startCoordinates[];vue.trip.endCoordinates[] + '?geometries=geojson&access_token=' + vue.mapboxToken)
+      axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/' + vue.trip.startCoordinates + ';' + vue.trip.endCoordinates + '?geometries=geojson&access_token=' + vue.mapboxToken)
         .then(function (response) {
           vue.distance = response.data.routes[0].distance
         })
@@ -123,9 +123,9 @@ export default {
           console.log(error)
         })
     },
-    postDirections () {
+    postTrip () {
       axios.post('http://54.186.69.46:81/trips/' + vue.activeUser.id, {
-        headers: { 'Authorization': 'JWT ' + vue.user.token }
+        headers: { 'Authorization': 'JWT ' + vue.user.token },
         trip: vue.trip
       })
     },
@@ -277,7 +277,7 @@ export default {
       let vue = this
       setInterval(
         vue.pastCoordinates = vue.coordinates
-        navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
+        navigator.geolocation.getCurrentPosition(vue.locationSuccess, vue.locationFail)
         function locationSuccess (position) {
           vue.coordinates = [position.coords.latitude, position.coords.longitude]
           if (vue.tripStarted === false) {
@@ -291,7 +291,7 @@ export default {
               vue.trip.endCoordinates = vue.coordinates
               vue.trip.userId = vue.user.id
               vue.getDirections()
-              vue.postDirections()
+              vue.postTrip()
               tripStarted = false
             }
           }
