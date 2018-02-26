@@ -297,7 +297,6 @@
       }
       }
     }
-  }
 </script>
 
 <style lang="less">

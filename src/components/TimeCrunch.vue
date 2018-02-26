@@ -74,22 +74,21 @@ export default {
       distance: 0,
       latitude: '',
       longitude: '',
+      tripStarted: false,
       coordinates: [0, 0],
       pastCoordinates: [0, 0],
       trip: {
         userId: '',
         distance: 0,
         start: {
-          latitude: '',
-          longitude: '',
+          startCoordinates: [0, 0],
           month: 0,
           hour: 0,
           minute: 0,
           second: 0
         },
         end: {
-          latitude: '',
-          longitude: '',
+          endCoordinates: [0, 0],
           month: 0,
           hour: 0,
           minute: 0,
@@ -116,13 +115,19 @@ export default {
     },
     getDirections () {
       let vue = this
-      axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag')
+      axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/' + vue.trip.startCoordinates[];vue.trip.endCoordinates[] + '?geometries=geojson&access_token=' + vue.mapboxToken)
         .then(function (response) {
           vue.distance = response.data.routes[0].distance
         })
         .catch(function (error) {
           console.log(error)
         })
+    },
+    postDirections () {
+      axios.post('http://54.186.69.46:81/trips/' + vue.activeUser.id, {
+        headers: { 'Authorization': 'JWT ' + vue.user.token }
+        trip: vue.trip
+      })
     },
     mapLoaded (map) {
       let vue = this
@@ -271,22 +276,32 @@ export default {
     tripLogic () {
       let vue = this
       setInterval(
-        vue.coordinates = vue.pastCoordinates
+        vue.pastCoordinates = vue.coordinates
         navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
         function locationSuccess (position) {
           vue.coordinates = [position.coords.latitude, position.coords.longitude]
-          if (vue.coordinates != vue.pastCoordinates) {
-            [vue.trip.start.latitude, vue.trip.start.longitude] = vue.pastCoordinates
-            [vue.trip.end.latitude, vue.trip.end.longitude] = vue.Coordinates
+          if (vue.tripStarted === false) {
+            if (vue.pastCoordinates !== vue.coordinates) {
+              trip.startCoordinates = vue.pastCoordinates
+              vue.tripStarted = true
+            }
+          }
+          else if (vue.tripStarted === true) {
+            if (vue.pastCoordinates === vue.coordinates) {
+              vue.trip.endCoordinates = vue.coordinates
+              vue.trip.userId = vue.user.id
+              vue.getDirections()
+              vue.postDirections()
+              tripStarted = false
+            }
           }
         }
         function locationFail () {
           vue.prettyModal('It seems we cant find you, please reload the page and try again.')
           this.locationError = true
-        }
-      300000)
+        }, 300000)
     }
-}
+  }
 function clock () {
   this.time = new Date()
   this.hours = this.time.getHours()
