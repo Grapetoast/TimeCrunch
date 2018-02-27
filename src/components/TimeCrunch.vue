@@ -54,7 +54,6 @@ export default {
       vue.prettyModal('It seems we cant find you, please reload the page and try again.')
       this.locationError = true
     }
-    vue.onDeviceReady()
   },
   data () {
     return {
@@ -122,37 +121,6 @@ export default {
       axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/' + vue.trip.startCoordinates + ';' + vue.trip.endCoordinates + '?geometries=geojson&access_token=' + vue.mapboxToken)
         .then(function (response) {
           vue.trip.distance = response.data.routes[0].distance
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
-    },
-    postTrip () {
-      let vue = this
-      axios.post('http://54.186.69.46:81/trips', {
-        userId: vue.user.id,
-        start: {
-          latitude: vue.trip.start.latitude,
-          longitude: vue.trip.start.longitude,
-          month: vue.trip.start.month,
-          day: vue.trip.start.day,
-          hour: vue.trip.start.hour,
-          minute: vue.trip.start.minute,
-          second: vue.trip.start.second
-        },
-        end: {
-          latitude: vue.trip.end.latitude,
-          longitude: vue.trip.end.longitude,
-          month: vue.trip.end.month,
-          day: vue.trip.end.day,
-          hour: vue.trip.end.hour,
-          minute: vue.trip.end.minute,
-          second: vue.trip.end.second
-        },
-        distance: vue.trip.distance
-      })
-        .then(function (response) {
-          vue.prettyModal('trip Success!!')
         })
         .catch(function (error) {
           console.log(error)
@@ -294,48 +262,6 @@ export default {
       else {
         vue.prettyModal('You are already back from lunch!')
       }
-    },
-    mileageLogic () {
-      let vue = this
-      if (vue.lastClockType !== 'out') {
-        vue.pastCoordinates = vue.coordinates
-        navigator.geolocation.getCurrentPosition(vue.mileageLocationSuccess, vue.locationFail)
-      }
-    },
-    mileageLocationSuccess (position) {
-      let vue = this
-      vue.coordinates = [position.coords.longitude, position.coords.latitude]
-      if (vue.tripStarted === false) {
-        if (vue.pastCoordinates !== vue.coordinates) {
-          vue.trip.startCoordinates = vue.pastCoordinates
-          vue.tripStarted = true
-          vue.prettyModal('trip started')
-        }
-      }
-      else if (vue.tripStarted === true) {
-        if (vue.pastCoordinates === vue.coordinates) {
-          vue.trip.endCoordinates = vue.coordinates
-          vue.trip.userId = vue.user.id
-          vue.prettyModal('trip ended')
-          vue.getDirections()
-          vue.postTrip()
-          vue.tripStarted = false
-        }
-      }
-    },
-    onDeviceReady () {
-      let vue = this
-      try {
-        cordova.plugins.backgroundMode.enable()
-      }
-      catch (error) {
-        vue.prettyModal('Failed to enable Background Mode, please review settings and restart app.')
-      }
-      vue.tripLogic()
-    },
-    tripLogic () {
-      let vue = this
-      setInterval(vue.mileageLogic(), 150000)
     }
   }
 }
