@@ -82,6 +82,8 @@ export default {
         distance: 0,
         start: {
           startCoordinates: [0, 0],
+          latitude: '',
+          longitude: '',
           month: 0,
           hour: 0,
           minute: 0,
@@ -89,6 +91,8 @@ export default {
         },
         end: {
           endCoordinates: [0, 0],
+          latitude: '',
+          longitude: '',
           month: 0,
           hour: 0,
           minute: 0,
@@ -125,10 +129,34 @@ export default {
     },
     postTrip () {
       let vue = this
-      axios.post('http://54.186.69.46:81/trips/' + vue.activeUser.id, {
-        headers: { 'Authorization': 'JWT ' + vue.user.token },
-        trip: vue.trip
+      axios.post('http://54.186.69.46:81/trips', {
+        userId: vue.user.id,
+        start: {
+          latitude: vue.trip.start.latitude,
+          longitude: vue.trip.start.longitude,
+          month: vue.trip.start.month,
+          day: vue.trip.start.day,
+          hour: vue.trip.start.hour,
+          minute: vue.trip.start.minute,
+          second: vue.trip.start.second
+        },
+        end: {
+          latitude: vue.trip.end.latitude,
+          longitude: vue.trip.end.longitude,
+          month: vue.trip.end.month,
+          day: vue.trip.end.day,
+          hour: vue.trip.end.hour,
+          minute: vue.trip.end.minute,
+          second: vue.trip.end.second
+        },
+        distance: vue.trip.distance
       })
+        .then(function (response) {
+          vue.prettyModal('trip Success!!')
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     mapLoaded (map) {
       let vue = this
@@ -269,29 +297,31 @@ export default {
     },
     mileageLogic () {
       let vue = this
-      vue.pastCoordinates = vue.coordinates
-      navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
-      function locationSuccess (position) {
-        vue.coordinates = [position.coords.longitude, position.coords.latitude]
-        if (vue.tripStarted === false) {
-          if (vue.pastCoordinates !== vue.coordinates) {
-            vue.trip.startCoordinates = vue.pastCoordinates
-            vue.tripStarted = true
+      if (vue.lastClockType !== 'out') {
+        vue.pastCoordinates = vue.coordinates
+        navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
+        function locationSuccess (position) {
+          vue.coordinates = [position.coords.longitude, position.coords.latitude]
+          if (vue.tripStarted === false) {
+            if (vue.pastCoordinates !== vue.coordinates) {
+              vue.trip.startCoordinates = vue.pastCoordinates
+              vue.tripStarted = true
+            }
+          }
+          else if (vue.tripStarted === true) {
+            if (vue.pastCoordinates === vue.coordinates) {
+              vue.trip.endCoordinates = vue.coordinates
+              vue.trip.userId = vue.user.id
+              vue.getDirections()
+              vue.postTrip()
+              vue.tripStarted = false
+            }
           }
         }
-        else if (vue.tripStarted === true) {
-          if (vue.pastCoordinates === vue.coordinates) {
-            vue.trip.endCoordinates = vue.coordinates
-            vue.trip.userId = vue.user.id
-            vue.getDirections()
-            vue.postTrip()
-            vue.tripStarted = false
-          }
+        function locationFail () {
+          vue.prettyModal('It seems we cant find you, please reload the page and try again.')
+          this.locationError = true
         }
-      }
-      function locationFail () {
-        vue.prettyModal('It seems we cant find you, please reload the page and try again.')
-        this.locationError = true
       }
     },
     onDeviceReady () {
