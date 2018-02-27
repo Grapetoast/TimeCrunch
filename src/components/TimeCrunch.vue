@@ -117,7 +117,7 @@ export default {
       let vue = this
       axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/' + vue.trip.startCoordinates + ';' + vue.trip.endCoordinates + '?geometries=geojson&access_token=' + vue.mapboxToken)
         .then(function (response) {
-          vue.distance = response.data.routes[0].distance
+          vue.trip.distance = response.data.routes[0].distance
         })
         .catch(function (error) {
           console.log(error)
