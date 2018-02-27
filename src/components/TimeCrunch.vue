@@ -7,7 +7,7 @@
     </div>
     <div class="prettyModal" v-else-if="modal==='pretty'">
       <h2>{{prettyMessage}}</h2>
-      <button class="back" v-on:click="modal=''">Back</button>
+      <button class="prettyBack" v-on:click="modal=''">Back</button>
     </div>
     <div class="clockIn" v-on:click="clockIn"> Clock In</div>
     <div class="clockOut" v-on:click="clockOut">Clock Out</div>
@@ -138,8 +138,6 @@ export default {
         zoom: 15
       })
       vue.startMarker()
-      vue.endMarkerMethod()
-      vue.getDirections()
     },
     mapJump () {
       let vue = this
@@ -298,7 +296,12 @@ export default {
     },
     onDeviceReady () {
       let vue = this
-      cordova.plugins.backgroundMode.enable()
+      try {
+        cordova.plugins.backgroundMode.enable()
+      }
+      catch (error) {
+        vue.prettyModal('Failed to enable Background Mode, please review settings and restart app.')
+      }
       vue.tripLogic()
     },
     tripLogic () {
@@ -306,22 +309,21 @@ export default {
       setInterval(vue.mileageLogic(), 300000)
     }
   }
-  function clock () {
-    let vue = this
-    this.time = new Date()
-    this.hours = this.time.getHours()
-    this.minutes = this.time.getMinutes()
-    this.seconds = this.time.getSeconds()
-    document.querySelectorAll('.clock')[0].innerHTML = harold(this.hours) + ':' + harold(this.minutes) + ':' + harold(this.seconds)
-    function harold (standIn) {
-      if (standIn < 10) {
-        standIn = '0' + standIn
-      }
-      return standIn
+}
+function clock () {
+  this.time = new Date()
+  this.hours = this.time.getHours()
+  this.minutes = this.time.getMinutes()
+  this.seconds = this.time.getSeconds()
+  document.querySelectorAll('.clock')[0].innerHTML = harold(this.hours) + ':' + harold(this.minutes) + ':' + harold(this.seconds)
+  function harold (standIn) {
+    if (standIn < 10) {
+      standIn = '0' + standIn
     }
-    setInterval(clock, 1000)
+    return standIn
   }
 }
+setInterval(clock, 1000)
 </script>
 
 <style lang="less">
