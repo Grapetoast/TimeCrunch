@@ -338,7 +338,6 @@
             zoom: 14
           })
         }
->>>>>>> master
       },
       addMarker () {
         let vue = this

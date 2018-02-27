@@ -162,7 +162,8 @@ export default {
       let vue = this
       setInterval(vue.mapUpdate(), 150000)
     },
-    mapUpdate () {
+    mapUpdate (map) {
+      let vue = this
       vue.map = map
       vue.map.jumpTo({
         center: [vue.longitude, vue.latitude],
