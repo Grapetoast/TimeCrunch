@@ -299,28 +299,25 @@ export default {
       let vue = this
       if (vue.lastClockType !== 'out') {
         vue.pastCoordinates = vue.coordinates
-        navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
-        function locationSuccess (position) {
-          vue.coordinates = [position.coords.longitude, position.coords.latitude]
-          if (vue.tripStarted === false) {
-            if (vue.pastCoordinates !== vue.coordinates) {
-              vue.trip.startCoordinates = vue.pastCoordinates
-              vue.tripStarted = true
-            }
-          }
-          else if (vue.tripStarted === true) {
-            if (vue.pastCoordinates === vue.coordinates) {
-              vue.trip.endCoordinates = vue.coordinates
-              vue.trip.userId = vue.user.id
-              vue.getDirections()
-              vue.postTrip()
-              vue.tripStarted = false
-            }
-          }
+        navigator.geolocation.getCurrentPosition(vue.mileageLocationSuccess, vue.locationFail)
+      }
+    },
+    mileageLocationSuccess (position) {
+      let vue = this
+      vue.coordinates = [position.coords.longitude, position.coords.latitude]
+      if (vue.tripStarted === false) {
+        if (vue.pastCoordinates !== vue.coordinates) {
+          vue.trip.startCoordinates = vue.pastCoordinates
+          vue.tripStarted = true
         }
-        function locationFail () {
-          vue.prettyModal('It seems we cant find you, please reload the page and try again.')
-          this.locationError = true
+      }
+      else if (vue.tripStarted === true) {
+        if (vue.pastCoordinates === vue.coordinates) {
+          vue.trip.endCoordinates = vue.coordinates
+          vue.trip.userId = vue.user.id
+          vue.getDirections()
+          vue.postTrip()
+          vue.tripStarted = false
         }
       }
     },
