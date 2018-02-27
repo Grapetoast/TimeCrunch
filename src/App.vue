@@ -55,6 +55,7 @@
         tripStarted: false,
         coordinates: [0, 0],
         pastCoordinates: [0, 0],
+        time: '',
         trip: {
           userId: '',
           distance: 0,
@@ -62,6 +63,7 @@
             startCoordinates: [0, 0],
             latitude: '',
             longitude: '',
+            day: 0,
             month: 0,
             hour: 0,
             minute: 0,
@@ -71,6 +73,7 @@
             endCoordinates: [0, 0],
             latitude: '',
             longitude: '',
+            day: 0,
             month: 0,
             hour: 0,
             minute: 0,
@@ -147,6 +150,12 @@
         if (vue.tripStarted === false) {
           if (vue.pastCoordinates[0] !== vue.coordinates[0] || vue.pastCoordinates[1] !== vue.coordinates[1]) {
             vue.trip.start.startCoordinates = vue.pastCoordinates
+            vue.time = new Date()
+            vue.trip.start.month = vue.time.getMonth()
+            vue.trip.start.day = vue.time.getDay()
+            vue.trip.start.hour = vue.time.getHours()
+            vue.trip.start.minute = vue.time.getMinutes()
+            vue.trip.start.second = vue.time.getSeconds()
             vue.trip.start.latitude = vue.pastCoordinates[0]
             vue.trip.start.longitude = vue.pastCoordinates[1]
             vue.tripStarted = true
@@ -156,6 +165,12 @@
         else if (vue.tripStarted === true) {
           if (vue.pastCoordinates[0] === vue.coordinates[0] && vue.pastCoordinates[1] === vue.coordinates[1]) {
             vue.trip.end.endCoordinates = vue.coordinates
+            vue.time = new Date()
+            vue.trip.end.month = vue.time.getMonth()
+            vue.trip.end.day = vue.time.getDay()
+            vue.trip.end.hour = vue.time.getHours()
+            vue.trip.end.minute = vue.time.getMinutes()
+            vue.trip.end.second = vue.time.getSeconds()
             vue.trip.end.latitude = vue.coordinates[0]
             vue.trip.end.longitude = vue.coordinates[1]
             vue.trip.userId = vue.user.id
@@ -173,7 +188,7 @@
       },
       getDirections () {
         let vue = this
-        axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/' + vue.trip.startCoordinates + ';' + vue.trip.endCoordinates + '?geometries=geojson&access_token=' + vue.mapboxToken)
+        axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/' + vue.trip.start.startCoordinates + ';' + vue.trip.end.endCoordinates + '?geometries=geojson&access_token=' + vue.mapboxToken)
           .then(function (response) {
             vue.trip.distance = response.data.routes[0].distance
           })
