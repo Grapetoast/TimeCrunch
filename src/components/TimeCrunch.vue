@@ -309,12 +309,14 @@ export default {
         if (vue.pastCoordinates !== vue.coordinates) {
           vue.trip.startCoordinates = vue.pastCoordinates
           vue.tripStarted = true
+          vue.prettyModal('trip started')
         }
       }
       else if (vue.tripStarted === true) {
         if (vue.pastCoordinates === vue.coordinates) {
           vue.trip.endCoordinates = vue.coordinates
           vue.trip.userId = vue.user.id
+          vue.prettyModal('trip ended')
           vue.getDirections()
           vue.postTrip()
           vue.tripStarted = false
