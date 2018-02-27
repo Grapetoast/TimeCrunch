@@ -335,7 +335,7 @@ export default {
     },
     tripLogic () {
       let vue = this
-      setInterval(vue.mileageLogic(), 300000)
+      setInterval(vue.mileageLogic(), 150000)
     }
   }
 }
