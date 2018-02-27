@@ -319,7 +319,7 @@ export default {
       }
       return standIn
     }
-    setInterval(vue.clockUpdate(), 1000)
+    setInterval(clock, 1000)
   }
 }
 </script>
