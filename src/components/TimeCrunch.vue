@@ -304,22 +304,23 @@ export default {
     tripLogic () {
       let vue = this
       setInterval(vue.mileageLogic(), 300000)
+    },
+    clockUpdate () {
+      let vue = this
+      this.time = new Date()
+      this.hours = this.time.getHours()
+      this.minutes = this.time.getMinutes()
+      this.seconds = this.time.getSeconds()
+      document.querySelectorAll('.clock')[0].innerHTML = harold(this.hours) + ':' + harold(this.minutes) + ':' + harold(this.seconds)
+      function harold (standIn) {
+        if (standIn < 10) {
+          standIn = '0' + standIn
+        }
+        return standIn
+      }
+      setInterval(vue.clockUpdate(), 1000)
     }
-  },
-  function clock () {
-  this.time = new Date()
-  this.hours = this.time.getHours()
-  this.minutes = this.time.getMinutes()
-  this.seconds = this.time.getSeconds()
-  document.querySelectorAll('.clock')[0].innerHTML = harold(this.hours) + ':' + harold(this.minutes) + ':' + harold(this.seconds)
-  function harold (standIn) {
-    if (standIn < 10) {
-      standIn = '0' + standIn
-    }
-    return standIn
   }
-}
-setInterval(clock, 1000)
 }
 </script>
 
