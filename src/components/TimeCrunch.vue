@@ -124,6 +124,7 @@ export default {
         })
     },
     postTrip () {
+      let vue = this
       axios.post('http://54.186.69.46:81/trips/' + vue.activeUser.id, {
         headers: { 'Authorization': 'JWT ' + vue.user.token },
         trip: vue.trip
@@ -268,6 +269,33 @@ export default {
         vue.prettyModal('You are already back from lunch!')
       }
     },
+    mileageLogic () {
+      let vue = this
+      vue.pastCoordinates = vue.coordinates
+      navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
+      function locationSuccess (position) {
+        vue.coordinates = [position.coords.latitude, position.coords.longitude]
+        if (vue.tripStarted === false) {
+          if (vue.pastCoordinates !== vue.coordinates) {
+            vue.trip.startCoordinates = vue.pastCoordinates
+            vue.tripStarted = true
+          }
+        }
+        else if (vue.tripStarted === true) {
+          if (vue.pastCoordinates === vue.coordinates) {
+            vue.trip.endCoordinates = vue.coordinates
+            vue.trip.userId = vue.user.id
+            vue.getDirections()
+            vue.postTrip()
+            vue.tripStarted = false
+          }
+        }
+      }
+      function locationFail () {
+        vue.prettyModal('It seems we cant find you, please reload the page and try again.')
+        this.locationError = true
+      }
+    },
     onDeviceReady () {
       let vue = this
       cordova.plugins.backgroundMode.enable()
@@ -275,34 +303,10 @@ export default {
     },
     tripLogic () {
       let vue = this
-      setInterval(
-        vue.pastCoordinates = vue.coordinates
-        navigator.geolocation.getCurrentPosition(vue.locationSuccess, vue.locationFail)
-        function locationSuccess (position) {
-          vue.coordinates = [position.coords.latitude, position.coords.longitude]
-          if (vue.tripStarted === false) {
-            if (vue.pastCoordinates !== vue.coordinates) {
-              trip.startCoordinates = vue.pastCoordinates
-              vue.tripStarted = true
-            }
-          }
-          else if (vue.tripStarted === true) {
-            if (vue.pastCoordinates === vue.coordinates) {
-              vue.trip.endCoordinates = vue.coordinates
-              vue.trip.userId = vue.user.id
-              vue.getDirections()
-              vue.postTrip()
-              tripStarted = false
-            }
-          }
-        }
-        function locationFail () {
-          vue.prettyModal('It seems we cant find you, please reload the page and try again.')
-          this.locationError = true
-        }, 300000)
+      setInterval(vue.mileageLogic(), 300000)
     }
-  }
-function clock () {
+  },
+  function clock () {
   this.time = new Date()
   this.hours = this.time.getHours()
   this.minutes = this.time.getMinutes()
@@ -315,8 +319,8 @@ function clock () {
     return standIn
   }
 }
-}
 setInterval(clock, 1000)
+}
 </script>
 
 <style lang="less">

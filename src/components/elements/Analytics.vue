@@ -295,8 +295,8 @@
           .setLngLat(vue.coordinates)
           .addTo(vue.map)
       }
-      }
     }
+}
 </script>
 
 <style lang="less">
