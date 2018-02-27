@@ -274,7 +274,7 @@ export default {
       vue.pastCoordinates = vue.coordinates
       navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
       function locationSuccess (position) {
-        vue.coordinates = [position.coords.latitude, position.coords.longitude]
+        vue.coordinates = [position.coords.longitude, position.coords.latitude]
         if (vue.tripStarted === false) {
           if (vue.pastCoordinates !== vue.coordinates) {
             vue.trip.startCoordinates = vue.pastCoordinates
@@ -304,22 +304,22 @@ export default {
     tripLogic () {
       let vue = this
       setInterval(vue.mileageLogic(), 300000)
-    },
-    clockUpdate () {
-      let vue = this
-      this.time = new Date()
-      this.hours = this.time.getHours()
-      this.minutes = this.time.getMinutes()
-      this.seconds = this.time.getSeconds()
-      document.querySelectorAll('.clock')[0].innerHTML = harold(this.hours) + ':' + harold(this.minutes) + ':' + harold(this.seconds)
-      function harold (standIn) {
-        if (standIn < 10) {
-          standIn = '0' + standIn
-        }
-        return standIn
-      }
-      setInterval(vue.clockUpdate(), 1000)
     }
+  }
+  function clock () {
+    let vue = this
+    this.time = new Date()
+    this.hours = this.time.getHours()
+    this.minutes = this.time.getMinutes()
+    this.seconds = this.time.getSeconds()
+    document.querySelectorAll('.clock')[0].innerHTML = harold(this.hours) + ':' + harold(this.minutes) + ':' + harold(this.seconds)
+    function harold (standIn) {
+      if (standIn < 10) {
+        standIn = '0' + standIn
+      }
+      return standIn
+    }
+    setInterval(vue.clockUpdate(), 1000)
   }
 }
 </script>
