@@ -7,26 +7,41 @@
         <h4>{{totalHours}} Total Hours Clocked</h4>
       </div>
       <div class="readouts" v-else-if="pane==='readout'">
-        <h3>User: {{activeUser.name}}</h3>
-        <h3>Clock {{activeClock.clockType}} {{(activeClock.month + 1)}}/{{activeClock.day}} {{activeClock.hours}}:{{activeClock.minutes}}</h3>
+        <div v-if="modal==='clock'">
+          <h3>User: {{activeUser.name}}</h3>
+          <h3>Clock {{activeClock.clockType}} {{(activeClock.month + 1)}}/{{activeClock.day}} {{activeClock.hours}}:{{activeClock.minutes}}</h3>
+        </div>
+        <div v-else>
+          <h3>User: {{activeUser.name}}</h3>
+          <h3>Trip on {{activeTrip.start.month + 1}}/{{activeTrip.start.day}} Distance: {{Math.floor(activeTrip.distance / 1609.34)}} Miles</h3>
+          <h3>Start Time - {{activeTrip.start.hour}}:{{activeTrip.start.minute}}</h3>
+          <h3>End Time - {{activeTrip.end.hour}}:{{activeTrip.end.minute}}</h3>
+        </div>
       </div>
       <div class="mileGraphsPane" v-else>
         <h4 v-if="modal==='user'">{{activeUser.name}}'s Mileage Record</h4>
-        <h4>{{totalDistance}} Total Distance Driven</h4>
+        <h4>{{totalDistance}} Total Miles Driven</h4>
       </div>
     </div>
     <div class="timeTab" v-on:click="pane='time'" v-if="pane!=='readout'">Time</div>
     <div class="mileTab" v-on:click="pane=''" v-if="pane!=='readout'">Distance</div>
     <div class="modals">
       <div class="userView" v-if="modal==='user'">
-        <button class="back" v-on:click="modal=''; resetTime(); populateCompanyClocks()">Back</button>
+        <button class="back" v-on:click="modal=''; resetTime(); populateCompanyClocks(); populateCompanyTrips()">Back</button>
         <input class="userSearch" v-model="userSearch" placeholder="search"></input>
-        <div class="clocks" v-for="clock in clocks">
+        <div class="clocks" v-for="clock in clocks" v-if="pane==='time'">
           <h5 v-on:click="viewClock(clock)">clock {{clock.clockType}}  {{(clock.month + 1)}}/{{clock.day}} {{clock.hours}}:{{clock.minutes}}</h5>
+        </div>
+        <div class="trips" v-for="trip in trips" v-if="pane===''">
+          <h5 v-on:click="viewTrip(trip)">trip on {{trip.start.month + 1}}/{{trip.start.day}} Distance: {{Math.floor(trip.distance / 1609.34)}} Miles</h5>
         </div>
       </div>
       <div class="clockMapView" v-else-if="modal==='clock'">
         <button class="mapBack" v-on:click="modal='user'; pane='time'">Back</button>
+        <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
+      </div>
+      <div class="tripMapView" v-else-if="modal==='trip'">
+        <button class="mapBack" v-on:click="modal='user'; pane=''">Back</button>
         <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
       </div>
       <div class="adminView" v-else>
@@ -55,6 +70,8 @@
       return {
         count: 0,
         marker: document.createElement('div'),
+        markerStart: document.createElement('div'),
+        markerEnd: document.createElement('div'),
         coordinates: [0, 0],
         startCoordinates: [0, 0],
         endCoordinates: [0, 0],
@@ -108,6 +125,7 @@
             latitude: '',
             longitude: '',
             month: 0,
+            day: 0,
             hour: 0,
             minute: 0,
             second: 0
@@ -116,6 +134,7 @@
             latitude: '',
             longitude: '',
             month: 0,
+            day: 0,
             hour: 0,
             minute: 0,
             second: 0
@@ -146,6 +165,7 @@
       viewUser (user) {
         let vue = this
         vue.totalHours = 0
+        vue.totalDistance = 0
         vue.totalTime = {
           hours: 0,
           minutes: 0,
@@ -161,6 +181,15 @@
             vue.clocks = []
             vue.clocks = response.data
             vue.countClocks()
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+        axios.get('http://54.186.69.46:81/trips/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+          .then(function (response) {
+            vue.trips = []
+            vue.trips = response.data
+            vue.countTrips()
             vue.modal = 'user'
           })
           .catch(function (error) {
@@ -178,6 +207,7 @@
       },
       populateCompanyClocks () {
         let vue = this
+        vue.totalHours = 0
         let i = 0
         vue.clocks = []
         for (i = 0; i < vue.users.length; i++) {
@@ -243,6 +273,7 @@
       },
       populateCompanyTrips () {
         let vue = this
+        vue.totalDistance = 0
         let i = 0
         vue.trips = []
         for (i = 0; i < vue.users.length; i++) {
@@ -268,31 +299,60 @@
         let i = 0
         for (i = 0; i < vue.trips.length; i++) {
           let distance = vue.trips[i].distance
-          vue.totalDistance = vue.totalDistance + distance
+          vue.totalDistance = vue.totalDistance + Math.floor(distance / 1609.34)
         }
       },
       viewTrip (trip) {
         let vue = this
         vue.activeTrip.userId = trip._id
         vue.activeTrip.distance = trip.distance
-        vue.startCoordinates = [vue.trip.start.longitude, vue.trip.start.latitude]
-        vue.endCoordinates = [vue.trip.end.longitude, vue.trip.end.latitude]
+        vue.activeTrip.start.month = trip.start.month
+        vue.activeTrip.start.day = trip.start.day
+        vue.activeTrip.start.hour = trip.start.hour
+        vue.activeTrip.start.minute = trip.start.minute
+        vue.activeTrip.start.second = trip.start.second
+        vue.activeTrip.end.month = trip.end.month
+        vue.activeTrip.end.day = trip.end.day
+        vue.activeTrip.end.hour = trip.end.hour
+        vue.activeTrip.end.minute = trip.end.minute
+        vue.activeTrip.end.second = trip.end.second
+        vue.startCoordinates = [trip.start.longitude, trip.start.latitude]
+        vue.endCoordinates = [trip.end.longitude, trip.end.latitude]
         vue.pane = 'readout'
         vue.modal = 'trip'
       },
       mapLoaded (map) {
         let vue = this
         vue.map = map
-        vue.addMarker()
-        vue.map.jumpTo({
-          center: [vue.activeClock.longitude, (vue.activeClock.latitude - 0.007)],
-          zoom: 14
-        })
+        if (vue.modal === 'clock') {
+          vue.addMarker()
+          vue.map.jumpTo({
+            center: [vue.activeClock.longitude, vue.activeClock.latitude],
+            zoom: 14
+          })
+        }
+        else {
+          vue.addMarkers()
+          vue.map.jumpTo({
+            center: vue.startCoordinates,
+            zoom: 14
+          })
+        }
+>>>>>>> master
       },
       addMarker () {
         let vue = this
         new mapboxgl.Marker(vue.marker)
           .setLngLat(vue.coordinates)
+          .addTo(vue.map)
+      },
+      addMarkers () {
+        let vue = this
+        new mapboxgl.Marker(vue.markerStart)
+          .setLngLat(vue.startCoordinates)
+          .addTo(vue.map)
+        new mapboxgl.Marker(vue.markerEnd)
+          .setLngLat(vue.endCoordinates)
           .addTo(vue.map)
       }
     }
