@@ -49,6 +49,7 @@ export default {
       vue.accuracy = position.coords.accuracy
       vue.altitudeAccuracy = position.coords.altitudeAccuracy
       vue.coordinates = [vue.longitude, vue.latitude]
+      setInterval(function () { vue.mapUpdate() }, 300000)
     }
     function locationFail () {
       vue.prettyModal('It seems we cant find you, please reload the page and try again.')
@@ -128,11 +129,11 @@ export default {
     },
     mapLoaded (map) {
       let vue = this
+      vue.map = map
       setInterval(vue.mapUpdate(), 150000)
     },
-    mapUpdate (map) {
+    mapUpdate () {
       let vue = this
-      vue.map = map
       vue.map.jumpTo({
         center: [vue.longitude, vue.latitude],
         zoom: 15

@@ -224,7 +224,7 @@
       },
       tripLogic () {
         let vue = this
-        setInterval(function () { vue.mileageLogic() }, 3000)
+        setInterval(function () { vue.mileageLogic() }, 30000)
       }
     }
   }
