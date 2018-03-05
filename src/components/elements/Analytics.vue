@@ -355,7 +355,7 @@
   }
 </script>
 
-<style lang="less">
+<style scoped lang="less">
   @red: #c90c2e;
   @grey: #323d38;
   .analytics {
@@ -365,26 +365,18 @@
     grid-template-rows: repeat(5, 100px);
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
+
   #map {
     width: 100%;
-    margin-top: 100%;
-    height: 33%;
+    margin-top: 110% !important;
+    height: 33% !important;
     z-index: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    position: fixed;
+    position: absolute !important;
   }
 
-  .mapboxgl-marker {
-    background-image: url('../../assets/mapbox-icon.png');
-    background-size: cover;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    z-index: 4;
-    cursor: pointer;
-  }
   .timeTab {
     grid-column-start: 1;
     grid-column-end: 3;
