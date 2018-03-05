@@ -154,7 +154,7 @@ export default {
       navigator.geolocation.getCurrentPosition(vue.locationSuccess, vue.locationFail)
       this.time = new Date()
       vue.month = vue.time.getMonth()
-      vue.day = vue.time.getDay()
+      vue.day = vue.time.getDate()
       vue.hours = vue.time.getHours()
       vue.minutes = vue.time.getMinutes()
       vue.seconds = vue.time.getSeconds()
