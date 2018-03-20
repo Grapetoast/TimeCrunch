@@ -7,7 +7,7 @@
     </div>
     <div class="prettyModal" v-else-if="modal==='pretty'">
       <h2>{{prettyMessage}}</h2>
-      <button class="prettyBack" v-on:click="modal=''">Back</button>
+      <button class="back" v-on:click="modal=''">Back</button>
     </div>
     <div class="clockIn" v-on:click="clockIn"> Clock In</div>
     <div class="clockOut" v-on:click="clockOut">Clock Out</div>
@@ -49,7 +49,6 @@ export default {
       vue.accuracy = position.coords.accuracy
       vue.altitudeAccuracy = position.coords.altitudeAccuracy
       vue.coordinates = [vue.longitude, vue.latitude]
-      setInterval(function () { vue.mapUpdate() }, 300000)
     }
     function locationFail () {
       vue.prettyModal('It seems we cant find you, please reload the page and try again.')
@@ -74,31 +73,8 @@ export default {
       distance: 0,
       latitude: '',
       longitude: '',
-      tripStarted: false,
       coordinates: [0, 0],
-      pastCoordinates: [0, 0],
-      trip: {
-        userId: '',
-        distance: 0,
-        start: {
-          startCoordinates: [0, 0],
-          latitude: '',
-          longitude: '',
-          month: 0,
-          hour: 0,
-          minute: 0,
-          second: 0
-        },
-        end: {
-          endCoordinates: [0, 0],
-          latitude: '',
-          longitude: '',
-          month: 0,
-          hour: 0,
-          minute: 0,
-          second: 0
-        }
-      },
+      endcoordinates: [-112, 34],
       altitude: '',
       accuracy: '',
       altitudeAccuracy: '',
@@ -117,11 +93,15 @@ export default {
       vue.prettyMessage = message
       vue.modal = 'pretty'
     },
+    submitDirections () {
+      axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag', {
+      })
+    },
     getDirections () {
       let vue = this
-      axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/' + vue.trip.startCoordinates + ';' + vue.trip.endCoordinates + '?geometries=geojson&access_token=' + vue.mapboxToken)
+      axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag')
         .then(function (response) {
-          vue.trip.distance = response.data.routes[0].distance
+          vue.distance = response.data.routes[0].distance
         })
         .catch(function (error) {
           console.log(error)
@@ -130,15 +110,13 @@ export default {
     mapLoaded (map) {
       let vue = this
       vue.map = map
-      setInterval(vue.mapUpdate(), 150000)
-    },
-    mapUpdate () {
-      let vue = this
       vue.map.jumpTo({
         center: [vue.longitude, vue.latitude],
         zoom: 15
       })
       vue.startMarker()
+      vue.endMarkerMethod()
+      vue.getDirections()
     },
     mapJump () {
       let vue = this

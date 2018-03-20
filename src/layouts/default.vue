@@ -1,13 +1,12 @@
 <template>
   <q-layout>
-    <router-view :user="user"/>
+    <router-view />
   </q-layout>
 </template>
 
 <script>
 export default {
   name: 'LayoutDefault',
-  props: ['user'],
   data () {
     return {
     }

@@ -157,7 +157,6 @@ export default {
     height: 40px;
     margin-bottom: 10px;
   }
-
   .role {
     border: 1px solid @grey;
     width: 90%;
@@ -165,7 +164,6 @@ export default {
     height: 40px;
     margin-bottom: 10px;
   }
-
   .togglePass {
     width: 50%;
     margin-left: 20px;
@@ -206,7 +204,6 @@ export default {
     margin-left: 20px;
     margin-top: 10px;
   }
-
   @media (min-width: 700px) {
   }
 </style>
