@@ -10,7 +10,7 @@
 </template>
 
 <script>
-
+import axios from 'axios'
 import navbar from './pages/elements/Navbar'
 
 export default {
@@ -120,8 +120,7 @@ export default {
           vue.user.companyId = user.companyId
           vue.logged = true
           vue.$router.push('/')
-        }
-        else {
+        } else {
           vue.logged = false
         }
       },
@@ -133,8 +132,7 @@ export default {
           vue.user.admin = user.data.admin
           vue.logged = true
           vue.$router.push('/')
-        }
-        else {
+        } else {
           vue.logged = false
         }
       },
@@ -154,8 +152,7 @@ export default {
         vue.prettyModal('logic')
         if (vue.firstStarted === true) {
           navigator.geolocation.getCurrentPosition(vue.locationSuccess, vue.locationFail)
-        }
-        else if (vue.lastClockType !== 'out') {
+        } else if (vue.lastClockType !== 'out') {
           vue.pastCoordinates = vue.coordinates
           navigator.geolocation.getCurrentPosition(vue.mileageLocationSuccess, vue.locationFail)
         }
@@ -183,8 +180,7 @@ export default {
             vue.tripStarted = true
             vue.prettyModal('trip started')
           }
-        }
-        else if (vue.tripStarted === true) {
+        } else if (vue.tripStarted === true) {
           if (vue.pastCoordinates[0] === vue.coordinates[0] && vue.pastCoordinates[1] === vue.coordinates[1]) {
             vue.trip.end.endCoordinates = vue.coordinates
             vue.time = new Date()
@@ -253,8 +249,7 @@ export default {
         let vue = this
         try {
           cordova.plugins.backgroundMode.enable()
-        }
-        catch (error) {
+        } catch (error) {
           vue.prettyModal('Failed to enable Background Mode, please review settings and restart app.')
         }
         vue.tripLogic()
@@ -263,8 +258,6 @@ export default {
         let vue = this
         setInterval(function () { vue.mileageLogic() }, 30000)
         vue.$router.push('/')
-      } else {
-        vue.logged = false
       }
     },
     register (user) {
