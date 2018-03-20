@@ -48,7 +48,6 @@ export default {
         vue.user.admin = user.admin
         vue.user.companyId = user.companyId
         vue.logged = true
-<<<<<<< HEAD
         axios.get('http://54.186.69.46:81/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
           .then(function (response) {
             vue.lastClockType = response.data.lastClockType
@@ -263,7 +262,6 @@ export default {
       tripLogic () {
         let vue = this
         setInterval(function () { vue.mileageLogic() }, 30000)
-=======
         vue.$router.push('/')
       } else {
         vue.logged = false
@@ -279,7 +277,6 @@ export default {
         vue.$router.push('/')
       } else {
         vue.logged = false
->>>>>>> master
       }
     },
     logOut () {
