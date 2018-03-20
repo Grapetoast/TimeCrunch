@@ -27,12 +27,12 @@
     <div class="modals">
       <div class="userView" v-if="modal==='user'">
         <button class="back" v-on:click="modal=''; resetTime(); populateCompanyClocks(); populateCompanyTrips()">Back</button>
-        <input class="userSearch" v-model="userSearch" placeholder="search">
+        <input class="userSearch" v-model="userSearch" placeholder="Search Clocks...">
         <div class="clocks" v-for="clock in clocks" v-bind:key="clock.id" v-if="pane==='time'">
           <h5 v-on:click="viewClock(clock)">clock {{clock.clockType}}  {{(clock.month + 1)}}/{{clock.day}} {{clock.hours}}:{{clock.minutes}}</h5>
         </div>
         <div class="trips" v-for="trip in trips" v-bind:key="trip.id" v-if="pane===''">
-          <h5 v-on:click="viewTrip(trip)">trip on {{trip.start.month + 1}}/{{trip.start.day}} Distance: {{Math.floor(trip.distance / 1609.34)}} Miles</h5>
+          <h5 v-on:click="viewTrip(trip)">Trip On {{trip.start.month + 1}}/{{trip.start.day}} Distance: {{Math.floor(trip.distance / 1609.34)}} Miles</h5>
         </div>
       </div>
       <div class="clockMapView" v-else-if="modal==='clock'">
@@ -44,7 +44,7 @@
         <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
       </div>
       <div class="adminView" v-else>
-        <input class="globalSearch" v-model="search" placeholder="search">
+        <input class="globalSearch" v-model="search" placeholder="Search Users...">
         <div class="user" v-for="user in users" v-bind:key="user.id">
           <h5 v-on:click="viewUser(user)">{{user.name}}</h5>
         </div>
@@ -383,8 +383,8 @@ export default {
   background-color: @grey;
   height: 30px;
   color: #fff;
-  width: 90%;
-  margin-left: 5%;
+  width: 80%;
+  margin-left: 10%;
   line-height: 25px;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
@@ -396,9 +396,9 @@ export default {
   background-color: @grey;
   height: 30px;
   color: #fff;
-  margin-left: 5%;
+  margin-left: 10%;
   line-height: 25px;
-  width: 90%;
+  width: 80%;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
@@ -417,8 +417,10 @@ export default {
   grid-row-end: 3;
   grid-column-start: 1;
   grid-column-end: 5;
-  border: 2px solid @red;
+  border: 3px solid @red;
   border-radius: 5px;
+  width: 96%;
+  margin-left: 2%;
 }
 
 .modals {
@@ -433,7 +435,8 @@ export default {
   margin-top: 5px;
   width: 20%;
   color: #fff;
-  font-size: 1em;
+  height: 30px;
+  font-size: 1.2em;
   font-weight: 400;
   background-color: @red;
   border: none;
@@ -452,9 +455,12 @@ h4 {
   font-size: 1em;
   color: @red;
   line-height: 10px;
+  margin-left: 5%;
 }
 h5 {
   font-size: 1em;
+  height: 20px;
+  padding: 0px;
 }
 h3 {
   font-size: 1em;
@@ -470,12 +476,19 @@ input {
 }
 .user {
   width: 100%;
-  border: 1px solid black;
+  border-bottom: 1px solid #000;
   padding-left: 5%;
+  height: 30px;
 }
 .clocks {
   width: 100%;
   border: 1px solid black;
   padding-left: 5%;
 }
+.trips {
+  width: 100%;
+  border: 1px solid black;
+  padding-left: 5%;
+}
+
 </style>
