@@ -9,10 +9,10 @@
       <h2>{{prettyMessage}}</h2>
       <button class="back" v-on:click="modal=''">Back</button>
     </div>
-    <div class="clockIn" v-on:click="clockIn"> Clock In</div>
-    <div class="clockOut" v-on:click="clockOut">Clock Out</div>
-    <div class="lunchOut" v-on:click="lunchOut">Lunch Start</div>
-    <div class="lunchIn" v-on:click="lunchIn">Lunch End</div>
+    <div class="clockIn timeBtn" v-on:click="clockIn"> Clock In</div>
+    <div class="clockOut timeBtn" v-on:click="clockOut">Clock Out</div>
+    <div class="lunchOut timeBtn" v-on:click="lunchOut">Lunch Start</div>
+    <div class="lunchIn timeBtn" v-on:click="lunchIn">Lunch End</div>
     <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
   </div>
 </template>
@@ -258,6 +258,8 @@ setInterval(clock, 1000)
 <style lang="less">
 @red: #c90c2e;
 @grey: #323d38;
+@green: #3fb80b;
+@blue: #1D2395;
 
 .timecrunch {
   position: fixed;
@@ -330,76 +332,46 @@ setInterval(clock, 1000)
   line-height: 80px;
   color: #fff;
   box-shadow: 0px 1.5px 5px #000;
+  border-bottom: 3px dotted white;
+}
+
+.timeBtn {
+  z-index: 3;
+  font-size: 1em;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  height: 50px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  color: white;
+  line-height: 50px;
+  box-shadow: 0px 1.5px 5px #000;
 }
 
 .clockIn {
-  z-index: 3;
-  font-size: 1em;
-  font-weight: bold;
-  text-align: center;
-  width: 100%;
-  height: 50px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  background-color: @grey;
+  background-color: #609732;
   grid-row: 2;
   grid-column: 1;
-  color: white;
-  line-height: 50px;
-  box-shadow: 0px 1.5px 5px #000;
 }
 
 .lunchIn {
-  z-index: 3;
-  font-size: 1em;
-  font-weight: bold;
-  text-align: center;
-  width: 100%;
-  height: 50px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
   background-color: @grey;
   grid-row: 2;
   grid-column: 3;
-  color: white;
-  line-height: 50px;
-  box-shadow: 0px 1.5px 5px #000;
 }
 
 .lunchOut {
-  z-index: 3;
-  color: white;
-  font-size: 1.1em;
-  font-weight: bold;
-  font-size: 1em;
-  text-align: center;
-  width: 100%;
-  height: 50px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  background-color: @grey;
+  background-color: @blue;
   grid-row: 2;
   grid-column: 2;
-  line-height: 50px;
-  box-shadow: 0px 1.5px 5px #000;
+
 }
 
 .clockOut {
-  z-index: 3;
-  color: white;
-  font-size: 1.1em;
-  font-weight: bold;
-  font-size: 1em;
-  text-align: center;
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  background-color: @grey;
+  background-color: @red;
   grid-row: 2;
   grid-column: 4;
-  box-shadow: 0px 1.5px 5px #000;
 }
 
 .prettyModal {
