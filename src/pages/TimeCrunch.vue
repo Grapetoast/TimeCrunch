@@ -334,7 +334,7 @@ setInterval(clock, 1000)
 
 .clockIn {
   z-index: 3;
-  font-size: 1em;
+  font-size: .8em;
   font-weight: bold;
   text-align: center;
   width: 100%;
@@ -351,7 +351,7 @@ setInterval(clock, 1000)
 
 .lunchIn {
   z-index: 3;
-  font-size: 1em;
+  font-size: .8em;
   font-weight: bold;
   text-align: center;
   width: 100%;
@@ -369,9 +369,8 @@ setInterval(clock, 1000)
 .lunchOut {
   z-index: 3;
   color: white;
-  font-size: 1.1em;
+  font-size: .8em;
   font-weight: bold;
-  font-size: 1em;
   text-align: center;
   width: 100%;
   height: 50px;
@@ -387,9 +386,8 @@ setInterval(clock, 1000)
 .clockOut {
   z-index: 3;
   color: white;
-  font-size: 1.1em;
+  font-size: .8em;
   font-weight: bold;
-  font-size: 1em;
   text-align: center;
   width: 100%;
   height: 50px;
