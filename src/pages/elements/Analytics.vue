@@ -358,6 +358,7 @@ export default {
 @grey: #323d38;
 
 .analytics {
+  position: fixed;
   display: grid;
   width: 100%;
   margin: 0;
