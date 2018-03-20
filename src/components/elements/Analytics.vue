@@ -1,6 +1,5 @@
 <template>
   <div class="analytics">
-    <div>{{count}}</div>
     <div class="graphsPane">
       <div class="timeGraphsPane" v-if="pane==='time'">
         <h4 v-if="modal==='user'">{{activeUser.name}}'s Time Record</h4>
