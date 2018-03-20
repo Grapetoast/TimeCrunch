@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="accountView" v-if="modal==='view'">
-      <h2 class="name">Name:</br>{{activeUser.name}}</h2>
+      <h2 class="name">Name:<br/>{{activeUser.name}}</h2>
       <h2 class="email">Email: {{activeUser.email}}</h2>
       <button class="accountEditButton" v-on:click="modal='edit'">Edit Account</button>
       <button class="back" v-on:click="modal=''">Back</button>
