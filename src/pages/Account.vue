@@ -27,9 +27,10 @@
     <analytics class="analyticsComponent" v-on:back="modal=''" v-else-if="modal==='analytics'" :user="user"></analytics>
     <div class="accountHome" v-else>
       <h1>Account</h1>
+      <button class="analytics" v-on:click="modal='analytics'" v-if="user.admin">Analytics</button>
       <button class="update" v-on:click="modal='pass'">Update Password</button>
       <button class="viewAccount" v-on:click="modal='view'">View Account</button>
-      <button class="analytics" v-on:click="modal='analytics'" v-if="user.admin">Analytics</button>
+
     </div>
   </div>
 </template>
@@ -129,7 +130,7 @@ export default {
 @grey: #323d38;
 
 .main {
-  margin-top: 120px;
+  margin-top: 100px;
 }
 
 h1 {
