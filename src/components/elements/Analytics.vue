@@ -44,7 +44,7 @@
         <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
       </div>
       <div class="adminView" v-else>
-        <input class="globalSearch" v-model="search" placeholder="search"></input>
+        <input class="globalSearch" v-model="search" placeholder="Search Users..."></input>
         <div class="user" v-for="user in users">
           <h5 v-on:click="viewUser(user)">{{user.name}}</h5>
         </div>
@@ -358,6 +358,7 @@
 <style scoped lang="less">
   @red: #c90c2e;
   @grey: #323d38;
+
   .analytics {
     display: grid;
     width: 100%;
@@ -382,7 +383,7 @@
     grid-column-end: 3;
     text-align: center;
     background-color: @grey;
-    height: 25px;
+    height: 30px;
     color: #fff;
     width: 90%;
     margin-left: 5%;
@@ -395,7 +396,7 @@
     grid-column-end: 5;
     text-align: center;
     background-color: @grey;
-    height: 25px;
+    height: 30px;
     color: #fff;
     margin-left: 5%;
     line-height: 25px;
@@ -408,7 +409,7 @@
     grid-column-start: 1;
     grid-column-end: 5;
     width: 100%;
-    height: 30px;
+    height: 40px;
     border: 1px solid black;
 
   }
@@ -456,10 +457,27 @@
   }
   h5 {
     font-size: 1em;
-    text-decoration: underline;
   }
   h3 {
     font-size: 1em;
-    margin-left: 5%
+    margin-left: 5%;
+  }
+  input {
+    border: 1px solid #000;
+    width: 100%;
+    margin-top: 10px;
+    height: 40px;
+    padding-left: 5%;
+    margin-bottom: 5%;
+  }
+  .user {
+    width: 100%;
+    border: 1px solid black;
+    padding-left: 5%;
+  }
+  .clocks {
+    width: 100%;
+    border: 1px solid black;
+    padding-left: 5%;
   }
 </style>

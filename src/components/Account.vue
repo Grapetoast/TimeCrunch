@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="accountView" v-if="modal==='view'">
-      <h2 class="name">Name: {{activeUser.name}}</h2>
+      <h2 class="name">Name:</br>{{activeUser.name}}</h2>
       <h2 class="email">Email: {{activeUser.email}}</h2>
       <button class="accountEditButton" v-on:click="modal='edit'">Edit Account</button>
       <button class="back" v-on:click="modal=''">Back</button>
@@ -138,9 +138,11 @@
   }
 
   h2 {
-    font-size: 2em;
+    width: 90%;
+    font-size: 1.5em;
     border: 2px solid @grey;
     padding-left: 5%;
+    margin-left: 5%;
   }
 
   input {
@@ -173,6 +175,22 @@
   }
 
   .submitEdit {
-    background-color: @grey;
+    margin-top: 20px;
+    background-color: @red;
+  }
+  .nameEdit {
+    border: 1px solid @red;
+    width: 90%;
+    margin-top: 20px;
+    height: 40px;
+  }
+  .emailEdit {
+    border: 1px solid @red;
+    width: 90%;
+    margin-top: 20px;
+    height: 40px;
+  }
+  .togglePass {
+    margin-top: 20px;
   }
 </style>

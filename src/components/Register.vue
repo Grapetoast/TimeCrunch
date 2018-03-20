@@ -197,6 +197,7 @@
     height: 50px;
     margin-top: 20px;
     margin-left: 5%;
+    font-size: 1.2em;
   }
 
   .back {
