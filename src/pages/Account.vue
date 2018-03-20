@@ -125,72 +125,72 @@ export default {
 </script>
 
 <style scoped lang="less">
-  @red: #c90c2e;
-  @grey: #323d38;
+@red: #c90c2e;
+@grey: #323d38;
 
-  .main {
-    margin-top: 120px;
-  }
+.main {
+  margin-top: 120px;
+}
 
-  h1 {
-    color: @red;
-    text-align: center;
-  }
+h1 {
+  color: @red;
+  text-align: center;
+}
 
-  h2 {
-    width: 90%;
-    font-size: 1.5em;
-    border: 2px solid @grey;
-    padding-left: 5%;
-    margin-left: 5%;
-  }
+h2 {
+  width: 90%;
+  font-size: 1.5em;
+  border: 2px solid @grey;
+  padding-left: 5%;
+  margin-left: 5%;
+}
 
-  input {
-    width: 90%;
-    font-size: 1.5em;
-    background-color: #fff;
-    border: 2px solid @red;
-    padding-left: 5%;
-    margin-left: 5%;
-  }
+input {
+  width: 90%;
+  font-size: 1.5em;
+  background-color: #fff;
+  border: 2px solid @red;
+  padding-left: 5%;
+  margin-left: 5%;
+}
 
-  select option[data-default] {
-    color: #888;
-  }
+select option[data-default] {
+  color: #888;
+}
 
-  button {
-    background: @grey;
-    border: none;
-    color: #fff;
-    font-size: 2em;
-    width: 90%;
-    margin-bottom: 20px;
-    margin-left: 5%;
-    border-radius: 5px;
-  }
+button {
+  background: @grey;
+  border: none;
+  color: #fff;
+  font-size: 2em;
+  width: 90%;
+  margin-bottom: 20px;
+  margin-left: 5%;
+  border-radius: 5px;
+}
 
-  .accountEditButton {
-    margin-bottom: 20px;
-    background-color: @grey;
-  }
+.accountEditButton {
+  margin-bottom: 20px;
+  background-color: @grey;
+}
 
-  .submitEdit {
-    margin-top: 20px;
-    background-color: @red;
-  }
-  .nameEdit {
-    border: 1px solid @red;
-    width: 90%;
-    margin-top: 20px;
-    height: 40px;
-  }
-  .emailEdit {
-    border: 1px solid @red;
-    width: 90%;
-    margin-top: 20px;
-    height: 40px;
-  }
-  .togglePass {
-    margin-top: 20px;
-  }
+.submitEdit {
+  margin-top: 20px;
+  background-color: @red;
+}
+.nameEdit {
+  border: 1px solid @red;
+  width: 90%;
+  margin-top: 20px;
+  height: 40px;
+}
+.emailEdit {
+  border: 1px solid @red;
+  width: 90%;
+  margin-top: 20px;
+  height: 40px;
+}
+.togglePass {
+  margin-top: 20px;
+}
 </style>

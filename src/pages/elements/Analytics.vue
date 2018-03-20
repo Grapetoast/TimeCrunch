@@ -354,110 +354,128 @@ export default {
 </script>
 
 <style scoped lang="less">
-  @red: #c90c2e;
-  @grey: #323d38;
-  .analytics {
-    display: grid;
-    width: 100%;
-    margin: 0;
-    grid-template-rows: repeat(5, 100px);
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-  }
+@red: #c90c2e;
+@grey: #323d38;
 
-  #map {
-    width: 100%;
-    margin-top: 110% !important;
-    height: 33% !important;
-    z-index: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    position: absolute !important;
-  }
+.analytics {
+  display: grid;
+  width: 100%;
+  margin: 0;
+  grid-template-rows: repeat(5, 100px);
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
 
-  .timeTab {
-    grid-column-start: 1;
-    grid-column-end: 3;
-    text-align: center;
-    background-color: @grey;
-    height: 25px;
-    color: #fff;
-    width: 90%;
-    margin-left: 5%;
-    line-height: 25px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-  }
-  .mileTab {
-    grid-column-start: 3;
-    grid-column-end: 5;
-    text-align: center;
-    background-color: @grey;
-    height: 25px;
-    color: #fff;
-    margin-left: 5%;
-    line-height: 25px;
-    width: 90%;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-  }
-  .globalSearch {
-    grid-row: 4;
-    grid-column-start: 1;
-    grid-column-end: 5;
-    width: 100%;
-    height: 30px;
-    border: 1px solid black;
+#map {
+  width: 100%;
+  margin-top: 110% !important;
+  height: 33% !important;
+  z-index: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: absolute !important;
+}
 
-  }
-  .graphsPane {
-    margin-top: 10px;
-    grid-row-start: 1;
-    grid-row-end: 3;
-    grid-column-start: 1;
-    grid-column-end: 5;
-    border: 2px solid @red;
-    border-radius: 5px;
-  }
+.timeTab {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  text-align: center;
+  background-color: @grey;
+  height: 30px;
+  color: #fff;
+  width: 90%;
+  margin-left: 5%;
+  line-height: 25px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+.mileTab {
+  grid-column-start: 3;
+  grid-column-end: 5;
+  text-align: center;
+  background-color: @grey;
+  height: 30px;
+  color: #fff;
+  margin-left: 5%;
+  line-height: 25px;
+  width: 90%;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+.globalSearch {
+  grid-row: 4;
+  grid-column-start: 1;
+  grid-column-end: 5;
+  width: 100%;
+  height: 40px;
+  border: 1px solid black;
 
-  .modals {
-    grid-row: 4;
-    margin-top: -70px;
-    grid-column-start: 1;
-    grid-column-end: 5;
-    width: 90%;
-    margin-left: 5%;
-  }
-  .back {
-    margin-top: 5px;
-    width: 20%;
-    color: #fff;
-    font-size: 1em;
-    font-weight: 400;
-    background-color: @red;
-    border: none;
-    border-radius: 5px;
-  }
-  .mapBack {
-    background-color: @red;
-    color:  #fff;
-    border: none;
-    padding: 4px;
-    width: 20%;
-    position: fixed;
-    border-radius: 5px;
-  }
-  h4 {
-    font-size: 1em;
-    color: @red;
-    line-height: 10px;
-  }
-  h5 {
-    font-size: 1em;
-    text-decoration: underline;
-  }
-  h3 {
-    font-size: 1em;
-    margin-left: 5%
-  }
+}
+.graphsPane {
+  margin-top: 10px;
+  grid-row-start: 1;
+  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 5;
+  border: 2px solid @red;
+  border-radius: 5px;
+}
+
+.modals {
+  grid-row: 4;
+  margin-top: -70px;
+  grid-column-start: 1;
+  grid-column-end: 5;
+  width: 90%;
+  margin-left: 5%;
+}
+.back {
+  margin-top: 5px;
+  width: 20%;
+  color: #fff;
+  font-size: 1em;
+  font-weight: 400;
+  background-color: @red;
+  border: none;
+  border-radius: 5px;
+}
+.mapBack {
+  background-color: @red;
+  color:  #fff;
+  border: none;
+  padding: 4px;
+  width: 20%;
+  position: fixed;
+  border-radius: 5px;
+}
+h4 {
+  font-size: 1em;
+  color: @red;
+  line-height: 10px;
+}
+h5 {
+  font-size: 1em;
+}
+h3 {
+  font-size: 1em;
+  margin-left: 5%;
+}
+input {
+  border: 1px solid #000;
+  width: 100%;
+  margin-top: 10px;
+  height: 40px;
+  padding-left: 5%;
+  margin-bottom: 5%;
+}
+.user {
+  width: 100%;
+  border: 1px solid black;
+  padding-left: 5%;
+}
+.clocks {
+  width: 100%;
+  border: 1px solid black;
+  padding-left: 5%;
+}
 </style>
