@@ -144,7 +144,7 @@ export default {
   .navbar {
     width: 100%;
     height: 100px;
-    border-bottom: 2px solid @red;
+    border-bottom: 5px solid #000;
     position: fixed;
     top: 0;
     left: 0;

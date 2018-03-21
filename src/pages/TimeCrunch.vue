@@ -1,8 +1,11 @@
 <template>
   <div class="timecrunch">
-    <div class="clock"></div>
+    <div v-bind:class="clockLogic"></div>
     <div class="success" v-if="modal==='success'">
-      <h4>Clocked {{lastClockType}}</h4>
+      <h4 class="succIn" v-if="lastClockType==='in'">Clocked In</h4>
+      <h4 class="succLunchOut" v-if="lastClockType==='lunch out'">Enjoy Lunch!</h4>
+      <h4 class="succLunchIn" v-if="lastClockType==='lunch in'">Back to Work!</h4>
+      <h4 class="SuccOut" v-if="lastClockType==='out'">Clocked Out</h4>
       <button class="back" v-on:click="modal=''">Back</button>
     </div>
     <div class="prettyModal" v-else-if="modal==='pretty'">
@@ -115,8 +118,6 @@ export default {
         zoom: 15
       })
       vue.startMarker()
-      vue.endMarkerMethod()
-      vue.getDirections()
     },
     mapJump () {
       let vue = this
@@ -142,12 +143,6 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
-    },
-    endMarkerMethod () {
-      let vue = this
-      new mapboxgl.Marker(vue.endMarker)
-        .setLngLat(vue.endcoordinates)
-        .addTo(vue.map)
     },
     clock () {
       let vue = this
@@ -237,6 +232,17 @@ export default {
         vue.prettyModal('You are already back from lunch!')
       }
     }
+  },
+  computed: {
+    clockLogic: function () {
+      let vue = this
+      return {
+        clock: true,
+        clockRed: vue.lastClockType === 'out',
+        clockGreen: vue.lastClockType === 'in' || vue.lastClockType === 'lunch in',
+        clockBlue: vue.lastClockType === 'lunch out'
+      }
+    }
   }
 }
 function clock () {
@@ -270,16 +276,6 @@ setInterval(clock, 1000)
   grid-template-rows: repeat(7, 100px);
 }
 
-.prettyModal {
-  position: absolute;
-  z-index: 12;
-  background-color: @red;
-  border-radius: 10px;
-  width: 80%;
-  height: 80%;
-  margin-left: 10%;
-}
-
 #map {
   width: 100%;
   height: 100%;
@@ -305,15 +301,6 @@ setInterval(clock, 1000)
   cursor: pointer;
 }
 
-.success {
-  position: absolute;
-  z-index: 12;
-  background-color: @grey;
-  width: 100%;
-  height: 160px;
-  top: 0;
-}
-
 .mapboxgl-control-container {
 
 }
@@ -327,12 +314,23 @@ setInterval(clock, 1000)
   grid-row-end: 1;
   grid-column-start: 1;
   grid-column-end: 7;
-  background-color: @red;
   padding-top: 20px;
   line-height: 80px;
   color: #fff;
   box-shadow: 0px 1.5px 5px #000;
-  border-bottom: 3px dotted white;
+  border-bottom: 5px dashed #000;
+}
+
+.clockRed {
+  background-color: @red;
+}
+
+.clockGreen {
+  background-color: @green;
+}
+
+.clockBlue {
+  background-color: @blue;
 }
 
 .timeBtn {
@@ -346,11 +344,11 @@ setInterval(clock, 1000)
   border-bottom-right-radius: 5px;
   color: white;
   line-height: 50px;
-  box-shadow: 0px 1.5px 5px #000;
+  box-shadow: 0px 1.5px 4px #000;
 }
 
 .clockIn {
-  background-color: #609732;
+  background-color: @green;
   grid-row: 2;
   grid-column: 1;
 }
@@ -375,36 +373,78 @@ setInterval(clock, 1000)
   grid-column: 4;
 }
 
-.prettyModal {
-  color: #fff;
-  background-color: @grey;
-  height: 130px;
-  font-size: 1em;
-  margin-top: 160px;
-  box-shadow: 1px 1px 1px @grey;
-}
-.prettyModal h2 {
-  font-size: 1.5em;
-  text-align: center;
-
-}
-.back {
-  color: #fff;
-}
 .success {
-  color: #fff;
-  background-color: @grey;
-  height: 100px;
-  font-size: 1em;
-  margin-top: 160px;
-  width: 80%;
-  margin-left: 10%;
-  border-radius: 5px;
-  font-size: 1em;
+  color: @red;
+  background-color: #fff;
+  border-radius: 15px;
   box-shadow: 1px 1px 1px @grey;
+  z-index: 12;
+  border: 2px solid black;
+  grid-row-start: 3;
+  grid-row-end: 5;
+  grid-column-start: 2;
+  grid-column-end: 4;
+  display: grid;
+  grid-template-rows: 2fr 4fr 1fr;
 }
+
+.prettyModal {
+  color: @red;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 1px 1px 1px @grey;
+  z-index: 12;
+  border: 2px solid black;
+  grid-row-start: 3;
+  grid-row-end: 5;
+  grid-column-start: 2;
+  grid-column-end: 4;
+  display: grid;
+  grid-template-rows: 2fr 4fr 1fr;
+}
+
 .success h4 {
-  font-size: 1.5em;
+  font-family: sans-serif;
+//  font-size: 1.75em;
   text-align: center;
+  padding-top: 10px;
+  margin: 0;
+  grid-row: 1;
 }
+
+.succIn {
+  color: @green;
+  font-size: 1.75em;
+}
+
+.succLunchOut {
+  color: @blue;
+  font-size: 1.2em;
+}
+
+.succLunchIn {
+  color: @green;
+}
+
+.prettyModal h2 {
+  font-family: sans-serif;
+  font-size: 1.4em;
+  text-align: center;
+  padding-top: 10px;
+  margin: 0;
+  grid-row: 1;
+}
+
+.back {
+  grid-row: 3;
+  background-color: @red;
+  font-family: sans-serif;
+  color: #fff;
+  border: none;
+  border-top: 2px solid #000;
+  border-radius: 12px;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+
 </style>

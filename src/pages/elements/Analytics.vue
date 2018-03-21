@@ -1,5 +1,5 @@
 <template>
-  <div class="analytics">
+  <div v-bind:class="analyticsLogic">
     <div class="graphsPane">
       <div class="timeGraphsPane" v-if="pane==='time'">
         <h4 v-if="modal==='user'">{{activeUser.name}}'s Time Record</h4>
@@ -349,6 +349,15 @@ export default {
         .setLngLat(vue.endCoordinates)
         .addTo(vue.map)
     }
+  },
+  computed: {
+    analyticsLogic: function () {
+      let vue = this
+      return {
+        analytics: true,
+        fixed: vue.modal === 'clock' || vue.modal === 'time'
+      }
+    }
   }
 }
 </script>
@@ -357,8 +366,11 @@ export default {
 @red: #c90c2e;
 @grey: #323d38;
 
-.analytics {
+.fixed {
   position: fixed;
+}
+
+.analytics {
   display: grid;
   width: 100%;
   margin: 0;
@@ -368,8 +380,8 @@ export default {
 
 #map {
   width: 100%;
-  margin-top: 110% !important;
-  height: 33% !important;
+  margin-top: 60% !important;
+  height: 45% !important;
   z-index: 0;
   bottom: 0;
   left: 0;
