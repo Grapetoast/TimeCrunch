@@ -27,9 +27,11 @@
     <div class="modals">
       <div class="userView" v-if="modal==='user'">
         <button class="back" v-on:click="modal=''; resetTime(); populateCompanyClocks(); populateCompanyTrips()">Back</button>
-        <input class="userSearch" v-model="userSearch" placeholder="Search Clocks...">
-        <div class="clocks" v-for="clock in clocks" v-bind:key="clock.id" v-if="pane==='time'">
-          <h5 v-on:click="viewClock(clock)">clock {{clock.clockType}}  {{(clock.month + 1)}}/{{clock.day}} {{clock.hours}}:{{clock.minutes}}</h5>
+        <div class="clockDay" v-bind:key="day.id" v-for="day in days" v-if="pane==='time'">
+          <h5 v-on:click="day.visible = !day.visible"> {{(day.month + 1)}}/{{day.day}}</h5>
+          <div class="clocks" v-bind:key="clock.id" v-for="clock in day.clocks" v-if="day.visible">
+            <h5 v-on:click="viewClock(clock)">{{clock.clockType}} {{clock.hours}}:{{clock.minutes}}</h5>
+          </div>
         </div>
         <div class="trips" v-for="trip in trips" v-bind:key="trip.id" v-if="pane===''">
           <h5 v-on:click="viewTrip(trip)">Trip On {{trip.start.month + 1}}/{{trip.start.day}} Distance: {{Math.floor(trip.distance / 1609.34)}} Miles</h5>
@@ -44,7 +46,6 @@
         <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
       </div>
       <div class="adminView" v-else>
-        <input class="globalSearch" v-model="search" placeholder="Search Users...">
         <div class="user" v-for="user in users" v-bind:key="user.id">
           <h5 v-on:click="viewUser(user)">{{user.name}}</h5>
         </div>
@@ -74,6 +75,7 @@ export default {
       endCoordinates: [0, 0],
       pane: 'time',
       modal: '',
+      dayMatch: false,
       startTime: {
         hours: 0,
         minutes: 0,
@@ -95,6 +97,8 @@ export default {
       userSearch: '',
       users: [],
       clocks: [],
+      days: [],
+      activeClocks: [],
       trips: [],
       activeUser: {
         id: '',
@@ -177,6 +181,53 @@ export default {
         .then(function (response) {
           vue.clocks = []
           vue.clocks = response.data
+          let j = 0
+          for (j = 0; j < response.data.length; j++) {
+            let q = 0
+            for (q = 0; q < vue.days.length; q++) {
+              if (vue.days[q].month === response.data[j].month && vue.days[q].day === response.data[j].day) {
+                vue.dayMatch = true
+                vue.activeClocks = vue.days[q].clocks
+                let w = 0
+                for (w = 0; w < vue.activeClocks.length; w++) {
+                  if (vue.activeClocks[w].hours > response.data[j].hours) {
+                    vue.days[q].clocks.splice((w), 0, response.data[j])
+                    break
+                  } else if (vue.activeClocks[w].hours === response.data[j].hours && vue.activeClocks[w].minutes > response.data[j].minutes) {
+                    vue.days[q].clocks.splice((w), 0, response.data[j])
+                    break
+                  } else if (vue.activeClocks[w].hours === response.data[j].hours && vue.activeClocks[w].minutes === response.data[j].minutes) {
+                    vue.days[q].clocks.splice((w), 0, response.data[j])
+                    break
+                  } else {
+                    vue.days[q].clocks.push(response.data[j])
+                    break
+                  }
+                }
+              }
+            }
+            if (vue.dayMatch === true) {
+              vue.dayMatch = false
+            } else if (vue.days.length === 0) {
+              vue.days.push({day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
+            } else {
+              let z = 0
+              for (z = 0; z < vue.days.length; z++) {
+                if (vue.days[z].month === response.data[j].month) {
+                  if (vue.days[z].day > response.data[j].day) {
+                    vue.days.splice((z), 0, {day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
+                    break
+                  }
+                } else if (vue.days[z].month > response.data[j].month) {
+                  vue.days.splice((z), 0, {day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
+                  break
+                } else {
+                  vue.days.push({day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
+                  break
+                }
+              }
+            }
+          }
           vue.countClocks()
         })
         .catch(function (error) {
@@ -368,9 +419,9 @@ export default {
 
 #map {
   width: 100%;
-  margin-top: 110% !important;
-  height: 33% !important;
+  height: 500px;
   z-index: 0;
+  top: 60%;
   bottom: 0;
   left: 0;
   right: 0;
@@ -390,6 +441,7 @@ export default {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
+
 .mileTab {
   grid-column-start: 3;
   grid-column-end: 5;
@@ -403,6 +455,7 @@ export default {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
+
 .globalSearch {
   grid-row: 4;
   grid-column-start: 1;
@@ -410,8 +463,8 @@ export default {
   width: 100%;
   height: 40px;
   border: 1px solid black;
-
 }
+
 .graphsPane {
   margin-top: 10px;
   grid-row-start: 1;
@@ -432,6 +485,7 @@ export default {
   width: 90%;
   margin-left: 5%;
 }
+
 .back {
   margin-top: 5px;
   width: 20%;
@@ -443,6 +497,7 @@ export default {
   border: none;
   border-radius: 5px;
 }
+
 .mapBack {
   background-color: @red;
   color:  #fff;
@@ -452,21 +507,25 @@ export default {
   position: fixed;
   border-radius: 5px;
 }
+
 h4 {
   font-size: 1em;
   color: @red;
   line-height: 10px;
   margin-left: 5%;
 }
+
 h5 {
   font-size: 1em;
   height: 20px;
   padding: 0px;
 }
+
 h3 {
   font-size: 1em;
   margin-left: 5%;
 }
+
 input {
   border: 1px solid #000;
   width: 100%;
@@ -475,17 +534,20 @@ input {
   padding-left: 5%;
   margin-bottom: 5%;
 }
+
 .user {
   width: 100%;
   border-bottom: 1px solid #000;
   padding-left: 5%;
   height: 30px;
 }
+
 .clocks {
   width: 100%;
   border: 1px solid black;
   padding-left: 5%;
 }
+
 .trips {
   width: 100%;
   border: 1px solid black;
