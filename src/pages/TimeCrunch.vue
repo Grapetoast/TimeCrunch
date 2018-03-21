@@ -5,7 +5,7 @@
       <h4 class="succIn" v-if="lastClockType==='in'">Clocked In</h4>
       <h4 class="succLunchOut" v-if="lastClockType==='lunch out'">Enjoy Lunch!</h4>
       <h4 class="succLunchIn" v-if="lastClockType==='lunch in'">Back to Work!</h4>
-      <h4 class="SuccOut" v-if="lastClockType==='out'">Clocked Out</h4>
+      <h4 class="succOut" v-if="lastClockType==='out'">Clocked Out</h4>
       <button class="back" v-on:click="modal=''">Back</button>
     </div>
     <div class="prettyModal" v-else-if="modal==='pretty'">
@@ -212,9 +212,9 @@ export default {
         this.clockType = 'lunch out'
         this.clock()
       } else if (this.lastClockType === 'lunch out') {
-        vue.prettyModal('You are already out to lunch!')
+        vue.prettyModal('Lunch has Started!')
       } else if (this.lastClockType === 'lunch in') {
-        vue.prettyModal('You already had lunch!')
+        vue.prettyModal('Lunch is Over!')
       } else {
         vue.prettyModal('You are not clocked in!')
       }
@@ -227,9 +227,9 @@ export default {
       } else if (this.lastClockType === 'out') {
         vue.prettyModal('You are not clocked in!')
       } else if (this.lastClockType === 'in') {
-        vue.prettyModal('You never clocked off for lunch!')
+        vue.prettyModal('Start Lunch first!')
       } else {
-        vue.prettyModal('You are already back from lunch!')
+        vue.prettyModal('Lunch is Over!')
       }
     }
   },
@@ -405,7 +405,7 @@ setInterval(clock, 1000)
 
 .success h4 {
   font-family: sans-serif;
-//  font-size: 1.75em;
+  font-size: 1.75em;
   text-align: center;
   padding-top: 10px;
   margin: 0;
@@ -414,12 +414,10 @@ setInterval(clock, 1000)
 
 .succIn {
   color: @green;
-  font-size: 1.75em;
 }
 
 .succLunchOut {
   color: @blue;
-  font-size: 1.2em;
 }
 
 .succLunchIn {
@@ -428,7 +426,7 @@ setInterval(clock, 1000)
 
 .prettyModal h2 {
   font-family: sans-serif;
-  font-size: 1.4em;
+  font-size: 1.5em;
   text-align: center;
   padding-top: 10px;
   margin: 0;
