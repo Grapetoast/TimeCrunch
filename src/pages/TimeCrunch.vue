@@ -337,7 +337,7 @@ setInterval(clock, 1000)
 
 .timeBtn {
   z-index: 3;
-  font-size: 1em;
+  font-size: .8em;
   font-weight: bold;
   text-align: center;
   width: 100%;
@@ -356,6 +356,7 @@ setInterval(clock, 1000)
 }
 
 .lunchIn {
+  z-index: 3;
   background-color: @grey;
   grid-row: 2;
   grid-column: 3;
