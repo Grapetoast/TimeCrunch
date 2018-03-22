@@ -1,10 +1,9 @@
 <template>
-  <div v-bind:class="analyticsLogic">
+  <div class="analytics">
     <div class="graphsPane">
       <div class="timeGraphsPane" v-if="pane==='time'">
         <h4 v-if="modal==='user'">{{activeUser.name}}'s Time Record</h4>
         <h4>{{totalHours}} Total Hours Clocked</h4>
-        <div class="clockIcon"></div>
       </div>
       <div class="readouts" v-else-if="pane==='readout'">
         <div v-if="modal==='clock'">
@@ -21,7 +20,6 @@
       <div class="mileGraphsPane" v-else>
         <h4 v-if="modal==='user'">{{activeUser.name}}'s Mileage Record</h4>
         <h4>{{totalDistance}} Total Miles Driven</h4>
-        <div class="odometerIcon"></div>
       </div>
     </div>
     <div class="timeTab" v-on:click="pane='time'" v-if="pane!=='readout'">Time</div>
@@ -29,9 +27,11 @@
     <div class="modals">
       <div class="userView" v-if="modal==='user'">
         <button class="back" v-on:click="modal=''; resetTime(); populateCompanyClocks(); populateCompanyTrips()">Back</button>
-        <input class="userSearch" v-model="userSearch" placeholder="Search Clocks...">
-        <div class="clocks" v-for="clock in clocks" v-bind:key="clock.id" v-if="pane==='time'">
-          <h5 v-on:click="viewClock(clock)">clock {{clock.clockType}}  {{(clock.month + 1)}}/{{clock.day}} {{clock.hours}}:{{clock.minutes}}</h5>
+        <div class="clockDay" v-bind:key="day.id" v-for="day in days" v-if="pane==='time'">
+          <h5 v-on:click="day.visible = !day.visible"> {{(day.month + 1)}}/{{day.day}}</h5>
+          <div class="clocks" v-bind:key="clock.id" v-for="clock in day.clocks" v-if="day.visible">
+            <h5 v-on:click="viewClock(clock)">{{clock.clockType}} {{clock.hours}}:{{clock.minutes}}</h5>
+          </div>
         </div>
         <div class="tripDay" v-bind:key="tripDay.id" v-for="tripDay in tripDays" v-if="pane===''">
           <h5 v-on:click="tripDay.visible = !tripDay.visible"> {{(tripDay.month + 1)}}/{{tripDay.day}}</h5>
@@ -49,7 +49,6 @@
         <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
       </div>
       <div class="adminView" v-else>
-        <input class="globalSearch" v-model="search" placeholder="Search Users...">
         <div class="user" v-for="user in users" v-bind:key="user.id">
           <h5 v-on:click="viewUser(user)">{{user.name}}</h5>
         </div>
@@ -188,7 +187,53 @@ export default {
         .then(function (response) {
           vue.clocks = []
           vue.clocks = response.data
-          vue.days = []
+          let j = 0
+          for (j = 0; j < response.data.length; j++) {
+            let q = 0
+            for (q = 0; q < vue.days.length; q++) {
+              if (vue.days[q].month === response.data[j].month && vue.days[q].day === response.data[j].day) {
+                vue.dayMatch = true
+                vue.activeClocks = vue.days[q].clocks
+                let w = 0
+                for (w = 0; w < vue.activeClocks.length; w++) {
+                  if (vue.activeClocks[w].hours > response.data[j].hours) {
+                    vue.days[q].clocks.splice((w), 0, response.data[j])
+                    break
+                  } else if (vue.activeClocks[w].hours === response.data[j].hours && vue.activeClocks[w].minutes > response.data[j].minutes) {
+                    vue.days[q].clocks.splice((w), 0, response.data[j])
+                    break
+                  } else if (vue.activeClocks[w].hours === response.data[j].hours && vue.activeClocks[w].minutes === response.data[j].minutes) {
+                    vue.days[q].clocks.splice((w), 0, response.data[j])
+                    break
+                  } else {
+                    vue.days[q].clocks.push(response.data[j])
+                    break
+                  }
+                }
+              }
+            }
+            if (vue.dayMatch === true) {
+              vue.dayMatch = false
+            } else if (vue.days.length === 0) {
+              vue.days.push({day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
+            } else {
+              let z = 0
+              for (z = 0; z < vue.days.length; z++) {
+                if (vue.days[z].month === response.data[j].month) {
+                  if (vue.days[z].day > response.data[j].day) {
+                    vue.days.splice((z), 0, {day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
+                    break
+                  }
+                } else if (vue.days[z].month > response.data[j].month) {
+                  vue.days.splice((z), 0, {day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
+                  break
+                } else {
+                  vue.days.push({day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
+                  break
+                }
+              }
+            }
+          }
           vue.countClocks()
         })
         .catch(function (error) {
@@ -198,7 +243,6 @@ export default {
         .then(function (response) {
           vue.trips = []
           vue.trips = response.data
-          vue.tripDays = []
           let j = 0
           for (j = 0; j < response.data.length; j++) {
             if (vue.tripDays.length === 0) {
@@ -414,15 +458,6 @@ export default {
         .setLngLat(vue.endCoordinates)
         .addTo(vue.map)
     }
-  },
-  computed: {
-    analyticsLogic: function () {
-      let vue = this
-      return {
-        analytics: true,
-        fixed: vue.modal === 'clock' || vue.modal === 'time'
-      }
-    }
   }
 }
 </script>
@@ -431,25 +466,19 @@ export default {
 @red: #c90c2e;
 @grey: #323d38;
 
-.fixed {
-  position: fixed;
-}
-
 .analytics {
+  position: fixed;
   display: grid;
   width: 100%;
   margin: 0;
   grid-template-rows: repeat(5, 100px);
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
 #map {
   width: 100%;
   height: 300px;
-  z-index: 0;
-  top: auto;
   bottom: 0;
-  margin-bottom: 0;
   left: 0;
   right: 0;
   position: fixed !important;
