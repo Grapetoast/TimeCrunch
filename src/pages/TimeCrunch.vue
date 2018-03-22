@@ -266,7 +266,7 @@ function clock () {
 setInterval(clock, 1000)
 </script>
 
-<style lang="less">
+<style scoped lang="less">
 @red: #c90c2e;
 @grey: #323d38;
 @green: #3fb80b;
@@ -294,15 +294,6 @@ setInterval(clock, 1000)
   position: absolute;
   top:0;
   bottom:0;
-}
-
-.mapboxgl-marker {
-  background-image: url('../assets/tc_Marker.svg');
-  background-size: cover;
-  width: 50px;
-  height: 140px;
-  z-index: 4;
-  cursor: pointer;
 }
 
 .clock {

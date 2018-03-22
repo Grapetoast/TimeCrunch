@@ -75,5 +75,13 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less">
+  .mapboxgl-marker {
+    background-image: url('./assets/tc_Marker.svg');
+    background-size: cover;
+    width: 50px;
+    height: 140px;
+    z-index: 4;
+    cursor: pointer;
+  }
 </style>

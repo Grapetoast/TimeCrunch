@@ -188,6 +188,7 @@ export default {
         .then(function (response) {
           vue.clocks = []
           vue.clocks = response.data
+          vue.days = []
           vue.countClocks()
         })
         .catch(function (error) {
@@ -197,6 +198,7 @@ export default {
         .then(function (response) {
           vue.trips = []
           vue.trips = response.data
+          vue.tripDays = []
           let j = 0
           for (j = 0; j < response.data.length; j++) {
             if (vue.tripDays.length === 0) {
@@ -438,18 +440,19 @@ export default {
   width: 100%;
   margin: 0;
   grid-template-rows: repeat(5, 100px);
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
 }
 
 #map {
   width: 100%;
-  height: 340px;
+  height: 300px;
   z-index: 0;
-  top:32%;
+  top: auto;
   bottom: 0;
+  margin-bottom: 0;
   left: 0;
   right: 0;
-  position: absolute !important;
+  position: fixed !important;
 }
 
 .timeTab {
@@ -465,6 +468,7 @@ export default {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
+
 .mileTab {
   grid-column-start: 3;
   grid-column-end: 5;
@@ -478,6 +482,7 @@ export default {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
+
 .globalSearch {
   grid-row: 4;
   grid-column-start: 1;
@@ -485,8 +490,8 @@ export default {
   width: 100%;
   height: 40px;
   border: 1px solid black;
-
 }
+
 .graphsPane {
   margin-top: 10px;
   grid-row-start: 1;
@@ -507,6 +512,7 @@ export default {
   width: 90%;
   margin-left: 5%;
 }
+
 .back {
   margin-top: 5px;
   width: 20%;
@@ -518,6 +524,7 @@ export default {
   border: none;
   border-radius: 5px;
 }
+
 .mapBack {
   background-color: @red;
   color:  #fff;
@@ -527,21 +534,25 @@ export default {
   position: fixed;
   border-radius: 5px;
 }
+
 h4 {
   font-size: 1em;
   color: @red;
   line-height: 10px;
   margin-left: 5%;
 }
+
 h5 {
   font-size: 1em;
   height: 20px;
   padding: 0px;
 }
+
 h3 {
   font-size: 1em;
   margin-left: 5%;
 }
+
 input {
   border: 1px solid #000;
   width: 100%;
@@ -550,17 +561,20 @@ input {
   padding-left: 5%;
   margin-bottom: 5%;
 }
+
 .user {
   width: 100%;
   border-bottom: 1px solid #000;
   padding-left: 5%;
   height: 30px;
 }
+
 .clocks {
   width: 100%;
   border: 1px solid black;
   padding-left: 5%;
 }
+
 .trips {
   width: 100%;
   border: 1px solid black;
