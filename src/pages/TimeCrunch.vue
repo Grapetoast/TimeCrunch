@@ -3,13 +3,18 @@
     <div v-bind:class="clockLogic"></div>
     <div class="success" v-if="modal==='success'">
       <h4 class="succIn" v-if="lastClockType==='in'">Clocked In</h4>
+      <div class="succInIcon" v-if="lastClockType==='in'"></div>
       <h4 class="succLunchOut" v-if="lastClockType==='lunch out'">Enjoy Lunch!</h4>
+      <div class="succLunchOutIcon" v-if="lastClockType==='lunch out'"></div>
       <h4 class="succLunchIn" v-if="lastClockType==='lunch in'">Back to Work!</h4>
+      <div class="succLunchInIcon" v-if="lastClockType==='lunch in'"></div>
       <h4 class="succOut" v-if="lastClockType==='out'">Clocked Out</h4>
+      <div class="succOutIcon" v-if="lastClockType==='out'"></div>
       <button class="back" v-on:click="modal=''">Back</button>
     </div>
     <div class="prettyModal" v-else-if="modal==='pretty'">
       <h2>{{prettyMessage}}</h2>
+      <div class="crossIcon"></div>
       <button class="back" v-on:click="modal=''">Back</button>
     </div>
     <div class="clockIn timeBtn" v-on:click="clockIn"> Clock In</div>
@@ -292,17 +297,12 @@ setInterval(clock, 1000)
 }
 
 .mapboxgl-marker {
-  background-image: url('../assets/mapbox-icon.png');
+  background-image: url('../assets/tc_Marker.svg');
   background-size: cover;
   width: 50px;
-  height: 50px;
-  border-radius: 50%;
+  height: 140px;
   z-index: 4;
   cursor: pointer;
-}
-
-.mapboxgl-control-container {
-
 }
 
 .clock {
@@ -318,7 +318,7 @@ setInterval(clock, 1000)
   line-height: 80px;
   color: #fff;
   box-shadow: 0px 1.5px 5px #000;
-  border-bottom: 5px dashed #000;
+  border-bottom: 5px solid #000;
 }
 
 .clockRed {
@@ -381,7 +381,7 @@ setInterval(clock, 1000)
   z-index: 12;
   border: 2px solid black;
   grid-row-start: 3;
-  grid-row-end: 5;
+  grid-row-end: 6;
   grid-column-start: 2;
   grid-column-end: 4;
   display: grid;
@@ -396,7 +396,7 @@ setInterval(clock, 1000)
   z-index: 12;
   border: 2px solid black;
   grid-row-start: 3;
-  grid-row-end: 5;
+  grid-row-end: 6;
   grid-column-start: 2;
   grid-column-end: 4;
   display: grid;
@@ -416,12 +416,34 @@ setInterval(clock, 1000)
   color: @green;
 }
 
+.succInIcon {
+  background-image: url("../assets/tc_Time_IN.svg");
+  background-repeat: no-repeat;
+}
+
 .succLunchOut {
   color: @blue;
 }
 
+.succLunchOutIcon {
+  background-image: url("../assets/tc_Lunchbox_OUT.svg");
+  background-repeat: no-repeat;
+  margin-left: 11%;
+}
+
 .succLunchIn {
   color: @green;
+}
+
+.succLunchInIcon {
+  background-image: url("../assets/tc_Lunchbox_IN.svg");
+  background-repeat: no-repeat;
+  margin-left: 11%;
+}
+
+.succOutIcon {
+  background-image: url("../assets/tc_Time_OUT.svg");
+  background-repeat: no-repeat;
 }
 
 .prettyModal h2 {
@@ -431,6 +453,12 @@ setInterval(clock, 1000)
   padding-top: 10px;
   margin: 0;
   grid-row: 1;
+}
+
+.crossIcon {
+  background-image: url("../assets/tc_Cross.svg");
+  background-repeat: no-repeat;
+  margin-left: 12%;
 }
 
 .back {
