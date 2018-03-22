@@ -1,18 +1,26 @@
 <template>
   <div class="timecrunch">
-    <div class="clock"></div>
+    <div v-bind:class="clockLogic"></div>
     <div class="success" v-if="modal==='success'">
-      <h4>Clocked {{lastClockType}}</h4>
+      <h4 class="succIn" v-if="lastClockType==='in'">Clocked In</h4>
+      <div class="succInIcon" v-if="lastClockType==='in'"></div>
+      <h4 class="succLunchOut" v-if="lastClockType==='lunch out'">Enjoy Lunch!</h4>
+      <div class="succLunchOutIcon" v-if="lastClockType==='lunch out'"></div>
+      <h4 class="succLunchIn" v-if="lastClockType==='lunch in'">Back to Work!</h4>
+      <div class="succLunchInIcon" v-if="lastClockType==='lunch in'"></div>
+      <h4 class="succOut" v-if="lastClockType==='out'">Clocked Out</h4>
+      <div class="succOutIcon" v-if="lastClockType==='out'"></div>
       <button class="back" v-on:click="modal=''">Back</button>
     </div>
     <div class="prettyModal" v-else-if="modal==='pretty'">
       <h2>{{prettyMessage}}</h2>
+      <div class="crossIcon"></div>
       <button class="back" v-on:click="modal=''">Back</button>
     </div>
-    <div class="clockIn" v-on:click="clockIn"> Clock In</div>
-    <div class="clockOut" v-on:click="clockOut">Clock Out</div>
-    <div class="lunchOut" v-on:click="lunchOut">Lunch Start</div>
-    <div class="lunchIn" v-on:click="lunchIn">Lunch End</div>
+    <div class="clockIn timeBtn" v-on:click="clockIn"> Clock In</div>
+    <div class="clockOut timeBtn" v-on:click="clockOut">Clock Out</div>
+    <div class="lunchOut timeBtn" v-on:click="lunchOut">Lunch Start</div>
+    <div class="lunchIn timeBtn" v-on:click="lunchIn">Lunch End</div>
     <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
   </div>
 </template>
@@ -115,8 +123,6 @@ export default {
         zoom: 15
       })
       vue.startMarker()
-      vue.endMarkerMethod()
-      vue.getDirections()
     },
     mapJump () {
       let vue = this
@@ -142,12 +148,6 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
-    },
-    endMarkerMethod () {
-      let vue = this
-      new mapboxgl.Marker(vue.endMarker)
-        .setLngLat(vue.endcoordinates)
-        .addTo(vue.map)
     },
     clock () {
       let vue = this
@@ -217,9 +217,9 @@ export default {
         this.clockType = 'lunch out'
         this.clock()
       } else if (this.lastClockType === 'lunch out') {
-        vue.prettyModal('You are already out to lunch!')
+        vue.prettyModal('Lunch has Started!')
       } else if (this.lastClockType === 'lunch in') {
-        vue.prettyModal('You already had lunch!')
+        vue.prettyModal('Lunch is Over!')
       } else {
         vue.prettyModal('You are not clocked in!')
       }
@@ -232,9 +232,20 @@ export default {
       } else if (this.lastClockType === 'out') {
         vue.prettyModal('You are not clocked in!')
       } else if (this.lastClockType === 'in') {
-        vue.prettyModal('You never clocked off for lunch!')
+        vue.prettyModal('Start Lunch first!')
       } else {
-        vue.prettyModal('You are already back from lunch!')
+        vue.prettyModal('Lunch is Over!')
+      }
+    }
+  },
+  computed: {
+    clockLogic: function () {
+      let vue = this
+      return {
+        clock: true,
+        clockRed: vue.lastClockType === 'out',
+        clockGreen: vue.lastClockType === 'in' || vue.lastClockType === 'lunch in',
+        clockBlue: vue.lastClockType === 'lunch out'
       }
     }
   }
@@ -258,6 +269,8 @@ setInterval(clock, 1000)
 <style lang="less">
 @red: #c90c2e;
 @grey: #323d38;
+@green: #3fb80b;
+@blue: #1D2395;
 
 .timecrunch {
   position: fixed;
@@ -266,16 +279,6 @@ setInterval(clock, 1000)
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(7, 100px);
-}
-
-.prettyModal {
-  position: absolute;
-  z-index: 12;
-  background-color: @red;
-  border-radius: 10px;
-  width: 80%;
-  height: 80%;
-  margin-left: 10%;
 }
 
 #map {
@@ -294,26 +297,12 @@ setInterval(clock, 1000)
 }
 
 .mapboxgl-marker {
-  background-image: url('../assets/mapbox-icon.png');
+  background-image: url('../assets/tc_Marker.svg');
   background-size: cover;
   width: 50px;
-  height: 50px;
-  border-radius: 50%;
+  height: 140px;
   z-index: 4;
   cursor: pointer;
-}
-
-.success {
-  position: absolute;
-  z-index: 12;
-  background-color: @grey;
-  width: 100%;
-  height: 160px;
-  top: 0;
-}
-
-.mapboxgl-control-container {
-
 }
 
 .clock {
@@ -325,14 +314,26 @@ setInterval(clock, 1000)
   grid-row-end: 1;
   grid-column-start: 1;
   grid-column-end: 7;
-  background-color: @red;
   padding-top: 20px;
   line-height: 80px;
   color: #fff;
   box-shadow: 0px 1.5px 5px #000;
+  border-bottom: 5px solid #000;
 }
 
-.clockIn {
+.clockRed {
+  background-color: @red;
+}
+
+.clockGreen {
+  background-color: @green;
+}
+
+.clockBlue {
+  background-color: @blue;
+}
+
+.timeBtn {
   z-index: 3;
   font-size: .8em;
   font-weight: bold;
@@ -341,95 +342,135 @@ setInterval(clock, 1000)
   height: 50px;
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  background-color: @grey;
-  grid-row: 2;
-  grid-column: 1;
   color: white;
   line-height: 50px;
-  box-shadow: 0px 1.5px 5px #000;
+  box-shadow: 0px 1.5px 4px #000;
+}
+
+.clockIn {
+  background-color: @green;
+  grid-row: 2;
+  grid-column: 1;
 }
 
 .lunchIn {
   z-index: 3;
-  font-size: .8em;
-  font-weight: bold;
-  text-align: center;
-  width: 100%;
-  height: 50px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
   background-color: @grey;
   grid-row: 2;
   grid-column: 3;
-  color: white;
-  line-height: 50px;
-  box-shadow: 0px 1.5px 5px #000;
 }
 
 .lunchOut {
-  z-index: 3;
-  color: white;
-  font-size: .8em;
-  font-weight: bold;
-  text-align: center;
-  width: 100%;
-  height: 50px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  background-color: @grey;
+  background-color: @blue;
   grid-row: 2;
   grid-column: 2;
-  line-height: 50px;
-  box-shadow: 0px 1.5px 5px #000;
+
 }
 
 .clockOut {
-  z-index: 3;
-  color: white;
-  font-size: .8em;
-  font-weight: bold;
-  text-align: center;
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  background-color: @grey;
+  background-color: @red;
   grid-row: 2;
   grid-column: 4;
-  box-shadow: 0px 1.5px 5px #000;
+}
+
+.success {
+  color: @red;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 1px 1px 1px @grey;
+  z-index: 12;
+  border: 2px solid black;
+  grid-row-start: 3;
+  grid-row-end: 6;
+  grid-column-start: 2;
+  grid-column-end: 4;
+  display: grid;
+  grid-template-rows: 2fr 4fr 1fr;
 }
 
 .prettyModal {
-  color: #fff;
-  background-color: @grey;
-  height: 130px;
-  font-size: 1em;
-  margin-top: 160px;
+  color: @red;
+  background-color: #fff;
+  border-radius: 15px;
   box-shadow: 1px 1px 1px @grey;
+  z-index: 12;
+  border: 2px solid black;
+  grid-row-start: 3;
+  grid-row-end: 6;
+  grid-column-start: 2;
+  grid-column-end: 4;
+  display: grid;
+  grid-template-rows: 2fr 4fr 1fr;
 }
-.prettyModal h2 {
-  font-size: 1.5em;
-  text-align: center;
 
-}
-.back {
-  color: #fff;
-}
-.success {
-  color: #fff;
-  background-color: @grey;
-  height: 100px;
-  font-size: 1em;
-  margin-top: 160px;
-  width: 80%;
-  margin-left: 10%;
-  border-radius: 5px;
-  font-size: 1em;
-  box-shadow: 1px 1px 1px @grey;
-}
 .success h4 {
+  font-family: sans-serif;
+  font-size: 1.75em;
+  text-align: center;
+  padding-top: 10px;
+  margin: 0;
+  grid-row: 1;
+}
+
+.succIn {
+  color: @green;
+}
+
+.succInIcon {
+  background-image: url("../assets/tc_Time_IN.svg");
+  background-repeat: no-repeat;
+}
+
+.succLunchOut {
+  color: @blue;
+}
+
+.succLunchOutIcon {
+  background-image: url("../assets/tc_Lunchbox_OUT.svg");
+  background-repeat: no-repeat;
+  margin-left: 11%;
+}
+
+.succLunchIn {
+  color: @green;
+}
+
+.succLunchInIcon {
+  background-image: url("../assets/tc_Lunchbox_IN.svg");
+  background-repeat: no-repeat;
+  margin-left: 11%;
+}
+
+.succOutIcon {
+  background-image: url("../assets/tc_Time_OUT.svg");
+  background-repeat: no-repeat;
+}
+
+.prettyModal h2 {
+  font-family: sans-serif;
   font-size: 1.5em;
   text-align: center;
+  padding-top: 10px;
+  margin: 0;
+  grid-row: 1;
 }
+
+.crossIcon {
+  background-image: url("../assets/tc_Cross.svg");
+  background-repeat: no-repeat;
+  margin-left: 12%;
+}
+
+.back {
+  grid-row: 3;
+  background-color: @red;
+  font-family: sans-serif;
+  color: #fff;
+  border: none;
+  border-top: 2px solid #000;
+  border-radius: 12px;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+
 </style>
