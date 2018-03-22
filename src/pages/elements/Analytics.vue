@@ -33,8 +33,11 @@
         <div class="clocks" v-for="clock in clocks" v-bind:key="clock.id" v-if="pane==='time'">
           <h5 v-on:click="viewClock(clock)">clock {{clock.clockType}}  {{(clock.month + 1)}}/{{clock.day}} {{clock.hours}}:{{clock.minutes}}</h5>
         </div>
-        <div class="trips" v-for="trip in trips" v-bind:key="trip.id" v-if="pane===''">
-          <h5 v-on:click="viewTrip(trip)">Trip On {{trip.start.month + 1}}/{{trip.start.day}} Distance: {{Math.floor(trip.distance / 1609.34)}} Miles</h5>
+        <div class="tripDay" v-bind:key="tripDay.id" v-for="tripDay in tripDays" v-if="pane===''">
+          <h5 v-on:click="tripDay.visible = !tripDay.visible"> {{(tripDay.month + 1)}}/{{tripDay.day}}</h5>
+          <div class="trips" v-bind:key="trip.id" v-for="trip in tripDay.trips" v-if="tripDay.visible">
+            <h5 v-on:click="viewTrip(trip)"> Distance: {{Math.floor(trip.distance / 1609.34)}} Miles</h5>
+          </div>
         </div>
       </div>
       <div class="clockMapView" v-else-if="modal==='clock'">
@@ -76,6 +79,8 @@ export default {
       endCoordinates: [0, 0],
       pane: 'time',
       modal: '',
+      tripMatch: false,
+      dayMatch: false,
       startTime: {
         hours: 0,
         minutes: 0,
@@ -97,6 +102,10 @@ export default {
       userSearch: '',
       users: [],
       clocks: [],
+      days: [],
+      activeClocks: [],
+      tripDays: [],
+      activeTrips: [],
       trips: [],
       activeUser: {
         id: '',
@@ -188,6 +197,58 @@ export default {
         .then(function (response) {
           vue.trips = []
           vue.trips = response.data
+          let j = 0
+          for (j = 0; j < response.data.length; j++) {
+            if (vue.tripDays.length === 0) {
+              vue.tripMatch = true
+              let thing = response.data[j]
+              console.log(vue.tripDays)
+              vue.tripDays.push({day: thing.start.day, month: thing.start.month, visible: false, trips: [thing]})
+              break
+            }
+            let q = 0
+            for (q = 0; q < vue.tripDays.length; q++) {
+              if (vue.tripDays[q].month === response.data[j].start.month && vue.tripDays[q].day === response.data[j].start.day) {
+                vue.tripMatch = true
+                vue.activeTrips = vue.tripDays[q].trips
+                let w = 0
+                for (w = 0; w < vue.activeTrips.length; w++) {
+                  if (vue.activeTrips[w].start.hours > response.data[j].start.hours) {
+                    vue.tripDays[q].trips.splice((w), 0, response.data[j])
+                    break
+                  } else if (vue.activeTrips[w].start.hours === response.data[j].start.hours && vue.activeTrips[w].start.minutes > response.data[j].start.minutes) {
+                    vue.tripDays[q].trips.splice((w), 0, response.data[j])
+                    break
+                  } else if (vue.activeTrips[w].start.hours === response.data[j].start.hours && vue.activeTrips[w].start.minutes === response.data[j].start.minutes) {
+                    vue.tripDays[q].trips.splice((w), 0, response.data[j])
+                    break
+                  } else {
+                    vue.tripDays[q].trips.push(response.data[j])
+                    break
+                  }
+                }
+              }
+            }
+            if (vue.tripMatch === true) {
+              vue.tripMatch = false
+            } else {
+              console.log(vue.tripDays[0].month)
+              let z = 0
+              for (z = 0; z < vue.tripDays.length; z++) {
+                if (vue.tripDays[z].month === response.data[j].start.month) {
+                  if (vue.tripDays[z].day > response.data[j].start.day) {
+                    vue.tripDays.splice((z), 0, {day: response.data[j].start.day, month: response.data[j].start.month, visible: false, trips: [response.data[j]]})
+                    break
+                  }
+                } else if (vue.tripDays[z].month > response.data[j].start.month) {
+                  vue.tripDays.splice((z), 0, {day: response.data[j].start.day, month: response.data[j].start.month, visible: false, trips: [response.data[j]]})
+                  break
+                } else {
+                  break
+                }
+              }
+            }
+          }
           vue.countTrips()
           vue.modal = 'user'
         })
@@ -382,9 +443,9 @@ export default {
 
 #map {
   width: 100%;
-  margin-top: 60% !important;
-  height: 45% !important;
+  height: 340px;
   z-index: 0;
+  top:32%;
   bottom: 0;
   left: 0;
   right: 0;
