@@ -33,9 +33,9 @@
             <h5 v-on:click="viewClock(clock)">{{clock.clockType}} {{clock.hours}}:{{clock.minutes}}</h5>
           </div>
         </div>
-        <div class="tripDay" v-bind:key="trip.id" v-for="day in tripDays" v-if="pane===''">
-          <h5 v-on:click="trip.visible = !trip.visible"> {{(tripDay.start.month + 1)}}/{{tripDay.start.day}}</h5>
-          <div class="trips" v-bind:key="trip.id" v-for="trip in tripDay.trips" v-if="trip.visible">
+        <div class="tripDay" v-bind:key="tripDay.id" v-for="tripDay in tripDays" v-if="pane===''">
+          <h5 v-on:click="tripDay.visible = !tripDay.visible"> {{(tripDay.month + 1)}}/{{tripDay.day}}</h5>
+          <div class="trips" v-bind:key="trip.id" v-for="trip in tripDay.trips" v-if="tripDay.visible">
             <h5 v-on:click="viewTrip(trip)"> Distance: {{Math.floor(trip.distance / 1609.34)}} Miles</h5>
           </div>
         </div>
@@ -78,6 +78,7 @@ export default {
       endCoordinates: [0, 0],
       pane: 'time',
       modal: '',
+      tripMatch: false,
       dayMatch: false,
       startTime: {
         hours: 0,
@@ -101,8 +102,8 @@ export default {
       users: [],
       clocks: [],
       days: [],
-      tripDays: [],
       activeClocks: [],
+      tripDays: [],
       activeTrips: [],
       trips: [],
       activeUser: {
@@ -244,20 +245,27 @@ export default {
           vue.trips = response.data
           let j = 0
           for (j = 0; j < response.data.length; j++) {
+            if (vue.tripDays.length === 0) {
+              vue.tripMatch = true
+              let thing = response.data[j]
+              console.log(vue.tripDays)
+              vue.tripDays.push({day: thing.start.day, month: thing.start.month, visible: false, trips: [thing]})
+              break
+            }
             let q = 0
             for (q = 0; q < vue.tripDays.length; q++) {
-              if (vue.tripDays[q].start.month === response.data[j].start.month && vue.tripDays[q].start.day === response.data[j].start.day) {
+              if (vue.tripDays[q].month === response.data[j].start.month && vue.tripDays[q].day === response.data[j].start.day) {
                 vue.tripMatch = true
-                vue.activeTrips = vue.tripDays[q].clocks
+                vue.activeTrips = vue.tripDays[q].trips
                 let w = 0
                 for (w = 0; w < vue.activeTrips.length; w++) {
-                  if (vue.activeTrips[w].hours > response.data[j].hours) {
+                  if (vue.activeTrips[w].start.hours > response.data[j].start.hours) {
                     vue.tripDays[q].trips.splice((w), 0, response.data[j])
                     break
-                  } else if (vue.activeTrips[w].hours === response.data[j].hours && vue.activeTrips[w].minutes > response.data[j].minutes) {
+                  } else if (vue.activeTrips[w].start.hours === response.data[j].start.hours && vue.activeTrips[w].start.minutes > response.data[j].start.minutes) {
                     vue.tripDays[q].trips.splice((w), 0, response.data[j])
                     break
-                  } else if (vue.activeTrips[w].hours === response.data[j].hours && vue.activeTrips[w].minutes === response.data[j].minutes) {
+                  } else if (vue.activeTrips[w].start.hours === response.data[j].start.hours && vue.activeTrips[w].start.minutes === response.data[j].start.minutes) {
                     vue.tripDays[q].trips.splice((w), 0, response.data[j])
                     break
                   } else {
@@ -268,22 +276,20 @@ export default {
               }
             }
             if (vue.tripMatch === true) {
-              vue.dayMatch = false
-            } else if (vue.tripDays.length === 0) {
-              vue.tripDays.push({day: response.data[j].day, month: response.data[j].month, visible: false, trips: [response.data[j]]})
+              vue.tripMatch = false
             } else {
+              console.log(vue.tripDays[0].month)
               let z = 0
               for (z = 0; z < vue.tripDays.length; z++) {
-                if (vue.tripDays[z].month === response.data[j].month) {
-                  if (vue.tripDays[z].day > response.data[j].day) {
-                    vue.tripDays.splice((z), 0, {day: response.data[j].day, month: response.data[j].month, visible: false, trips: [response.data[j]]})
+                if (vue.tripDays[z].month === response.data[j].start.month) {
+                  if (vue.tripDays[z].day > response.data[j].start.day) {
+                    vue.tripDays.splice((z), 0, {day: response.data[j].start.day, month: response.data[j].start.month, visible: false, trips: [response.data[j]]})
                     break
                   }
-                } else if (vue.tripDays[z].month > response.data[j].month) {
-                  vue.tripDays.splice((z), 0, {day: response.data[j].day, month: response.data[j].month, visible: false, trips: [response.data[j]]})
+                } else if (vue.tripDays[z].month > response.data[j].start.month) {
+                  vue.tripDays.splice((z), 0, {day: response.data[j].start.day, month: response.data[j].start.month, visible: false, trips: [response.data[j]]})
                   break
                 } else {
-                  vue.tripDays.push({day: response.data[j].day, month: response.data[j].month, visible: false, trips: [response.data[j]]})
                   break
                 }
               }
