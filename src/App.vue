@@ -80,7 +80,7 @@ export default {
     background-image: url('./assets/tc_Marker.svg');
     background-size: cover;
     width: 50px;
-    height: 140px;
+    height: 155px;
     z-index: 4;
     cursor: pointer;
   }

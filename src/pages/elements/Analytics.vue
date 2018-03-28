@@ -4,12 +4,13 @@
       <div class="timeGraphsPane" v-if="pane==='time'">
         <h4 v-if="modal==='user'">{{activeUser.name}}'s Time Record</h4>
         <h4>{{totalHours}} Total Hours Clocked</h4>
-        <div class="clockIcon"></div>
+
       </div>
       <div class="readouts" v-else-if="pane==='readout'">
         <div v-if="modal==='clock'">
           <h3>User: {{activeUser.name}}</h3>
           <h3>Clock {{activeClock.clockType}} {{(activeClock.month + 1)}}/{{activeClock.day}} {{activeClock.hours}}:{{activeClock.minutes}}</h3>
+          <div class="clockIcon"></div>
         </div>
         <div v-else>
           <h3>User: {{activeUser.name}}</h3>
@@ -560,6 +561,11 @@ input {
   height: 40px;
   padding-left: 5%;
   margin-bottom: 5%;
+}
+
+.clockIcon {
+  background-image: url(../../assets/tc_Time.svg);
+  background-repeat: no-repeat;
 }
 
 .user {
