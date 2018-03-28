@@ -489,7 +489,7 @@ export default {
 
 #map {
   width: 100%;
-  height: 300px;
+  height: 260px;
   bottom: 0;
   left: 0;
   right: 0;
