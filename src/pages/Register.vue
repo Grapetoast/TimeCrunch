@@ -31,7 +31,10 @@
     <div class="chooseRegister" v-else>
       <h1>Are you Registering a New Company?</h1>
       <button class="companyRegisterButton" v-on:click="modal='company'">Yes</button>
-      <button class="employeeRegisterButton" v-on:click="modal='employee'">No (Must have a company Code)</button>
+      <div class="exception">
+        <button class="employeeRegisterButton" v-on:click="modal='employee'">No</button>
+        <h4>*Must have a company Code</h4>
+      </div>
       <button class="back" v-on:click="$router.push('/login')">Back</button>
     </div>
   </div>
@@ -136,6 +139,7 @@ export default {
   h1 {
     color: @red;
     text-align: center;
+    font-size: 2.5em;
   }
 
   select option[data-default] {
@@ -150,6 +154,7 @@ export default {
     margin-left: 10px;
     border-radius: 5px;
   }
+
   input {
     border: 1px solid @grey;
     width: 90%;
@@ -157,6 +162,7 @@ export default {
     height: 40px;
     margin-bottom: 10px;
   }
+
   .role {
     border: 1px solid @grey;
     width: 90%;
@@ -164,6 +170,7 @@ export default {
     height: 40px;
     margin-bottom: 10px;
   }
+
   .togglePass {
     width: 50%;
     margin-left: 20px;
@@ -191,19 +198,38 @@ export default {
     margin-left: 5%;
   }
 
-  .employeeRegisterButton {
+  .exception {
     width: 90%;
-    height: 50px;
-    margin-top: 20px;
     margin-left: 5%;
-    font-size: 1.2em;
+    display: grid;
+    grid-template-rows: 50px 20px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .employeeRegisterButton {
+    grid-row: 1;
+    grid-column-start: 1;
+    grid-column-end: 4;
+    height: 50px;
+    margin: 0;
+    margin-top: 10px;
+  }
+
+  h4 {
+    grid-row: 2;
+    grid-column: 3;
+    font-size: 0.9em;
+    margin: 0;
+    color: @red;
   }
 
   .back {
-    width: 50%;
-    margin-left: 20px;
+    width: 25%;
+    margin-left: 5%;
     margin-top: 10px;
+    background-color: @red;
   }
+
   @media (min-width: 700px) {
   }
 </style>
