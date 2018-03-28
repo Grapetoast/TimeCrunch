@@ -12,7 +12,14 @@
     },
     "cordova-plugin-geolocation": {
       "PACKAGE_NAME": "io.timecrunch.timecrunch"
+    },
+    "cordova-plugin-background-mode": {
+      "PACKAGE_NAME": "timecrunch.thumbnail.com"
     }
   },
-  "dependent_plugins": {}
+  "dependent_plugins": {
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "timecrunch.thumbnail.com"
+    }
+  }
 }
