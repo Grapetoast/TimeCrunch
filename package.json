@@ -16,7 +16,8 @@
     "less-loader": "^4.1.0",
     "mapbox": "^1.0.0-beta9",
     "mapbox-gl": "^0.44.1",
-    "mapbox-gl-vue": "^1.7.0"
+    "mapbox-gl-vue": "^1.7.0",
+    "npm": "^5.8.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.1",

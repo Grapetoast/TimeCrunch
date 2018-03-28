@@ -550,6 +550,7 @@ h5 {
 
 h3 {
   font-size: 1em;
+  margin: 0;
   margin-left: 5%;
 }
 
