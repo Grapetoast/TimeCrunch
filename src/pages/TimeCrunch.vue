@@ -284,16 +284,11 @@ setInterval(clock, 1000)
 #map {
   width: 100%;
   height: 100%;
-  margin-top: 50px;
   padding-top: none;
-  grid-row-start: 2;
-  grid-row-end: 7;
-  grid-column-start: 1;
-  grid-column-end: 7;
   z-index: 0;
-  position: absolute;
-  top:0;
-  bottom:0;
+  position: fixed;
+  top: 224px;
+  bottom: 0;
 }
 
 .clock {
