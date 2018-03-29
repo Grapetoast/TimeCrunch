@@ -140,6 +140,11 @@ export default {
     color: @red;
     text-align: center;
     font-size: 2.5em;
+    margin: 0;
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 200px;
+    margin-bottom: 20px;
   }
 
   select option[data-default] {
