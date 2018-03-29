@@ -55,21 +55,9 @@ plugins.forEach(plugin => plugin({ app, router, Vue }))
 
 
 
-  
-    // Needed only for iOS
-    import FastClick from 'fastclick'
-    document.addEventListener('DOMContentLoaded', () => {
-      FastClick.attach(document.body)
-    }, false)
-  
-document.addEventListener('deviceready', () => {
-Vue.prototype.$q.cordova = window.cordova
-
 
 
 new Vue(app)
 
 
-
-}, false) // on deviceready
 
