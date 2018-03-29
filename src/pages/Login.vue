@@ -103,8 +103,8 @@ export default {
   }
 
   input.email, input.password {
+    padding-left: 5px;
     padding-top: 14px;
-    background-color: none;
     font-size: 1.2em;
     border: none;
     border-bottom: 1px solid @red;
@@ -118,6 +118,7 @@ export default {
   }
 
   .emailTitle, .passwordTitle {
+    margin-left: 5px;
     grid-column: 2;
     margin-top: 10px;
   }
@@ -144,7 +145,8 @@ export default {
     grid-row-end: 7;
     grid-column-start: 2;
     grid-column-end: 5;
-    padding-top: 9%;
+    padding-top: 20px;
+    margin-left: 10px;
   }
 
   .logButton {
@@ -158,7 +160,9 @@ export default {
     font-size: 1em;
     border-radius: 5px;
     grid-row: 7;
-    grid-column: 5;
+    grid-column-start: 5;
+    grid-column-end: 6;
+    width: 90%;
   }
 
   .registerlink {
