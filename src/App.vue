@@ -1,11 +1,11 @@
 <template>
   <div id="q-app">
-    <navbar v-on:logout="logOut" :logged="logged" :user="user"></navbar>
+    <navbar v-on:logout="logOut" v-on:account="account" :logged="logged" :user="user"></navbar>
     <div class="prettyModal" v-if="modal==='pretty'">
       <h2>{{prettyMessage}}</h2>
       <button class="prettyBack" v-on:click="modal=''">Back</button>
     </div>
-    <router-view v-on:login="log" v-on:register="register" :logged="logged" :user="user"/>
+    <router-view v-on:login="log" v-on:register="register" v-on:account="account" :logged="logged" :user="user" :accountView="accountView"/>
   </div>
 </template>
 
@@ -31,6 +31,7 @@ export default {
   data: function () {
     return {
       modal: '',
+      accountView: '',
       prettyMessage: '',
       logged: false,
       lastClockType: '',
@@ -80,6 +81,10 @@ export default {
       let vue = this
       vue.prettyMessage = message
       vue.modal = 'pretty'
+    },
+    account (view) {
+      let vue = this
+      vue.accountView = view || ''
     },
     log (user) {
       let vue = this
