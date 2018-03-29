@@ -147,6 +147,18 @@ export default {
           second: 0
         }
       },
+      x: 0,
+      y: 0,
+      a: 0,
+      b: 0,
+      cx: 0,
+      cy: 0,
+      diffx: 0,
+      diffy: 0,
+      minx: 0,
+      miny: 0,
+      zoom: 0,
+      zoomNum: 0,
       mapboxToken: 'pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag',
       mapOptions: {
         container: 'map',
@@ -421,10 +433,126 @@ export default {
       vue.activeTrip.end.hour = trip.end.hour
       vue.activeTrip.end.minute = trip.end.minute
       vue.activeTrip.end.second = trip.end.second
+      vue.activeTrip.start.latitude = trip.start.longitude
+      vue.activeTrip.start.longitude = trip.start.latitude
+      vue.activeTrip.end.latitude = trip.end.longitude
+      vue.activeTrip.end.longitude = trip.end.latitude
       vue.startCoordinates = [trip.start.longitude, trip.start.latitude]
       vue.endCoordinates = [trip.end.longitude, trip.end.latitude]
       vue.pane = 'readout'
       vue.modal = 'trip'
+    },
+    tripZoom () {
+      let vue = this
+      vue.x = vue.activeTrip.start.latitude
+      vue.y = vue.activeTrip.start.longitude
+      vue.a = vue.activeTrip.end.latitude
+      vue.b = vue.activeTrip.end.longitude
+      vue.x = parseInt(vue.x)
+      vue.y = parseInt(vue.y)
+      vue.a = parseInt(vue.a)
+      vue.b = parseInt(vue.b)
+      if (vue.x > vue.a) {
+        vue.minx = vue.a
+      } else {
+        vue.minx = vue.x
+      }
+      if (vue.y > vue.b) {
+        vue.miny = vue.b
+      } else {
+        vue.miny = vue.y
+      }
+      vue.diffx = Math.abs(vue.x - vue.a)
+      vue.diffy = Math.abs(vue.y - vue.b)
+      vue.cx = (vue.diffx / 2) + vue.minx
+      vue.cx = vue.cx.toString()
+      vue.cy = (vue.diffy / 2) + vue.miny + (vue.diffy / 4)
+      vue.cy = vue.cy.toString()
+      vue.zoomNum = (vue.diffx + vue.diffy)
+      console.log(vue.x + 'long' + vue.y)
+      console.log(vue.a + 'long' + vue.b)
+      console.log(vue.cx + 'long' + vue.cy)
+      if (vue.zoomNum <= 30) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 1
+        })
+      } else if (vue.zoomNum <= 25) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 2
+        })
+      } else if (vue.zoomNum <= 20) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 3
+        })
+      } else if (vue.zoomNum <= 15) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 4
+        })
+      } else if (vue.zoomNum <= 10) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 5
+        })
+      } else if (vue.zoomNum <= 5) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 6
+        })
+      } else if (vue.zoomNum <= 1) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 7
+        })
+      } else if (vue.zoomNum <= 0.1) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 8
+        })
+      } else if (vue.zoomNum <= 0.01) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 9
+        })
+      } else if (vue.zoomNum <= 0.001) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 10
+        })
+      } else if (vue.zoomNum <= 0.0001) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 11
+        })
+      } else if (vue.zoomNum <= 0.00001) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 12
+        })
+      } else if (vue.zoomNum <= 0.000001) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 13
+        })
+      } else if (vue.zoomNum <= 0.0000001) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 14
+        })
+      } else if (vue.zoomNum <= 0.00000001) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 15
+        })
+      } else if (vue.zoomNum <= 0.000000001) {
+        vue.map.jumpTo({
+          center: [vue.cx, vue.cy],
+          zoom: 16
+        })
+      }
     },
     mapLoaded (map) {
       let vue = this
@@ -435,6 +563,9 @@ export default {
           center: [vue.activeClock.longitude, vue.activeClock.latitude],
           zoom: 14
         })
+      } else if (vue.modal === 'trip') {
+        vue.addMarkers()
+        vue.tripZoom()
       } else {
         vue.addMarkers()
         vue.map.jumpTo({
