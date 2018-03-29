@@ -1,36 +1,35 @@
 <template>
   <div class="main">
-    <div class="accountView" v-if="modal==='view'">
+    <div class="accountView" v-if="accountView==='view'">
       <h2 class="name">Name:<br/>{{activeUser.name}}</h2>
       <h2 class="email">Email: {{activeUser.email}}</h2>
-      <button class="accountEditButton" v-on:click="modal='edit'">Edit Account</button>
-      <button class="back" v-on:click="modal=''">Back</button>
+      <button class="accountEditButton" v-on:click="$emit('account', 'edit')">Edit Account</button>
+      <button class="back" v-on:click="$emit('account')">Back</button>
     </div>
-    <div class="accountEdit" v-else-if="modal==='edit'">
+    <div class="accountEdit" v-else-if="accountView==='edit'">
       <input class="nameEdit" v-model="activeUser.name" placeholder="Name">
       <input class="emailEdit" v-model="activeUser.email" placeholder="user@example.com">
       <button class="submitEdit" v-on:click="updateUser">Submit</button>
-      <button class="back" v-on:click="modal='view'">Back</button>
+      <button class="back" v-on:click="$emit('account', 'view')">Back</button>
     </div>
-    <div class="updatePass" v-else-if="modal==='pass'">
+    <div class="updatePass" v-else-if="accountView==='pass'">
       <input class="passwordEdit" v-model="activeUser.password" placeholder="********" v-if="!showPass" type="password">
       <input class="passwordEdit" v-model="activeUser.password" placeholder="********" v-if="showPass">
       <button class="togglePass" v-on:click="showPass = !showPass" v-if="!showPass">Show Password</button>
       <button class="togglePass" v-on:click="showPass = !showPass" v-if="showPass">Hide Password</button>
       <button class="submitUpdatePass" v-on:click="updatePass">Submit</button>
-      <button class="back" v-on:click="modal=''">Back</button>
+      <button class="back" v-on:click="$emit('account')">Back</button>
     </div>
-    <div class="success" v-else-if="modal==='success'">
+    <div class="success" v-else-if="accountView==='success'">
       <h1>Success!!</h1>
-      <button class="back" v-on:click="modal=''">Back</button>
+      <button class="back" v-on:click="$emit('account')">Back</button>
     </div>
-    <analytics class="analyticsComponent" v-on:back="modal=''" v-else-if="modal==='analytics'" :user="user"></analytics>
+    <analytics class="analyticsComponent" v-on:back="$emit('account')" v-else-if="accountView==='analytics'" :user="user"></analytics>
     <div class="accountHome" v-else>
       <h1>Account</h1>
-      <button class="analytics" v-on:click="modal='analytics'" v-if="user.admin">Analytics</button>
-      <button class="update" v-on:click="modal='pass'">Update Password</button>
-      <button class="viewAccount" v-on:click="modal='view'">View Account</button>
-
+      <button class="analytics" v-on:click="$emit('account', 'analytics')" v-if="user.admin">Analytics</button>
+      <button class="update" v-on:click="$emit('account', 'pass')">Update Password</button>
+      <button class="viewAccount" v-on:click="$emit('account', 'view')">View Account</button>
     </div>
   </div>
 </template>
@@ -44,7 +43,7 @@ export default {
   components: {
     'analytics': Analytics
   },
-  props: ['logged', 'user'],
+  props: ['logged', 'user', 'accountView'],
   data () {
     return {
       modal: '',
@@ -73,7 +72,7 @@ export default {
         .then(function (user) {
           vue.activeUser.email = user.data.email
           vue.activeUser.name = user.data.name
-          vue.modal = 'view'
+          vue.$emit('account', 'view')
         })
         .catch(function (error) {
           console.log(error)
@@ -85,7 +84,7 @@ export default {
         password: vue.activeUser.password
       }, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
         .then(function (user) {
-          vue.modal = 'success'
+          vue.$emit('account', 'success')
         })
         .catch(function (error) {
           console.log(error)
@@ -115,7 +114,7 @@ export default {
         name: vue.activeUser.name
       })
         .then(function () {
-          vue.modal = 'success'
+          vue.$emit('account', 'success')
         })
         .catch(function (error) {
           console.log(error)
@@ -170,6 +169,14 @@ button {
   border-radius: 5px;
 }
 
+.accountView {
+  margin-top: 160px;
+}
+
+.accountEdit {
+  margin-top: 160px;
+}
+
 .accountEditButton {
   margin-bottom: 20px;
   background-color: @grey;
@@ -179,18 +186,25 @@ button {
   margin-top: 20px;
   background-color: @red;
 }
+
 .nameEdit {
   border: 1px solid @red;
   width: 90%;
   margin-top: 20px;
   height: 40px;
 }
+
 .emailEdit {
   border: 1px solid @red;
   width: 90%;
   margin-top: 20px;
   height: 40px;
 }
+
+.updatePass {
+  margin-top: 180px;
+}
+
 .togglePass {
   margin-top: 20px;
 }
