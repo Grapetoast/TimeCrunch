@@ -129,6 +129,8 @@ export default {
 @grey: #323d38;
 
 .main {
+  width: 100%;
+  height: 100%;
   margin-top: 100px;
 }
 
@@ -170,11 +172,20 @@ button {
 }
 
 .accountView {
-  margin-top: 160px;
+  margin-top: 60px;
+  width: 100%;
+  position: fixed;
+}
+
+.accountHome {
+  margin-top: 10px;
+  width: 100%;
+  position: fixed;
 }
 
 .accountEdit {
-  margin-top: 160px;
+  margin-top: 60px;
+  position: fixed;
 }
 
 .accountEditButton {
@@ -202,7 +213,8 @@ button {
 }
 
 .updatePass {
-  margin-top: 180px;
+  margin-top: 80px;
+  position: fixed;
 }
 
 .togglePass {

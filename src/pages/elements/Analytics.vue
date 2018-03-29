@@ -41,11 +41,11 @@
         </div>
       </div>
       <div class="clockMapView" v-else-if="modal==='clock'">
-        <button class="mapBack" v-on:click="modal='user'; pane='time'">Back</button>
+        <button class="mapBack" v-on:click="modal='user'; pane='time'; resetTime(); populateCompanyClocks(); populateCompanyTrips()">Back</button>
         <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
       </div>
       <div class="tripMapView" v-else-if="modal==='trip'">
-        <button class="mapBack" v-on:click="modal='user'; pane=''">Back</button>
+        <button class="mapBack" v-on:click="modal='user'; pane=''; resetTime(); populateCompanyClocks(); populateCompanyTrips()">Back</button>
         <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
       </div>
       <div class="adminView" v-else>
@@ -183,6 +183,7 @@ export default {
   methods: {
     viewUser (user) {
       let vue = this
+      vue.days = []
       vue.totalHours = 0
       vue.totalDistance = 0
       vue.totalTime = {
@@ -195,62 +196,7 @@ export default {
       vue.activeUser.companyId = user.companyId
       vue.activeUser.email = user.email
       vue.activeUser.admin = user.admin
-      axios.get('http://54.186.69.46:81/clocks/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
-        .then(function (response) {
-          vue.clocks = []
-          vue.clocks = response.data
-          let j = 0
-          for (j = 0; j < response.data.length; j++) {
-            let q = 0
-            for (q = 0; q < vue.days.length; q++) {
-              if (vue.days[q].month === response.data[j].month && vue.days[q].day === response.data[j].day) {
-                vue.dayMatch = true
-                vue.activeClocks = vue.days[q].clocks
-                let w = 0
-                for (w = 0; w < vue.activeClocks.length; w++) {
-                  if (vue.activeClocks[w].hours > response.data[j].hours) {
-                    vue.days[q].clocks.splice((w), 0, response.data[j])
-                    break
-                  } else if (vue.activeClocks[w].hours === response.data[j].hours && vue.activeClocks[w].minutes > response.data[j].minutes) {
-                    vue.days[q].clocks.splice((w), 0, response.data[j])
-                    break
-                  } else if (vue.activeClocks[w].hours === response.data[j].hours && vue.activeClocks[w].minutes === response.data[j].minutes) {
-                    vue.days[q].clocks.splice((w), 0, response.data[j])
-                    break
-                  } else {
-                    vue.days[q].clocks.push(response.data[j])
-                    break
-                  }
-                }
-              }
-            }
-            if (vue.dayMatch === true) {
-              vue.dayMatch = false
-            } else if (vue.days.length === 0) {
-              vue.days.push({day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
-            } else {
-              let z = 0
-              for (z = 0; z < vue.days.length; z++) {
-                if (vue.days[z].month === response.data[j].month) {
-                  if (vue.days[z].day > response.data[j].day) {
-                    vue.days.splice((z), 0, {day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
-                    break
-                  }
-                } else if (vue.days[z].month > response.data[j].month) {
-                  vue.days.splice((z), 0, {day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
-                  break
-                } else {
-                  vue.days.push({day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
-                  break
-                }
-              }
-            }
-          }
-          vue.countClocks()
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      vue.populateUserClocks()
       axios.get('http://54.186.69.46:81/trips/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
         .then(function (response) {
           vue.trips = []
@@ -323,54 +269,108 @@ export default {
         seconds: 0
       }
     },
-    populateCompanyClocks () {
+    populateUserClocks () {
       let vue = this
-      vue.totalHours = 0
-      let i = 0
-      vue.clocks = []
-      for (i = 0; i < vue.users.length; i++) {
-        vue.activeUser.id = vue.users[i]._id
-        axios.get('http://54.186.69.46:81/clocks/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
-          .then(function (response) {
-            let j = 0
-            for (j = 0; j < response.data.length; j++) {
-              vue.clocks.push(response.data[j])
-              if (vue.clocks.length === response.data.length) {
-                vue.countClocks()
+      axios.get('http://54.186.69.46:81/clocks/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+        .then(function (response) {
+          vue.clocks = []
+          vue.clocks = response.data
+          let j = 0
+          for (j = 0; j < response.data.length; j++) {
+            let q = 0
+            for (q = 0; q < vue.days.length; q++) {
+              if (vue.days[q].month === response.data[j].month && vue.days[q].day === response.data[j].day) {
+                vue.dayMatch = true
+                vue.activeClocks = vue.days[q].clocks
+                let w = 0
+                for (w = 0; w < vue.activeClocks.length; w++) {
+                  if (vue.activeClocks[w].hours > response.data[j].hours) {
+                    console.log('splice')
+                    vue.days[q].clocks.splice((w), 0, response.data[j])
+                    break
+                  } else if (vue.activeClocks[w].hours === response.data[j].hours && vue.activeClocks[w].minutes > response.data[j].minutes) {
+                    console.log('splice')
+                    vue.days[q].clocks.splice((w), 0, response.data[j])
+                    break
+                  } else if (vue.activeClocks[w].hours === response.data[j].hours && vue.activeClocks[w].minutes === response.data[j].minutes) {
+                    console.log('splice')
+                    vue.days[q].clocks.splice((w), 0, response.data[j])
+                    break
+                  } else {
+                    console.log('push')
+                    vue.days[q].clocks.push(response.data[j])
+                    break
+                  }
+                }
               }
             }
-            vue.clocks = []
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
+            if (vue.dayMatch === true) {
+              vue.dayMatch = false
+            } else if (vue.days.length === 0) {
+              vue.days.push({day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
+            } else {
+              let z = 0
+              for (z = 0; z < vue.days.length; z++) {
+                if (vue.days[z].month === response.data[j].month) {
+                  if (vue.days[z].day > response.data[j].day) {
+                    vue.days.splice((z), 0, {day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
+                    break
+                  }
+                } else if (vue.days[z].month > response.data[j].month) {
+                  vue.days.splice((z), 0, {day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
+                  break
+                } else {
+                  vue.days.push({day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
+                  break
+                }
+              }
+            }
+          }
+          vue.countClocks()
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+    populateCompanyClocks () {
+      let vue = this
+      let i = 0
+      vue.clocks = []
+      vue.activeClocks = []
+      for (i = 0; i < vue.users.length; i++) {
+        vue.activeUser.id = vue.users[i]._id
+        vue.populateUserClocks()
       }
     },
     countClocks () {
       let vue = this
-      let i = 0
-      for (i = 0; i < vue.clocks.length; i++) {
-        let clockType = vue.clocks[i].clockType
-        if (clockType === 'in' || clockType === 'lunch in') {
-          vue.startTime = {
-            hours: vue.clocks[i].hours,
-            minutes: vue.clocks[i].minutes,
-            seconds: vue.clocks[i].seconds
-          }
-        } else if (clockType === 'out' || clockType === 'lunch out') {
-          vue.endTime = {
-            hours: vue.clocks[i].hours,
-            minutes: vue.clocks[i].minutes,
-            seconds: vue.clocks[i].seconds
-          }
-          vue.totalTime = {
-            hours: (vue.endTime.hours - vue.startTime.hours) + vue.totalTime.hours,
-            minutes: (vue.endTime.minutes - vue.startTime.minutes) + vue.totalTime.minutes,
-            seconds: (vue.endTime.seconds - vue.startTime.seconds) + vue.totalTime.seconds
+      vue.resetTime()
+      let q = 0
+      for (q = 0; q < vue.days.length; q++) {
+        let i = 0
+        for (i = 0; i < vue.days[q].clocks.length; i++) {
+          let clockType = vue.days[q].clocks[i].clockType
+          if (clockType === 'in' || clockType === 'lunch in') {
+            vue.startTime = {
+              hours: vue.days[q].clocks[i].hours,
+              minutes: vue.days[q].clocks[i].minutes,
+              seconds: vue.days[q].clocks[i].seconds
+            }
+          } else if (clockType === 'out' || clockType === 'lunch out') {
+            vue.endTime = {
+              hours: vue.days[q].clocks[i].hours,
+              minutes: vue.days[q].clocks[i].minutes,
+              seconds: vue.days[q].clocks[i].seconds
+            }
+            vue.totalTime = {
+              hours: Math.abs(vue.endTime.hours - vue.startTime.hours) + vue.totalTime.hours,
+              minutes: Math.abs(vue.endTime.minutes - vue.startTime.minutes) + vue.totalTime.minutes,
+              seconds: Math.abs(vue.endTime.seconds - vue.startTime.seconds) + vue.totalTime.seconds
+            }
           }
         }
+        vue.totalHours = vue.totalTime.hours + Math.floor((vue.totalTime.minutes / 60) + Math.floor(vue.totalTime.seconds / 60))
       }
-      vue.totalHours = vue.totalTime.hours + Math.floor((vue.totalTime.minutes / 60) + Math.floor(vue.totalTime.seconds / 60))
     },
     viewClock (clock) {
       let vue = this
