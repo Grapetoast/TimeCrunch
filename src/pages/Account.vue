@@ -169,6 +169,14 @@ button {
   border-radius: 5px;
 }
 
+.accountView {
+  margin-top: 160px;
+}
+
+.accountEdit {
+  margin-top: 160px;
+}
+
 .accountEditButton {
   margin-bottom: 20px;
   background-color: @grey;
@@ -178,18 +186,25 @@ button {
   margin-top: 20px;
   background-color: @red;
 }
+
 .nameEdit {
   border: 1px solid @red;
   width: 90%;
   margin-top: 20px;
   height: 40px;
 }
+
 .emailEdit {
   border: 1px solid @red;
   width: 90%;
   margin-top: 20px;
   height: 40px;
 }
+
+.updatePass {
+  margin-top: 180px;
+}
+
 .togglePass {
   margin-top: 20px;
 }
