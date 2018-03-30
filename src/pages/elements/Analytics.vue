@@ -481,37 +481,7 @@ export default {
       console.log(vue.x + 'long' + vue.y)
       console.log(vue.a + 'long' + vue.b)
       console.log(vue.cx + 'long' + vue.cy)
-      if (vue.zoomNum <= 30) {
-        vue.map.jumpTo({
-          center: [vue.cx, vue.cy],
-          zoom: 1
-        })
-      } else if (vue.zoomNum <= 25) {
-        vue.map.jumpTo({
-          center: [vue.cx, vue.cy],
-          zoom: 2
-        })
-      } else if (vue.zoomNum <= 20) {
-        vue.map.jumpTo({
-          center: [vue.cx, vue.cy],
-          zoom: 3
-        })
-      } else if (vue.zoomNum <= 15) {
-        vue.map.jumpTo({
-          center: [vue.cx, vue.cy],
-          zoom: 4
-        })
-      } else if (vue.zoomNum <= 10) {
-        vue.map.jumpTo({
-          center: [vue.cx, vue.cy],
-          zoom: 5
-        })
-      } else if (vue.zoomNum <= 5) {
-        vue.map.jumpTo({
-          center: [vue.cx, vue.cy],
-          zoom: 6
-        })
-      } else if (vue.zoomNum <= 1) {
+      if (vue.zoomNum <= 1) {
         vue.map.jumpTo({
           center: [vue.cx, vue.cy],
           zoom: 7
