@@ -281,23 +281,32 @@ export default {
             for (q = 0; q < vue.days.length; q++) {
               if (vue.days[q].month === response.data[j].month && vue.days[q].day === response.data[j].day) {
                 vue.dayMatch = true
-                vue.activeClocks = vue.days[q].clocks
                 let w = 0
-                for (w = 0; w < vue.activeClocks.length; w++) {
-                  if (vue.activeClocks[w].hours > response.data[j].hours) {
+                let clockLength = vue.days[q].clocks.length - 1
+                for (w = 0; w < vue.days[q].clocks.length; w++) {
+                  if (vue.days[q].clocks[w].hours > response.data[j].hours) {
                     console.log('splice')
+                    console.log(response.data[j])
                     vue.days[q].clocks.splice((w), 0, response.data[j])
                     break
-                  } else if (vue.activeClocks[w].hours === response.data[j].hours && vue.activeClocks[w].minutes > response.data[j].minutes) {
+                  } else if (vue.days[q].clocks[w].hours === response.data[j].hours && vue.days[q].clocks[w].minutes > response.data[j].minutes) {
                     console.log('splice')
+                    console.log(response.data[j])
                     vue.days[q].clocks.splice((w), 0, response.data[j])
                     break
-                  } else if (vue.activeClocks[w].hours === response.data[j].hours && vue.activeClocks[w].minutes === response.data[j].minutes) {
+                  } else if (vue.days[q].clocks[w].hours === response.data[j].hours && vue.days[q].clocks[w].minutes === response.data[j].minutes) {
                     console.log('splice')
+                    console.log(response.data[j])
                     vue.days[q].clocks.splice((w), 0, response.data[j])
                     break
-                  } else {
+                  } else if (vue.days[q].clocks[clockLength].hours < response.data[j].hours) {
                     console.log('push')
+                    console.log(response.data[j])
+                    vue.days[q].clocks.push(response.data[j])
+                    break
+                  } else if (vue.days[q].clocks[clockLength].hours === response.data[j].hours && vue.days[q].clocks[clockLength].minutes === response.data[j].minutes) {
+                    console.log('push')
+                    console.log(response.data[j])
                     vue.days[q].clocks.push(response.data[j])
                     break
                   }
@@ -307,6 +316,7 @@ export default {
             if (vue.dayMatch === true) {
               vue.dayMatch = false
             } else if (vue.days.length === 0) {
+              console.log('push day')
               vue.days.push({day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
             } else {
               let z = 0
