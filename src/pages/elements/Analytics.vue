@@ -345,8 +345,7 @@ export default {
     populateCompanyClocks () {
       let vue = this
       let i = 0
-      vue.clocks = []
-      vue.activeClocks = []
+      vue.days = []
       for (i = 0; i < vue.users.length; i++) {
         vue.activeUser.id = vue.users[i]._id
         vue.populateUserClocks()
