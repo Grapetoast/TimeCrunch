@@ -1,4 +1,4 @@
-#Wed Mar 28 15:27:32 MST 2018
-base.0=C\:\\Users\\Bon\\Documents\\GitHub\\TimeCrunch\\src-cordova\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+#Sun Apr 08 13:37:56 MST 2018
+base.0=C\:\\Users\\admin\\Documents\\Coding\\Quasar\\Time-Crunch\\src-cordova\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
 renamed.0=classes.dex
-file.0=C\:\\Users\\Bon\\Documents\\GitHub\\TimeCrunch\\src-cordova\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0\\classes.dex
+file.0=C\:\\Users\\admin\\Documents\\Coding\\Quasar\\Time-Crunch\\src-cordova\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0\\classes.dex
