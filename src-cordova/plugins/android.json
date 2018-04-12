@@ -7,13 +7,13 @@
     "files": {}
   },
   "installed_plugins": {
-    "cordova-plugin-whitelist": {
-      "PACKAGE_NAME": "io.timecrunch.timecrunch"
+    "cordova-plugin-background-mode": {
+      "PACKAGE_NAME": "timecrunch.thumbnail.com"
     },
     "cordova-plugin-geolocation": {
-      "PACKAGE_NAME": "io.timecrunch.timecrunch"
+      "PACKAGE_NAME": "timecrunch.thumbnail.com"
     },
-    "cordova-plugin-background-mode": {
+    "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "timecrunch.thumbnail.com"
     }
   },
