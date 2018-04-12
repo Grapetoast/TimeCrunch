@@ -55,15 +55,9 @@ plugins.forEach(plugin => plugin({ app, router, Vue }))
 
 
 
-  
-document.addEventListener('deviceready', () => {
-Vue.prototype.$q.cordova = window.cordova
-
 
 
 new Vue(app)
 
 
-
-}, false) // on deviceready
 
