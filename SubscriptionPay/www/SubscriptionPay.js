@@ -1,5 +1,5 @@
 var exec = require('cordova/exec');
 
-exports.coolMethod = function (arg0, success, error) {
-    exec(success, error, 'SubscriptionPay', 'coolMethod', [arg0]);
+exports.subscribe = function (token, code, success, error) {
+    exec(success, error, 'SubscriptionPay', 'subscribe', [token, code]);
 };
