@@ -106,6 +106,7 @@ export default {
         vue.user.id = user.data.id
         vue.user.admin = user.data.admin
         vue.logged = true
+        window.subscribe(vue.user.token, vue.user.companyId)
         vue.$router.push('/')
       } else {
         vue.logged = false
