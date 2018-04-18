@@ -10,6 +10,7 @@ var router = express.Router();
 var mongoose = require("mongoose");
 var User = mongoose.model("User");
 var bcrypt = require('bcryptjs');
+var stripe = require("stripe")("sk_test_BQokikJOvBiI2HlWgH4olfQ2");
 var ExtractJwt = passportJWT.ExtractJwt;
 var JwtStrategy = passportJWT.Strategy;
 
@@ -55,12 +56,38 @@ router.post("/login", (req, res) => {
 })
 
 router.post("/", (req,res) => {
+  if (req.body.payment === true) {
+    const customer = stripe.customers.create({
+      email: req.body.email,
+      source: req.body.stripeSource,
+    }, function(err, customer) {
+      const StripeCustomer = customer.id
+    });
+  } else {
+    User.findOne({"companyId": req.body.companyId, "payment": true}, function (err, users) {
+      const customer = stripe.customers.create({
+        email: req.body.email,
+        source: users.stripeSource,
+      }, function(err, customer) {
+        const StripeCustomer = customer.id
+      });
+    })
+  }
+
+  const subscription = stripe.subscriptions.create({
+    customer: StripeCustomer,
+    items: [{plan: 'plan_CBXbz9i7AIOTzr'}],
+  });
+
   var newUser = new User({
   email: req.body.email,
   password: req.body.password,
   name: req.body.name,
   companyId: req.body.companyId,
-  admin: req.body.admin
+  admin: req.body.admin,
+  payment: req.body.payment,
+  stripeSource: req.body.stripeSource,
+  stripeCustomer: StripeCustomer
   })
 
   newUser.save((err, result) => {
