@@ -9,6 +9,14 @@
       <input class="password" v-model="password" placeholder="*********" v-if="showPass" v-on:keypress.enter="registerUser">
       <button class="togglePass" v-on:click="showPass = !showPass" v-if="!showPass">Show Password</button>
       <button class="togglePass" v-on:click="showPass = !showPass" v-if="showPass">Hide Password</button>
+      <form action="/charge" method="post" id="payment-form">
+        <div class="form-row">
+          <label for="card-element">Credit or debit card</label>
+          <div id="card-element"></div>
+          <div id="card-errors" role="alert"></div>
+        </div>
+        <button>Submit Payment</button>
+      </form>
       <button class="submitRegister" v-on:click="registerUser">Submit</button>
       <button class="back" v-on:click="modal=''; error=false">Back</button>
     </div>
@@ -42,6 +50,7 @@
 
 <script>
 import axios from 'axios'
+import stripe from 'stripe'
 
 export default {
   name: 'Register',
@@ -59,6 +68,9 @@ export default {
       error: false,
       taken: false
     }
+  },
+  created () {
+    this.stripeSetup()
   },
   methods: {
     registerUser () {
@@ -121,6 +133,59 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    },
+    stripeSetup () {
+      elements.create('card')
+      card.mount('#card-element')
+      card.addEventListener('change', function(event) {
+        var displayError = document.getElementById('card-errors')
+        if (event.error) {
+          displayError.textContent = event.error.message
+        } else {
+          displayError.textContent = ''
+        }
+      })
+      var form = document.getElementById('payment-form')
+      form.addEventListener('submit', function(event) {
+        event.preventDefault()
+        const {source, error} = await stripe.createSource(card, ownerInfo)
+        if (error) {
+          const errorElement = document.getElementById('card-errors')
+          errorElement.textContent = error.message
+        } else {
+          stripeSourceHandler(source)
+        }
+        stripe.createToken(card).then(function(result) {
+          if (result.error) {
+            var errorElement = document.getElementById('card-errors')
+            errorElement.textContent = result.error.message
+          } else {
+              stripeTokenHandler(result.token)
+              const stripeSourceHandler = (source) {
+              const form = document.getElementById('payment-form')
+              const hiddenInput = document.createElement('input')
+              hiddenInput.setAttribute('type', 'hidden')
+              hiddenInput.setAttribute('name', 'stripeSource')
+              hiddenInput.setAttribute('value', source.id)
+              form.appendChild(hiddenInput)
+              form.submit()
+              stripe.customers.create({
+                email: "",
+                source: ""
+              }, function(err, customer) {
+              })
+            }
+          }
+          var stripe = require("stripe")("");
+          stripe.charges.create({
+            amount: 1000,
+            currency: "usd",
+            customer: "",
+            source: "",
+          }, function(err, charge) {
+          });
+        })
+      })
     }
   }
 }
@@ -150,6 +215,29 @@ export default {
   select option[data-default] {
     color: #888;
   }
+
+.StripeElement {
+  background-color: white;
+  height: 40px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  box-shadow: 0 1px 3px 0 #e6ebf1;
+  -webkit-transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus {
+  box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.StripeElement--invalid {
+  border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+  background-color: #fefde5 !important;
+}
 
   button {
     background:  @grey;
