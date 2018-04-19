@@ -68,10 +68,7 @@ export default {
       error: false,
       taken: false
     }
-  },
-  created () {
-    this.stripeSetup()
-  },
+  }
   methods: {
     registerUser () {
       let vue = this
