@@ -10,7 +10,7 @@ var router = express.Router();
 var mongoose = require("mongoose");
 var User = mongoose.model("User");
 var bcrypt = require('bcryptjs');
-var stripe = require("stripe")("sk_test_BQokikJOvBiI2HlWgH4olfQ2");
+var stripe = require("stripe")("pk_live_dMLr0hShLxaZmXesv1buhndd");
 var ExtractJwt = passportJWT.ExtractJwt;
 var JwtStrategy = passportJWT.Strategy;
 
@@ -76,7 +76,7 @@ router.post("/", (req,res) => {
 
   const subscription = stripe.subscriptions.create({
     customer: StripeCustomer,
-    items: [{plan: 'plan_CBXbz9i7AIOTzr'}],
+    items: [{plan: 'plan_Chp8vqhbDhX0AO'}],
   });
 
   var newUser = new User({
@@ -138,6 +138,9 @@ router.put("/:id", passport.authenticate('jwt', { session: false }), (req, res) 
         user.companyId = req.body.companyId || user.companyId;
         user.lastClockType = req.body.lastClockType || user.lastClockType;
         user.admin = req.body.admin || user.admin;
+        user.payment = req.body.payment || user.payment;
+        user.stripeSource = req.body.stripeSource || user.stripeSource;
+        user.stripeCustomer = req.body.stripeCustomer || user.stripeCustomer;
 
         user.save(function (err, user) {
             if (err) {
