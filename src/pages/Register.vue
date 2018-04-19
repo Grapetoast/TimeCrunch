@@ -152,12 +152,12 @@ export default {
         } else {
           stripeSourceHandler(source)
         }
-        stripe.createToken(card).then(function(result) {
+        stripe.createSource(card).then(function(result) {
           if (result.error) {
             var errorElement = document.getElementById('card-errors')
             errorElement.textContent = result.error.message
           } else {
-              stripeTokenHandler(result.token)
+              stripeSourceHandler(result.source)
               const stripeSourceHandler = (source) {
               const form = document.getElementById('payment-form')
               const hiddenInput = document.createElement('input')
@@ -173,14 +173,14 @@ export default {
               })
             }
           }
-          var stripe = require("stripe")("");
+          var stripe = require("stripe")("")
           stripe.charges.create({
             amount: 1000,
             currency: "usd",
             customer: "",
-            source: "",
+            source: ""
           }, function(err, charge) {
-          });
+          })
         })
       })
     }
