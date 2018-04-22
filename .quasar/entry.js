@@ -47,6 +47,9 @@ plugins.push(pluginAxios)
 import pluginMapbox from 'src/plugins/mapbox'
 plugins.push(pluginMapbox)
 
+import pluginStripe from 'src/plugins/stripe'
+plugins.push(pluginStripe)
+
 plugins.forEach(plugin => plugin({ app, router, Vue }))
 
 

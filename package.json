@@ -19,6 +19,7 @@
     "mapbox-gl": "^0.44.1",
     "mapbox-gl-vue": "^1.7.0",
     "npm": "^5.8.0",
+    "scriptjs": "^2.5.8",
     "stripe": "^5.8.0"
   },
   "devDependencies": {

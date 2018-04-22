@@ -15,7 +15,7 @@
           <div id="card-element"></div>
           <div id="card-errors" role="alert"></div>
         </div>
-        <button>Submit Payment</button>
+        <button>Submit</button>
       </form>
       <button class="submitRegister" v-on:click="registerUser">Submit</button>
       <button class="back" v-on:click="modal=''; error=false">Back</button>
@@ -50,7 +50,6 @@
 
 <script>
 import axios from 'axios'
-import stripe from 'stripe'
 
 export default {
   name: 'Register',
@@ -63,13 +62,19 @@ export default {
       password: '',
       name: '',
       company: false,
+      payment: false,
       companyId: '',
       companyName: '',
+      stripeSource: '',
       error: false,
-      taken: false
+      taken: false,
+      stripe: ''
     }
   },
-  created () {
+  async mounted () {
+    let vue = this
+    await this.$Stripe()
+    vue.stripe = Stripe('pk_live_dMLr0hShLxaZmXesv1buhndd')
     this.stripeSetup()
   },
   methods: {
@@ -93,7 +98,9 @@ export default {
         password: vue.password,
         name: vue.name,
         companyId: vue.companyId,
-        admin: vue.company
+        admin: vue.company,
+        payment: vue.payment,
+        stripeSource: vue.stripeSource
       })
         .then(function (user) {
           console.log(user.data.token)
@@ -135,9 +142,34 @@ export default {
         })
     },
     stripeSetup () {
+      let vue = this
+      var elements = vue.stripe.elements()
       elements.create('card')
+      let ownerInfo = {
+        owner: {
+          name: vue.name,
+          email: vue.email
+        }
+      }
+      var style = {
+        base: {
+          color: '#32325d',
+          lineHeight: '18px',
+          fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+          fontSmoothing: 'antialiased',
+          fontSize: '16px',
+          '::placeholder': {
+            color: '#aab7c4'
+          }
+        },
+        invalid: {
+          color: '#fa755a',
+          iconColor: '#fa755a'
+        }
+      }
+      let card = elements.create('card', {style: style})
       card.mount('#card-element')
-      card.addEventListener('change', function(event) {
+      card.addEventListener('change', function (event) {
         var displayError = document.getElementById('card-errors')
         if (event.error) {
           displayError.textContent = event.error.message
@@ -146,46 +178,29 @@ export default {
         }
       })
       var form = document.getElementById('payment-form')
-      form.addEventListener('submit', function(event) {
+      form.addEventListener('submit', function (event) {
         event.preventDefault()
-        const {source, error} = await stripe.createSource(card, ownerInfo)
+        const {source, error} = vue.stripe.createSource(card, ownerInfo)
         if (error) {
           const errorElement = document.getElementById('card-errors')
           errorElement.textContent = error.message
         } else {
-          stripeSourceHandler(source)
+          vue.stripeSourceHandler(source)
         }
-        stripe.createToken(card).then(function(result) {
-          if (result.error) {
-            var errorElement = document.getElementById('card-errors')
-            errorElement.textContent = result.error.message
-          } else {
-              stripeTokenHandler(result.token)
-              const stripeSourceHandler = (source) {
-              const form = document.getElementById('payment-form')
-              const hiddenInput = document.createElement('input')
-              hiddenInput.setAttribute('type', 'hidden')
-              hiddenInput.setAttribute('name', 'stripeSource')
-              hiddenInput.setAttribute('value', source.id)
-              form.appendChild(hiddenInput)
-              form.submit()
-              stripe.customers.create({
-                email: "",
-                source: ""
-              }, function(err, customer) {
-              })
-            }
-          }
-          var stripe = require("stripe")("");
-          stripe.charges.create({
-            amount: 1000,
-            currency: "usd",
-            customer: "",
-            source: "",
-          }, function(err, charge) {
-          });
-        })
       })
+    },
+    stripeSourceHandler (source) {
+      let vue = this
+      // Insert the source ID into the form so it gets submitted to the server
+      const form = document.getElementById('payment-form')
+      const hiddenInput = document.createElement('input')
+      hiddenInput.setAttribute('type', 'hidden')
+      hiddenInput.setAttribute('name', 'stripeSource')
+      hiddenInput.setAttribute('value', source.id)
+      form.appendChild(hiddenInput)
+      vue.stripeSource = source
+      vue.payment = true
+      vue.registerUser()
     }
   }
 }
