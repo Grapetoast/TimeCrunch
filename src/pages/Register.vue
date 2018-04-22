@@ -72,10 +72,8 @@ export default {
     }
   },
   async mounted () {
-    let vue = this
-    await this.$Stripe()
-    vue.stripe = Stripe('pk_live_dMLr0hShLxaZmXesv1buhndd')
-    this.stripeSetup()
+    var stripe = this.$Stripe('pk_live_dMLr0hShLxaZmXesv1buhndd')
+    this.stripeSetup(stripe)
   },
   methods: {
     registerUser () {
@@ -141,9 +139,9 @@ export default {
           console.log(error)
         })
     },
-    stripeSetup () {
+    stripeSetup (stripe) {
       let vue = this
-      var elements = vue.stripe.elements()
+      var elements = stripe.elements()
       elements.create('card')
       let ownerInfo = {
         owner: {
