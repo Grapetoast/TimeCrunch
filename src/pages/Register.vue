@@ -195,7 +195,7 @@ export default {
       hiddenInput.setAttribute('name', 'stripeSource')
       hiddenInput.setAttribute('value', source.id)
       form.appendChild(hiddenInput)
-      vue.stripeSource = source
+      vue.stripeSource = source.id
       vue.payment = true
       vue.registerUser()
     }
