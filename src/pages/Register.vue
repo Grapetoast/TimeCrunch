@@ -142,7 +142,6 @@ export default {
     stripeSetup (stripe) {
       let vue = this
       var elements = stripe.elements()
-      elements.create('card')
       let ownerInfo = {
         owner: {
           name: vue.name,
