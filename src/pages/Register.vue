@@ -7,18 +7,6 @@
       <input class="email" v-model="email" placeholder="user@example.com">
       <input class="password" v-model="password" placeholder="*********" type="password" v-if="!showPass" v-on:keypress.enter="registerUser">
       <input class="password" v-model="password" placeholder="*********" v-if="showPass" v-on:keypress.enter="registerUser">
-      <button class="togglePass" v-on:click="showPass = !showPass" v-if="!showPass">Show Password</button>
-      <button class="togglePass" v-on:click="showPass = !showPass" v-if="showPass">Hide Password</button>
-      <form action="/charge" method="post" id="payment-form">
-        <div class="form-row">
-          <label for="card-element">Credit or debit card</label>
-          <div id="card-element"></div>
-          <div id="card-errors" role="alert"></div>
-        </div>
-        <button>Submit</button>
-      </form>
-      <button class="submitRegister" v-on:click="registerUser">Submit</button>
-      <button class="back" v-on:click="modal=''; error=false">Back</button>
     </div>
     <div class="employeeRegister" v-else-if="modal==='employee'">
       <h1>Enter Company Code</h1>
@@ -45,6 +33,16 @@
       </div>
       <button class="back" v-on:click="$router.push('/login')">Back</button>
     </div>
+    <div v-show="modal==='register'">
+      <div class="form-row">
+        <div id="card-element"></div>
+        <div id="card-errors" role="alert"></div>
+      </div>
+      <button class="togglePass" v-on:click="showPass = !showPass" v-if="!showPass">Show Password</button>
+      <button class="togglePass" v-on:click="showPass = !showPass" v-if="showPass">Hide Password</button>
+      <button class="back" v-on:click="modal=''; error=false">Back</button>
+      <button class="submitRegister" v-on:click="submitCard">Submit</button>
+    </div>
   </div>
 </template>
 
@@ -68,12 +66,9 @@ export default {
       stripeSource: '',
       error: false,
       taken: false,
-      stripe: ''
+      stripe: '',
+      card: ''
     }
-  },
-  async mounted () {
-    var stripe = this.$Stripe('pk_live_dMLr0hShLxaZmXesv1buhndd')
-    this.stripeSetup(stripe)
   },
   methods: {
     registerUser () {
@@ -131,6 +126,8 @@ export default {
           if (response.data.length === 0) {
             vue.company = true
             vue.modal = 'register'
+            var stripe = window.Stripe('pk_live_dMLr0hShLxaZmXesv1buhndd')
+            vue.stripeSetup(stripe)
           } else {
             vue.taken = true
           }
@@ -141,13 +138,8 @@ export default {
     },
     stripeSetup (stripe) {
       let vue = this
+      vue.stripe = stripe
       var elements = stripe.elements()
-      let ownerInfo = {
-        owner: {
-          name: vue.name,
-          email: vue.email
-        }
-      }
       var style = {
         base: {
           color: '#32325d',
@@ -164,9 +156,9 @@ export default {
           iconColor: '#fa755a'
         }
       }
-      let card = elements.create('card', {style: style})
-      card.mount('#card-element')
-      card.addEventListener('change', function (event) {
+      vue.card = elements.create('card', {style: style})
+      vue.card.mount('#card-element')
+      vue.card.addEventListener('change', function (event) {
         var displayError = document.getElementById('card-errors')
         if (event.error) {
           displayError.textContent = event.error.message
@@ -174,17 +166,22 @@ export default {
           displayError.textContent = ''
         }
       })
-      var form = document.getElementById('payment-form')
-      form.addEventListener('submit', function (event) {
-        event.preventDefault()
-        const {source, error} = vue.stripe.createSource(card, ownerInfo)
-        if (error) {
-          const errorElement = document.getElementById('card-errors')
-          errorElement.textContent = error.message
-        } else {
-          vue.stripeSourceHandler(source)
+    },
+    submitCard () {
+      let vue = this
+      let ownerInfo = {
+        owner: {
+          name: vue.name,
+          email: vue.email
         }
-      })
+      }
+      const {source, error} = vue.stripe.createSource(vue.card, ownerInfo)
+      if (error) {
+        const errorElement = document.getElementById('card-errors')
+        errorElement.textContent = error.message
+      } else {
+        vue.stripeSourceHandler(source)
+      }
     },
     stripeSourceHandler (source) {
       let vue = this
@@ -231,9 +228,10 @@ export default {
 .StripeElement {
   background-color: white;
   height: 40px;
+  width: 90%;
+  margin-left: 5%;
   padding: 10px 12px;
-  border-radius: 4px;
-  border: 1px solid transparent;
+  border: 1px solid @grey;
   box-shadow: 0 1px 3px 0 #e6ebf1;
   -webkit-transition: box-shadow 150ms ease;
   transition: box-shadow 150ms ease;
@@ -244,7 +242,7 @@ export default {
 }
 
 .StripeElement--invalid {
-  border-color: #fa755a;
+  border-color: @grey;
 }
 
 .StripeElement--webkit-autofill {
@@ -282,7 +280,10 @@ export default {
   }
 
   .submitRegister {
-    width: 35%;
+    width: 90%;
+    height: 40px;
+    margin-left: 5%;
+    margin-top: 10px;
   }
 
   .submitCompany {
@@ -329,7 +330,7 @@ export default {
   }
 
   .back {
-    width: 25%;
+    width: 34%;
     margin-left: 5%;
     margin-top: 10px;
     background-color: @red;
