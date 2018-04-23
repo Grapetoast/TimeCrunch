@@ -74,7 +74,7 @@ export default {
     registerUser () {
       let vue = this
       if (vue.company === true) {
-        axios.post('http://54.186.69.46:81/companys', {
+        axios.post('https://54.186.69.46:81/companys', {
           companyId: vue.companyId,
           companyName: vue.companyName
         })
@@ -86,7 +86,7 @@ export default {
             vue.error = true
           })
       }
-      axios.post('http://54.186.69.46:81/users', {
+      axios.post('https://54.186.69.46:81/users', {
         email: vue.email,
         password: vue.password,
         name: vue.name,
@@ -106,7 +106,7 @@ export default {
     },
     submitCompanyId () {
       let vue = this
-      axios.get('http://54.186.69.46:81/companys/' + vue.companyId)
+      axios.get('https://54.186.69.46:81/companys/' + vue.companyId)
         .then(function (response) {
           vue.companyName = response.data[0].companyName
           vue.modal = 'register'
@@ -120,7 +120,7 @@ export default {
     },
     submitCompany () {
       let vue = this
-      axios.get('http://54.186.69.46:81/companys/' + vue.companyId)
+      axios.get('https://54.186.69.46:81/companys/' + vue.companyId)
         .then(function (response) {
           console.log(response.data.length)
           if (response.data.length === 0) {
@@ -169,17 +169,12 @@ export default {
     },
     submitCard () {
       let vue = this
-      let ownerInfo = {
-        owner: {
-          name: vue.name,
-          email: vue.email
-        }
-      }
-      const {source, error} = vue.stripe.createSource(vue.card, ownerInfo)
+      const {source, error} = vue.stripe.createSource(vue.card)
       if (error) {
         const errorElement = document.getElementById('card-errors')
         errorElement.textContent = error.message
       } else {
+        console.log(source)
         vue.stripeSourceHandler(source)
       }
     },
@@ -262,6 +257,7 @@ export default {
     border: 1px solid @grey;
     width: 90%;
     margin-left: 5%;
+    border-radius: 0;
     height: 40px;
     margin-bottom: 10px;
   }

@@ -34,7 +34,7 @@ export default {
     subscribe () {
       let vue = this
       if (vue.email !== '') {
-        axios.post('http://54.186.69.46:81/leads', {
+        axios.post('https://54.186.69.46:81/leads', {
           email: vue.email.toLowerCase()
         })
           .then(response => {
