@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Tue Apr 24 13:46:26 MST 2018
+#Tue Apr 24 14:05:27 MST 2018
 60.set=ASSET
 52.set=ASSET
 53.base=C\:\\Users\\admin\\Documents\\Coding\\Quasar\\Time-Crunch\\src-cordova\\platforms\\android\\app\\build\\intermediates\\assets\\debug
