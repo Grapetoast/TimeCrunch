@@ -10,7 +10,7 @@ var router = express.Router();
 var mongoose = require("mongoose");
 var User = mongoose.model("User");
 var bcrypt = require('bcryptjs');
-var stripe = require("stripe")("pk_live_dMLr0hShLxaZmXesv1buhndd");
+var stripe = require("stripe")("sk_live_5Letjzf5nUQxCGo6vCCMWQDm");
 var ExtractJwt = passportJWT.ExtractJwt;
 var JwtStrategy = passportJWT.Strategy;
 
@@ -57,50 +57,60 @@ router.post("/login", (req, res) => {
 
 router.post("/", (req,res) => {
   if (req.body.payment === true) {
-    const customer = stripe.customers.create({
+    let customer = stripe.customers.create({
       email: req.body.email,
       source: req.body.stripeSource,
     }, function(err, customer) {
-      const StripeCustomer = customer.id
+      if (err) {
+        console.log(err)
+      }
+      let StripeCustomer = customer.id
+      const subscription = stripe.subscriptions.create({
+        customer: StripeCustomer,
+        items: [{plan: 'plan_Chp8vqhbDhX0AO'}],
+      });
+      createNewUser(StripeCustomer);
     });
   } else {
     User.findOne({"companyId": req.body.companyId, "payment": true}, function (err, users) {
-      const customer = stripe.customers.create({
+      let customer = stripe.customers.create({
         email: req.body.email,
         source: users.stripeSource,
       }, function(err, customer) {
-        const StripeCustomer = customer.id
+        let StripeCustomer = customer.id
+        const subscription = stripe.subscriptions.create({
+          customer: StripeCustomer,
+          items: [{plan: 'plan_Ck0QWtUB1LiEvf'}],
+        });
+        createNewUser(StripeCustomer);
       });
     })
   }
 
-  const subscription = stripe.subscriptions.create({
-    customer: StripeCustomer,
-    items: [{plan: 'plan_Chp8vqhbDhX0AO'}],
-  });
+  function createNewUser (StripeCustomer) {
+    var newUser = new User({
+    email: req.body.email,
+    password: req.body.password,
+    name: req.body.name,
+    companyId: req.body.companyId,
+    admin: req.body.admin,
+    payment: req.body.payment,
+    stripeSource: req.body.stripeSource,
+    stripeCustomer: StripeCustomer
+    })
 
-  var newUser = new User({
-  email: req.body.email,
-  password: req.body.password,
-  name: req.body.name,
-  companyId: req.body.companyId,
-  admin: req.body.admin,
-  payment: req.body.payment,
-  stripeSource: req.body.stripeSource,
-  stripeCustomer: StripeCustomer
-  })
-
-  newUser.save((err, result) => {
-    if(err) {
-      res.send(err);
-    } else {
-      User.findOne({"email": req.body.email}, function (err, users) {
-        var payload = {"id": users.id};
-        var token = jwt.sign(payload, jwtOptions.secretOrKey);
-        res.status(201).json({userId: users.id, token: token, companyId: users.companyId, admin: users.admin});
-      })
-    }
-  })
+    newUser.save((err, result) => {
+      if(err) {
+        res.send(err);
+      } else {
+        User.findOne({"email": req.body.email}, function (err, users) {
+          var payload = {"id": users.id};
+          var token = jwt.sign(payload, jwtOptions.secretOrKey);
+          res.status(201).json({userId: users.id, token: token, companyId: users.companyId, admin: users.admin});
+        })
+      }
+    })
+  }
 })
 
 router.get("/all/:companyId", passport.authenticate('jwt', { session: false }),(req, res) => {

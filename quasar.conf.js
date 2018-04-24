@@ -4,19 +4,11 @@ module.exports = function (ctx) {
   return {
     // app plugins (/src/plugins)
     plugins: [
-      'axios',
-      'mapbox',
-      'stripe'
+      'mapbox'
     ],
     css: [
-      'app.styl'
     ],
     extras: [
-      ctx.theme.mat ? 'roboto-font' : null,
-      'material-icons'
-      // 'ionicons',
-      // 'mdi',
-      // 'fontawesome'
     ],
     supportIE: true,
     vendor: {
@@ -26,9 +18,12 @@ module.exports = function (ctx) {
     build: {
       scopeHoisting: true,
       vueRouterMode: 'history',
-      // gzip: true,
+      gzip: true,
+      minify: true,
+      webpackManifest: true,
+      sourceMap: true,
       // analyze: true,
-      // extractCSS: false,
+      extractCSS: true,
       // useNotifier: false,
       extendWebpack (cfg) {
         cfg.module.rules.push({
@@ -47,27 +42,11 @@ module.exports = function (ctx) {
     // framework: 'all' --- includes everything; for dev only!
     framework: {
       components: [
-        'QLayout',
-        'QLayoutHeader',
-        'QLayoutDrawer',
-        'QPageContainer',
-        'QPage',
-        'QToolbar',
-        'QToolbarTitle',
-        'QBtn',
-        'QIcon',
-        'QList',
-        'QListHeader',
-        'QItem',
-        'QItemMain',
-        'QItemSide'
       ],
       directives: [
-        'Ripple'
       ],
       // Quasar plugins
       plugins: [
-        'Notify'
       ]
     },
     // animations: 'all' --- includes all animations

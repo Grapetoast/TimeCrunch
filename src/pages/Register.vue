@@ -96,8 +96,7 @@ export default {
         stripeSource: vue.stripeSource
       })
         .then(function (user) {
-          console.log(user.data.token)
-          vue.$emit('register', user)
+          vue.$emit('register', {token: user.data.token, id: user.data.userId, admin: user.data.admin})
         })
         .catch(function (error) {
           console.log(error)
@@ -122,7 +121,6 @@ export default {
       let vue = this
       axios.get('https://54.186.69.46:81/companys/' + vue.companyId)
         .then(function (response) {
-          console.log(response.data.length)
           if (response.data.length === 0) {
             vue.company = true
             vue.modal = 'register'
@@ -169,25 +167,19 @@ export default {
     },
     submitCard () {
       let vue = this
-      const {source, error} = vue.stripe.createSource(vue.card)
-      if (error) {
-        const errorElement = document.getElementById('card-errors')
-        errorElement.textContent = error.message
-      } else {
-        console.log(source)
-        vue.stripeSourceHandler(source)
-      }
+      vue.stripe.createSource(vue.card).then(function (result) {
+        if (result.error) {
+          const errorElement = document.getElementById('card-errors')
+          errorElement.textContent = result.error.message
+          console.log(result.error)
+        } else {
+          vue.stripeSourceHandler(result.source.id)
+        }
+      })
     },
     stripeSourceHandler (source) {
       let vue = this
-      // Insert the source ID into the form so it gets submitted to the server
-      const form = document.getElementById('payment-form')
-      const hiddenInput = document.createElement('input')
-      hiddenInput.setAttribute('type', 'hidden')
-      hiddenInput.setAttribute('name', 'stripeSource')
-      hiddenInput.setAttribute('value', source.id)
-      form.appendChild(hiddenInput)
-      vue.stripeSource = source.id
+      vue.stripeSource = source
       vue.payment = true
       vue.registerUser()
     }

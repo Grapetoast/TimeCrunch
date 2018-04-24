@@ -303,6 +303,7 @@ setInterval(clock, 1000)
   padding-top: 20px;
   line-height: 80px;
   color: #fff;
+  background-color: @red;
   box-shadow: 0px 1.5px 5px #000;
   border-bottom: 5px solid #000;
 }
