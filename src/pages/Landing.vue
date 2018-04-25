@@ -3,17 +3,17 @@
     <h1>Your Foolproof Time Management System</h1>
     <p>
       When managing your business, you need innovative and reliable tools to increase
-your profits and cut your costs. Timecrunch allows your business to manage
-employees with precision.
-Time tracking and GPS location monitoring support your company financially &amp;
-logistically, giving the ability to coordinate like never before.
-If it&#39;s time to add a dependable tool to you business&#39;s arsenal - Timecrunch is here
-for you.
+      your profits and cut your costs. Timecrunch allows your business to manage
+      employees with precision.
+      Time tracking and GPS location monitoring support your company financially &amp;
+      logistically, giving the ability to coordinate like never before.
+      If it&#39;s time to add a dependable tool to you business&#39;s arsenal - Timecrunch is here
+      for you.
     </p>
     <h1 v-if="success">Success!!!</h1>
     <h1 v-if="wrong">Error</h1>
     <h2>Sign up for More INformation on TimeCrunch!</h2>
-    <input class="email" v-model="email" placeholder="email"></input>
+    <input class="email" v-model="email" placeholder="email">
     <button class="submit"  v-on:click="subscribe">Sign Up</button>
   </div>
 </template>
