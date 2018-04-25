@@ -22,6 +22,7 @@
     <div class="lunchOut timeBtn" v-on:click="lunchOut">Lunch Start</div>
     <div class="lunchIn timeBtn" v-on:click="lunchIn">Lunch End</div>
     <mapbox id="map" :access-token="mapboxToken" :map-options="mapOptions" @map-load="mapLoaded"></mapbox>
+    <button class="recenter" v-on:click="recenter">Recenter Map</button>
   </div>
 </template>
 
@@ -101,6 +102,24 @@ export default {
       vue.prettyMessage = message
       vue.modal = 'pretty'
     },
+    recenter () {
+      let vue = this
+      navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
+      function locationSuccess (position) {
+        vue.latitude = position.coords.latitude
+        vue.longitude = position.coords.longitude
+        vue.altitude = position.coords.altitude
+        vue.accuracy = position.coords.accuracy
+        vue.altitudeAccuracy = position.coords.altitudeAccuracy
+        vue.coordinates = [vue.longitude, vue.latitude]
+      }
+      function locationFail () {
+        vue.prettyModal('It seems we cant find you, please reload the page and try again.')
+        this.locationError = true
+      }
+      vue.startMarker()
+      vue.mapJump()
+    },
     submitDirections () {
       axios.get('https://api.mapbox.com/directions/v5/mapbox/driving/-112.399444,33.613509;-112,34?geometries=geojson&access_token=pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag', {
       })
@@ -177,19 +196,6 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
-    },
-    locationSuccess (position) {
-      let vue = this
-      vue.latitude = position.coords.latitude
-      vue.longitude = position.coords.longitude
-      vue.altitude = position.coords.altitude
-      vue.accuracy = position.coords.accuracy
-      vue.altitudeAccuracy = position.coords.altitudeAccuracy
-    },
-    locationFail () {
-      let vue = this
-      vue.prettyModal('It seems we cant find you, please reload the page and try again.')
-      this.locationError = true
     },
     clockIn () {
       let vue = this
@@ -279,6 +285,18 @@ setInterval(clock, 1000)
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(7, 100px);
+}
+
+.recenter {
+  position: fixed;
+  width: 100%;
+  font-size: 2em;
+  height: 50px;
+  background-color: @red;
+  color: #fff;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 #map {
