@@ -26,9 +26,9 @@
   "cordova-plugin-device": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-device@^2.0.1"
+      "id": "cordova-plugin-device"
     },
-    "is_top_level": true,
+    "is_top_level": false,
     "variables": {}
   }
 }

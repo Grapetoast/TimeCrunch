@@ -9,7 +9,7 @@
     <title><%= htmlWebpackPlugin.options.productName %></title>
 
     <link rel="icon" href="statics/quasar-logo.png" type="image/x-icon">
-    <link async href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' defer></link>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet'></link>
     <link rel="icon" type="image/png" sizes="32x32" href="statics/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="statics/icons/favicon-16x16.png">
 
@@ -26,7 +26,7 @@
     <meta name="msapplication-TileImage" content="statics/icons/ms-icon-144x144.png">
     <meta name="msapplication-TileColor" content="<%= htmlWebpackPlugin.options.pwaManifest.background_color %>">
     <% } %>
-    <script async src="https://js.stripe.com/v3/" defer></script>
+
     <%= htmlWebpackPlugin.options.headScripts %>
 
     <!--

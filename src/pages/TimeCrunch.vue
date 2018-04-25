@@ -41,7 +41,7 @@ export default {
     if (this.logged === false) {
       this.$router.push('/login')
     }
-    axios.get('https://54.186.69.46:81/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+    axios.get('http://54.186.69.46:81/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
       .then(function (response) {
         vue.lastClockType = response.data.lastClockType
       })
@@ -139,7 +139,7 @@ export default {
     },
     updateLastClockType () {
       let vue = this
-      axios.put('https://54.186.69.46:81/users/' + vue.user.id, {
+      axios.put('http://54.186.69.46:81/users/' + vue.user.id, {
         lastClockType: vue.lastClockType
       }, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
         .then(function (user) {
@@ -158,7 +158,7 @@ export default {
       vue.hours = vue.time.getHours()
       vue.minutes = vue.time.getMinutes()
       vue.seconds = vue.time.getSeconds()
-      axios.post('https://54.186.69.46:81/clocks', {
+      axios.post('http://54.186.69.46:81/clocks', {
         userId: vue.userId,
         clockType: vue.clockType,
         month: vue.month,
@@ -303,7 +303,6 @@ setInterval(clock, 1000)
   padding-top: 20px;
   line-height: 80px;
   color: #fff;
-  background-color: @red;
   box-shadow: 0px 1.5px 5px #000;
   border-bottom: 5px solid #000;
 }

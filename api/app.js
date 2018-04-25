@@ -1,7 +1,7 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var mongoose = require('mongoose');
-var port = 8181;
+var port = 81;
 var app = express();
 var router = express.Router();
 var path = __dirname + "/views/";
