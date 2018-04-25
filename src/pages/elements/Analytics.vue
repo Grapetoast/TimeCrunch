@@ -170,7 +170,7 @@ export default {
   },
   created () {
     let vue = this
-    axios.get('http://54.186.69.46:81/users/all/' + vue.user.companyId, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+    axios.get('https://54.186.69.46:81/users/all/' + vue.user.companyId, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
       .then(function (response) {
         vue.users = response.data
         vue.populateCompanyClocks()
@@ -197,7 +197,7 @@ export default {
       vue.activeUser.email = user.email
       vue.activeUser.admin = user.admin
       vue.populateUserClocks()
-      axios.get('http://54.186.69.46:81/trips/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+      axios.get('https://54.186.69.46:81/trips/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
         .then(function (response) {
           vue.trips = []
           vue.trips = response.data
@@ -271,7 +271,7 @@ export default {
     },
     populateUserClocks () {
       let vue = this
-      axios.get('http://54.186.69.46:81/clocks/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+      axios.get('https://54.186.69.46:81/clocks/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
         .then(function (response) {
           vue.clocks = []
           vue.clocks = response.data
@@ -404,7 +404,7 @@ export default {
       vue.trips = []
       for (i = 0; i < vue.users.length; i++) {
         vue.activeUser.id = vue.users[i]._id
-        axios.get('http://54.186.69.46:81/trips/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+        axios.get('https://54.186.69.46:81/trips/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
           .then(function (response) {
             let j = 0
             for (j = 0; j < response.data.length; j++) {

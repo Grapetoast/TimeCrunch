@@ -40,7 +40,7 @@ export default {
   methods: {
     login () {
       let vue = this
-      axios.post('http://54.186.69.46:81/users/login', {
+      axios.post('https://54.186.69.46:81/users/login', {
         email: vue.email.toLowerCase(),
         password: vue.password
       })

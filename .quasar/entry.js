@@ -13,17 +13,11 @@ import Vue from 'vue'
 Vue.config.productionTip = false
 
 
-import 'quasar-extras/roboto-font'
-
-import 'quasar-extras/material-icons'
-
 
 
 
 import 'quasar-app-styl'
 
-
-import 'src/css/app.styl'
 
 
 import App from 'src/App'
@@ -40,9 +34,6 @@ const app = {
 
 
 const plugins = []
-
-import pluginAxios from 'src/plugins/axios'
-plugins.push(pluginAxios)
 
 import pluginMapbox from 'src/plugins/mapbox'
 plugins.push(pluginMapbox)

@@ -25,7 +25,8 @@
         "plugins": {
             "cordova-plugin-whitelist": {},
             "cordova-plugin-geolocation": {},
-            "cordova-plugin-background-mode": {}
+            "cordova-plugin-background-mode": {},
+            "cordova-plugin-device": {}
         }
     }
 }
