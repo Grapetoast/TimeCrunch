@@ -12,7 +12,7 @@ for you.
     </p>
     <h1 v-if="success">Success!!!</h1>
     <h1 v-if="wrong">Error</h1>
-    <h2>Sign up for More Information on TimeCrunch!</h2>
+    <h2>Sign up for More INformation on TimeCrunch!</h2>
     <input class="email" v-model="email" placeholder="email"></input>
     <button class="submit"  v-on:click="subscribe">Sign Up</button>
   </div>
