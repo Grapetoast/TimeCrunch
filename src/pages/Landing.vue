@@ -1,22 +1,17 @@
 <template>
   <div class="main">
     <h1>Available Now on the Android App Store!</h1>
-    <p>
-      When managing your business, you need innovative and reliable tools to increase
+    <p>When managing your business, you need innovative and reliable tools to increase
       your profits and cut your costs. Timecrunch allows your business to manage
       employees with precision.</p>
-      <h4>Time Tracking and GPS Location Monitoring<h4>To support your company financially &amp;
+    <h4>Time Tracking and GPS Location Monitoring<h4>To support your company financially &amp;
       logistically, giving the ability to coordinate like NEVER before.</p>
-      <h3>Decrease "Lost Time"<br/> & <br/>Maximize Productivity!
-    </h3>
+    <h3>Decrease "Lost Time"<br/> & <br/>Maximize Productivity!</h3>
     <h1 v-if="success">Success!!!</h1>
     <h1 v-if="wrong">Error</h1>
-<<<<<<< HEAD
     <h2>Sign Up for our Email List to get Updates and News...</h2>
-=======
-    <h2>Sign up for More Information on TimeCrunch!</h2>
->>>>>>> 4d0dae068fc725839330ea2f9c324dbb19393cb6
-    <input class="email" v-model="email" placeholder="email">
+    <h2>Sign up for More INformation on TimeCrunch!</h2>
+    <input class="email" v-model="email" placeholder="email"></input>
     <button class="submit"  v-on:click="subscribe">Sign Up</button>
   </div>
 </template>
@@ -37,7 +32,7 @@ export default {
     subscribe () {
       let vue = this
       if (vue.email !== '') {
-        axios.post('http://54.186.69.46:81/leads', {
+        axios.post('https://54.186.69.46:81/leads', {
           email: vue.email.toLowerCase()
         })
           .then(response => {
