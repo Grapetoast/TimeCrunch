@@ -224,6 +224,10 @@ export default {
   transition: box-shadow 150ms ease;
 }
 
+#card-errors {
+  text-align: center;
+}
+
 .StripeElement--focus {
   box-shadow: 0 1px 3px 0 #cfd7df;
 }
