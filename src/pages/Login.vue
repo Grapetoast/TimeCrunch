@@ -113,7 +113,7 @@ export default {
   }
 
   ::placeholder {
-    color: @grey;
+    color: grey;
     font-size: 1em;
   }
 
