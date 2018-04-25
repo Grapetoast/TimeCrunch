@@ -1,6 +1,6 @@
 
 export default [
-  { path: '/', component: () => import('pages/TimeCrunch') },
+  { path: '/', component: () => import('pages/Landing') },
   { path: '/Login', component: () => import('pages/Login') },
   { path: '/Register', component: () => import('pages/Register') },
   { path: '/Account', component: () => import('pages/Account') },
