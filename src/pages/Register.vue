@@ -7,10 +7,6 @@
       <input class="email" v-model="email" placeholder="user@example.com">
       <input class="password" v-model="password" placeholder="*********" type="password" v-if="!showPass" v-on:keypress.enter="registerUser">
       <input class="password" v-model="password" placeholder="*********" v-if="showPass" v-on:keypress.enter="registerUser">
-      <button class="togglePass" v-on:click="showPass = !showPass" v-if="!showPass">Show Password</button>
-      <button class="togglePass" v-on:click="showPass = !showPass" v-if="showPass">Hide Password</button>
-      <button class="submitRegister" v-on:click="registerUser">Submit</button>
-      <button class="back" v-on:click="modal=''; error=false">Back</button>
     </div>
     <div class="employeeRegister" v-else-if="modal==='employee'">
       <h1>Enter Company Code</h1>
@@ -37,6 +33,16 @@
       </div>
       <button class="back" v-on:click="$router.push('/login')">Back</button>
     </div>
+    <div v-show="modal==='register'">
+      <div class="form-row">
+        <div id="card-element"></div>
+        <div id="card-errors" role="alert"></div>
+      </div>
+      <button class="togglePass" v-on:click="showPass = !showPass" v-if="!showPass">Show Password</button>
+      <button class="togglePass" v-on:click="showPass = !showPass" v-if="showPass">Hide Password</button>
+      <button class="back" v-on:click="modal=''; error=false">Back</button>
+      <button class="submitRegister" v-on:click="submitCard">Submit</button>
+    </div>
   </div>
 </template>
 
@@ -54,17 +60,21 @@ export default {
       password: '',
       name: '',
       company: false,
+      payment: false,
       companyId: '',
       companyName: '',
+      stripeSource: '',
       error: false,
-      taken: false
+      taken: false,
+      stripe: '',
+      card: ''
     }
   },
   methods: {
     registerUser () {
       let vue = this
       if (vue.company === true) {
-        axios.post('http://54.186.69.46:81/companys', {
+        axios.post('https://54.186.69.46:81/companys', {
           companyId: vue.companyId,
           companyName: vue.companyName
         })
@@ -76,16 +86,17 @@ export default {
             vue.error = true
           })
       }
-      axios.post('http://54.186.69.46:81/users', {
+      axios.post('https://54.186.69.46:81/users', {
         email: vue.email,
         password: vue.password,
         name: vue.name,
         companyId: vue.companyId,
-        admin: vue.company
+        admin: vue.company,
+        payment: vue.payment,
+        stripeSource: vue.stripeSource
       })
         .then(function (user) {
-          console.log(user.data.token)
-          vue.$emit('register', user)
+          vue.$emit('register', {token: user.data.token, id: user.data.userId, admin: user.data.admin})
         })
         .catch(function (error) {
           console.log(error)
@@ -94,7 +105,7 @@ export default {
     },
     submitCompanyId () {
       let vue = this
-      axios.get('http://54.186.69.46:81/companys/' + vue.companyId)
+      axios.get('https://54.186.69.46:81/companys/' + vue.companyId)
         .then(function (response) {
           vue.companyName = response.data[0].companyName
           vue.modal = 'register'
@@ -108,12 +119,13 @@ export default {
     },
     submitCompany () {
       let vue = this
-      axios.get('http://54.186.69.46:81/companys/' + vue.companyId)
+      axios.get('https://54.186.69.46:81/companys/' + vue.companyId)
         .then(function (response) {
-          console.log(response.data.length)
           if (response.data.length === 0) {
             vue.company = true
             vue.modal = 'register'
+            var stripe = window.Stripe('pk_live_dMLr0hShLxaZmXesv1buhndd')
+            vue.stripeSetup(stripe)
           } else {
             vue.taken = true
           }
@@ -121,6 +133,55 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    },
+    stripeSetup (stripe) {
+      let vue = this
+      vue.stripe = stripe
+      var elements = stripe.elements()
+      var style = {
+        base: {
+          color: '#32325d',
+          lineHeight: '18px',
+          fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+          fontSmoothing: 'antialiased',
+          fontSize: '16px',
+          '::placeholder': {
+            color: '#aab7c4'
+          }
+        },
+        invalid: {
+          color: '#fa755a',
+          iconColor: '#fa755a'
+        }
+      }
+      vue.card = elements.create('card', {style: style})
+      vue.card.mount('#card-element')
+      vue.card.addEventListener('change', function (event) {
+        var displayError = document.getElementById('card-errors')
+        if (event.error) {
+          displayError.textContent = event.error.message
+        } else {
+          displayError.textContent = ''
+        }
+      })
+    },
+    submitCard () {
+      let vue = this
+      vue.stripe.createSource(vue.card).then(function (result) {
+        if (result.error) {
+          const errorElement = document.getElementById('card-errors')
+          errorElement.textContent = result.error.message
+          console.log(result.error)
+        } else {
+          vue.stripeSourceHandler(result.source.id)
+        }
+      })
+    },
+    stripeSourceHandler (source) {
+      let vue = this
+      vue.stripeSource = source
+      vue.payment = true
+      vue.registerUser()
     }
   }
 }
@@ -151,6 +212,30 @@ export default {
     color: #888;
   }
 
+.StripeElement {
+  background-color: white;
+  height: 40px;
+  width: 90%;
+  margin-left: 5%;
+  padding: 10px 12px;
+  border: 1px solid @grey;
+  box-shadow: 0 1px 3px 0 #e6ebf1;
+  -webkit-transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus {
+  box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.StripeElement--invalid {
+  border-color: @grey;
+}
+
+.StripeElement--webkit-autofill {
+  background-color: #fefde5 !important;
+}
+
   button {
     background:  @grey;
     color: #fff;
@@ -164,6 +249,7 @@ export default {
     border: 1px solid @grey;
     width: 90%;
     margin-left: 5%;
+    border-radius: 0;
     height: 40px;
     margin-bottom: 10px;
   }
@@ -182,7 +268,10 @@ export default {
   }
 
   .submitRegister {
-    width: 35%;
+    width: 90%;
+    height: 40px;
+    margin-left: 5%;
+    margin-top: 10px;
   }
 
   .submitCompany {
@@ -229,7 +318,7 @@ export default {
   }
 
   .back {
-    width: 25%;
+    width: 34%;
     margin-left: 5%;
     margin-top: 10px;
     background-color: @red;

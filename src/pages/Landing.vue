@@ -11,7 +11,11 @@
     </h3>
     <h1 v-if="success">Success!!!</h1>
     <h1 v-if="wrong">Error</h1>
+<<<<<<< HEAD
     <h2>Sign Up for our Email List to get Updates and News...</h2>
+=======
+    <h2>Sign up for More Information on TimeCrunch!</h2>
+>>>>>>> 4d0dae068fc725839330ea2f9c324dbb19393cb6
     <input class="email" v-model="email" placeholder="email">
     <button class="submit"  v-on:click="subscribe">Sign Up</button>
   </div>

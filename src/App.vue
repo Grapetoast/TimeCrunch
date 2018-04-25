@@ -101,12 +101,11 @@ export default {
     },
     register (user) {
       let vue = this
-      if (user.token !== null) {
-        vue.user.token = user.data.token
-        vue.user.id = user.data.id
-        vue.user.admin = user.data.admin
+      if (user.token) {
+        vue.user.token = user.token
+        vue.user.id = user.id
+        vue.user.admin = user.admin
         vue.logged = true
-        window.subscribe(vue.user.token, vue.user.companyId)
         vue.$router.push('/')
       } else {
         vue.logged = false

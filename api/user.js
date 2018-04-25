@@ -28,6 +28,19 @@ var UserSchema = new mongoose.Schema({
     type: Boolean,
     required: false,
     default: false
+  },
+  payment: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
+  stripeSource: {
+    type: String,
+    required: false
+  },
+  stripeCustomer: {
+    type: String,
+    required: true
   }
 })
 

@@ -12,6 +12,6 @@ import 'quasar-framework/dist/quasar.ie.polyfills'
 
 
 import Vue from 'vue'
-import Quasar, {QLayout,QLayoutHeader,QLayoutDrawer,QPageContainer,QPage,QToolbar,QToolbarTitle,QBtn,QIcon,QList,QListHeader,QItem,QItemMain,QItemSide,Ripple,Notify} from 'quasar'
+import Quasar from 'quasar'
 
-Vue.use(Quasar, {components: {QLayout,QLayoutHeader,QLayoutDrawer,QPageContainer,QPage,QToolbar,QToolbarTitle,QBtn,QIcon,QList,QListHeader,QItem,QItemMain,QItemSide},directives: {Ripple},plugins: {Notify}})
+Vue.use(Quasar)
