@@ -10,7 +10,7 @@ var router = express.Router();
 var mongoose = require("mongoose");
 var User = mongoose.model("User");
 var bcrypt = require('bcryptjs');
-var stripe = require("stripe")("sk_test_aCYXyKYCN5iDhqBDn5PZ5CUY");
+var stripe = require("stripe")("sk_live_5Letjzf5nUQxCGo6vCCMWQDm");
 var ExtractJwt = passportJWT.ExtractJwt;
 var JwtStrategy = passportJWT.Strategy;
 
@@ -67,7 +67,7 @@ router.post("/", (req,res) => {
       let StripeCustomer = customer.id
       const subscription = stripe.subscriptions.create({
         customer: StripeCustomer,
-        items: [{plan: 'plan_Ck0QWtUB1LiEvf'}],
+        items: [{plan: 'plan_Chp8vqhbDhX0AO'}],
       });
       createNewUser(StripeCustomer);
     });
