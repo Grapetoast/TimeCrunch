@@ -1,18 +1,17 @@
 <template>
   <div class="main">
-    <h1>Your Foolproof Time Management System</h1>
+    <h1>Available Now on the Android App Store!</h1>
     <p>
       When managing your business, you need innovative and reliable tools to increase
       your profits and cut your costs. Timecrunch allows your business to manage
-      employees with precision.
-      Time tracking and GPS location monitoring support your company financially &amp;
-      logistically, giving the ability to coordinate like never before.
-      If it&#39;s time to add a dependable tool to you business&#39;s arsenal - Timecrunch is here
-      for you.
-    </p>
+      employees with precision.</p>
+      <h4>Time Tracking and GPS Location Monitoring<h4>To support your company financially &amp;
+      logistically, giving the ability to coordinate like NEVER before.</p>
+      <h3>Decrease "Lost Time"<br/> & <br/>Maximize Productivity!
+    </h3>
     <h1 v-if="success">Success!!!</h1>
     <h1 v-if="wrong">Error</h1>
-    <h2>Sign up for More INformation on TimeCrunch!</h2>
+    <h2>Sign Up for our Email List to get Updates and News...</h2>
     <input class="email" v-model="email" placeholder="email">
     <button class="submit"  v-on:click="subscribe">Sign Up</button>
   </div>
@@ -63,10 +62,27 @@ export default {
   }
   p {
     margin-left: 5%;
+    width: 90%;
+  }
+h4 {
+    color: @red;
+    font-size: 1.1em;
+    text-align: center;
   }
   h2 {
     color: @red;
     margin-left: 5%;
+    font-size: 1em;
+  }
+  h3 {
+    color: grey;
+    margin-left: 5%;
+    width: 90%;
+    font-size: 1.5em;
+    font-style: italic ;
+    text-align: center;
+    line-height: 30px;
+    font-weight: 400;
   }
   .email {
     border: 1px solid @grey;
