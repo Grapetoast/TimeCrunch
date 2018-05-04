@@ -191,7 +191,7 @@ export default {
     },
     postTrip () {
       let vue = this
-      axios.post('http://54.186.69.46:81/trips', {
+      axios.post('https://api.timecrunchapp.com/trips', {
         userId: vue.user.id,
         start: {
           latitude: vue.trip.start.latitude,

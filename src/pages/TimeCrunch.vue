@@ -42,7 +42,7 @@ export default {
     if (this.logged === false) {
       this.$router.push('/login')
     }
-    axios.get('https://54.186.69.46:81/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+    axios.get('https://api.timecrunchapp.com/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
       .then(function (response) {
         vue.lastClockType = response.data.lastClockType
       })
@@ -158,7 +158,7 @@ export default {
     },
     updateLastClockType () {
       let vue = this
-      axios.put('https://54.186.69.46:81/users/' + vue.user.id, {
+      axios.put('https://api.timecrunchapp.com/users/' + vue.user.id, {
         lastClockType: vue.lastClockType
       }, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
         .then(function (user) {
@@ -177,7 +177,7 @@ export default {
       vue.hours = vue.time.getHours()
       vue.minutes = vue.time.getMinutes()
       vue.seconds = vue.time.getSeconds()
-      axios.post('https://54.186.69.46:81/clocks', {
+      axios.post('https://api.timecrunchapp.com/clocks', {
         userId: vue.userId,
         clockType: vue.clockType,
         month: vue.month,
