@@ -138,7 +138,7 @@ export default {
       let vue = this
       vue.map = map
       vue.map.jumpTo({
-        center: [vue.longitude, vue.latitude],
+        center: [vue.longitude, (vue.latitude - 0.002)],
         zoom: 15
       })
       vue.startMarker()
@@ -146,7 +146,7 @@ export default {
     mapJump () {
       let vue = this
       vue.map.jumpTo({
-        center: [vue.longitude, vue.latitude],
+        center: [vue.longitude, (vue.latitude - 0.002)],
         zoom: 15
       })
     },
@@ -306,6 +306,8 @@ setInterval(clock, 1000)
 .recenter {
   position: fixed;
   width: 100%;
+  margin: 0;
+  padding: 0;
   font-size: 2em;
   height: 50px;
   background-color: @red;
@@ -319,10 +321,11 @@ setInterval(clock, 1000)
   width: 100%;
   height: 100%;
   padding-top: none;
+  padding-bottom: 50px;
   z-index: 0;
   position: fixed;
   top: 224px;
-  bottom: 0;
+  bottom: 50px;
 }
 
 .clock {
