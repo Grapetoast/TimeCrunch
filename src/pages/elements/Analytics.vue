@@ -285,28 +285,21 @@ export default {
                 let clockLength = vue.days[q].clocks.length - 1
                 for (w = 0; w < vue.days[q].clocks.length; w++) {
                   if (vue.days[q].clocks[w].hours > response.data[j].hours) {
-                    console.log('splice')
-                    console.log(response.data[j])
                     vue.days[q].clocks.splice((w), 0, response.data[j])
                     break
                   } else if (vue.days[q].clocks[w].hours === response.data[j].hours && vue.days[q].clocks[w].minutes > response.data[j].minutes) {
-                    console.log('splice')
-                    console.log(response.data[j])
                     vue.days[q].clocks.splice((w), 0, response.data[j])
                     break
                   } else if (vue.days[q].clocks[w].hours === response.data[j].hours && vue.days[q].clocks[w].minutes === response.data[j].minutes) {
-                    console.log('splice')
-                    console.log(response.data[j])
                     vue.days[q].clocks.splice((w), 0, response.data[j])
                     break
                   } else if (vue.days[q].clocks[clockLength].hours < response.data[j].hours) {
-                    console.log('push')
-                    console.log(response.data[j])
+                    vue.days[q].clocks.push(response.data[j])
+                    break
+                  } else if (vue.days[q].clocks[clockLength].hours === response.data[j].hours && vue.days[q].clocks[clockLength].minutes < response.data[j].minutes) {
                     vue.days[q].clocks.push(response.data[j])
                     break
                   } else if (vue.days[q].clocks[clockLength].hours === response.data[j].hours && vue.days[q].clocks[clockLength].minutes === response.data[j].minutes) {
-                    console.log('push')
-                    console.log(response.data[j])
                     vue.days[q].clocks.push(response.data[j])
                     break
                   }

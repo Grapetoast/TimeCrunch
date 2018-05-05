@@ -104,7 +104,6 @@ export default {
     },
     recenter () {
       let vue = this
-      navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
       function locationSuccess (position) {
         vue.latitude = position.coords.latitude
         vue.longitude = position.coords.longitude
@@ -117,6 +116,7 @@ export default {
         vue.prettyModal('It seems we cant find you, please reload the page and try again.')
         this.locationError = true
       }
+      navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
       vue.startMarker()
       vue.mapJump()
     },
@@ -170,7 +170,19 @@ export default {
     },
     clock () {
       let vue = this
-      navigator.geolocation.getCurrentPosition(vue.locationSuccess, vue.locationFail)
+      function locationSuccess (position) {
+        vue.latitude = position.coords.latitude
+        vue.longitude = position.coords.longitude
+        vue.altitude = position.coords.altitude
+        vue.accuracy = position.coords.accuracy
+        vue.altitudeAccuracy = position.coords.altitudeAccuracy
+        vue.coordinates = [vue.longitude, vue.latitude]
+      }
+      function locationFail () {
+        vue.prettyModal('It seems we cant find you, please reload the page and try again.')
+        this.locationError = true
+      }
+      navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
       this.time = new Date()
       vue.month = vue.time.getMonth()
       vue.day = vue.time.getDate()
@@ -189,9 +201,13 @@ export default {
         longitude: vue.longitude,
         altitude: vue.altitude
       })
-        .then(function () {
-          vue.lastClockType = vue.clockType
-          vue.updateLastClockType()
+        .then(function (clock) {
+          if (clock.status === 201) {
+            vue.lastClockType = vue.clockType
+            vue.updateLastClockType()
+          } else {
+            console.log('failed to clock in')
+          }
         })
         .catch(function (error) {
           console.log(error)
