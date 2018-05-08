@@ -318,6 +318,9 @@ export default {
                   if (vue.days[z].day > response.data[j].day) {
                     vue.days.splice((z), 0, {day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
                     break
+                  } else {
+                    vue.days.push({day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
+                    break
                   }
                 } else if (vue.days[z].month > response.data[j].month) {
                   vue.days.splice((z), 0, {day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
