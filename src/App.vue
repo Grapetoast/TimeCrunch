@@ -5,7 +5,7 @@
       <h2>{{prettyMessage}}</h2>
       <button class="prettyBack" v-on:click="modal=''">Back</button>
     </div>
-    <router-view v-on:login="log" v-on:register="register" v-on:account="account" :logged="logged" :user="user" :accountView="accountView"/>
+    <router-view v-on:login="log" v-on:register="register" v-on:account="account" v-on:clockUpdateType="updateClock" :logged="logged" :user="user" :page="page" :accountView="accountView"/>
   </div>
 </template>
 
@@ -26,11 +26,20 @@ export default {
     vue.user.admin = Boolean(localStorage.getItem('admin'))
     if (vue.user.token !== null) {
       vue.logged = true
+      axios.get('https://api.timecrunchapp.com/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+        .then(function (response) {
+          vue.lastClockType = response.data.lastClockType
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     }
+    vue.tripLogic()
   },
   data: function () {
     return {
       modal: '',
+      page: '',
       accountView: '',
       prettyMessage: '',
       logged: false,
@@ -82,6 +91,10 @@ export default {
       vue.prettyMessage = message
       vue.modal = 'pretty'
     },
+    updateClock (lastClockType) {
+      let vue = this
+      vue.lastClockType = lastClockType
+    },
     account (view) {
       let vue = this
       vue.accountView = view || ''
@@ -124,10 +137,9 @@ export default {
     },
     mileageLogic () {
       let vue = this
-      vue.prettyModal('logic')
       if (vue.firstStarted === true) {
         navigator.geolocation.getCurrentPosition(vue.locationSuccess, vue.locationFail)
-      } else if (vue.lastClockType !== 'out') {
+      } else if (vue.lastClockType === 'in' || 'lunch in') {
         vue.pastCoordinates = vue.coordinates
         navigator.geolocation.getCurrentPosition(vue.mileageLocationSuccess, vue.locationFail)
       }
@@ -146,37 +158,36 @@ export default {
           vue.trip.start.startCoordinates = vue.pastCoordinates
           vue.time = new Date()
           vue.trip.start.month = vue.time.getMonth()
-          vue.trip.start.day = vue.time.getDay()
+          vue.trip.start.day = vue.time.getDate()
           vue.trip.start.hour = vue.time.getHours()
           vue.trip.start.minute = vue.time.getMinutes()
           vue.trip.start.second = vue.time.getSeconds()
-          vue.trip.start.latitude = vue.pastCoordinates[0]
-          vue.trip.start.longitude = vue.pastCoordinates[1]
+          vue.trip.start.latitude = vue.pastCoordinates[1]
+          vue.trip.start.longitude = vue.pastCoordinates[0]
           vue.tripStarted = true
-          vue.prettyModal('trip started')
+          console.log('trip started')
         }
       } else if (vue.tripStarted === true) {
         if (vue.pastCoordinates[0] === vue.coordinates[0] && vue.pastCoordinates[1] === vue.coordinates[1]) {
           vue.trip.end.endCoordinates = vue.coordinates
           vue.time = new Date()
           vue.trip.end.month = vue.time.getMonth()
-          vue.trip.end.day = vue.time.getDay()
+          vue.trip.end.day = vue.time.getDate()
           vue.trip.end.hour = vue.time.getHours()
           vue.trip.end.minute = vue.time.getMinutes()
           vue.trip.end.second = vue.time.getSeconds()
-          vue.trip.end.latitude = vue.coordinates[0]
-          vue.trip.end.longitude = vue.coordinates[1]
+          vue.trip.end.latitude = vue.coordinates[1]
+          vue.trip.end.longitude = vue.coordinates[0]
           vue.trip.userId = vue.user.id
           vue.getDirections()
           vue.postTrip()
-          vue.prettyModal('trip ended')
+          console.log('trip ended')
           vue.tripStarted = false
         }
       }
     },
     locationFail () {
-      let vue = this
-      vue.prettyModal('It seems we cant find you, please reload the page and try again.')
+      alert('It seems we cant find you, please reload the page and try again.')
       this.locationError = true
     },
     getDirections () {
@@ -214,7 +225,7 @@ export default {
         distance: vue.trip.distance
       })
         .then(function (response) {
-          vue.prettyModal('trip Success!!')
+          console.log('trip Success!!')
         })
         .catch(function (error) {
           console.log(error)
@@ -225,7 +236,7 @@ export default {
       try {
         cordova.plugins.backgroundMode.enable()
       } catch (error) {
-        vue.prettyModal('Failed to enable Background Mode, please review settings and restart app.')
+        console.log(error)
       }
       vue.tripLogic()
     },

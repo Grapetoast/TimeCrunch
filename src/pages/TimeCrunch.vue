@@ -1,6 +1,6 @@
 <template>
   <div class="timecrunch">
-    <div v-bind:class="clockLogic"></div>
+    <div v-bind:class="clockLogic">{{hours + ':' + minutes + ':' + seconds}}</div>
     <div class="success" v-if="modal==='success'">
       <h4 class="succIn" v-if="lastClockType==='in'">Clocked In</h4>
       <div class="succInIcon" v-if="lastClockType==='in'"></div>
@@ -33,12 +33,14 @@ import axios from 'axios'
 
 export default {
   name: 'timecrunch',
-  props: ['logged', 'user'],
+  props: ['logged', 'user', 'page'],
   components: {
     'mapbox': Mapbox
   },
   created () {
     let vue = this
+    vue.updateClock()
+    setInterval(vue.updateClock, 1000)
     if (this.logged === false) {
       this.$router.push('/login')
     }
@@ -97,6 +99,19 @@ export default {
     }
   },
   methods: {
+    updateClock () {
+      let vue = this
+      vue.time = new Date()
+      vue.hours = harold(vue.time.getHours())
+      vue.minutes = harold(vue.time.getMinutes())
+      vue.seconds = harold(vue.time.getSeconds())
+      function harold (standIn) {
+        if (standIn < 10) {
+          standIn = '0' + standIn
+        }
+        return standIn
+      }
+    },
     prettyModal (message) {
       let vue = this
       vue.prettyMessage = message
@@ -204,6 +219,7 @@ export default {
         .then(function (clock) {
           if (clock.status === 201) {
             vue.lastClockType = vue.clockType
+            vue.$emit('clockUpdateType', vue.lastClockType)
             vue.updateLastClockType()
           } else {
             console.log('failed to clock in')
@@ -272,20 +288,6 @@ export default {
     }
   }
 }
-function clock () {
-  this.time = new Date()
-  this.hours = this.time.getHours()
-  this.minutes = this.time.getMinutes()
-  this.seconds = this.time.getSeconds()
-  document.querySelectorAll('.clock')[0].innerHTML = harold(this.hours) + ':' + harold(this.minutes) + ':' + harold(this.seconds)
-  function harold (standIn) {
-    if (standIn < 10) {
-      standIn = '0' + standIn
-    }
-    return standIn
-  }
-}
-setInterval(clock, 1000)
 </script>
 
 <style scoped lang="less">
