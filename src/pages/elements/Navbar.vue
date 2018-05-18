@@ -80,9 +80,6 @@ export default {
   }
 
   .logo {
-    background-image: url('../../assets/TClogo.svg');
-    background-repeat: no-repeat;
-    background-size: contain;
     height: 80px;
     width: 200px;
     margin-top: 16px;
@@ -98,7 +95,7 @@ export default {
     grid-column: 3;
     z-index: 8;
     background-repeat: no-repeat;
-    background-image: url("../../assets/navbuttonAnimationWhiteBorder.svg");
+    background-image: url("../../assets/navbuttonAnimationWhite.svg");
   }
 
   .Login {
@@ -144,19 +141,20 @@ export default {
   .navbar {
     width: 100%;
     height: 100px;
-    border-bottom: 5px solid #000;
     position: fixed;
+    background-image: url('../../assets/noise.png');
+    background-size: contain;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 11;
+    z-index: 12;
     text-align: center;
     line-height: 70px;
     font-weight: lighter;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: 100px;
-    background-color: #fff;
+    box-shadow: 0px 2px 3px black;
   }
 
   .navpaneAnimation {
@@ -165,10 +163,10 @@ export default {
     animation-fill-mode: forwards;
     grid-column-start: 1;
     grid-column-end: 4;
-    z-index: 12;
+    z-index: 9;
     opacity: 1;
     width: 100%;
-    height: 77px;
+    height: 75px;
     background: @red;
     color: #fff;
     box-shadow: 1px 2px 2px @grey;
@@ -176,6 +174,7 @@ export default {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     position: relative;
+    margin-top: 1px
   }
 
   .navpaneAnimationExit {
