@@ -61,7 +61,6 @@
 import Mapbox from 'mapbox-gl-vue'
 import mapboxgl from 'mapbox-gl'
 import axios from 'axios'
-import Decimal from 'decimal'
 
 export default {
   name: 'analytics',
@@ -158,8 +157,6 @@ export default {
       diffy: 0,
       minx: 0,
       miny: 0,
-      maxx: 0,
-      maxy: 0,
       zoom: 0,
       zoomNum: 0,
       mapboxToken: 'pk.eyJ1IjoiZ3JhcGV0b2FzdCIsImEiOiJjajhkeHR5YzEwdXp4MnpwbWhqYzI4ejh0In0.JzUlf5asD6yOa5XvjUF5Ag',
@@ -173,7 +170,7 @@ export default {
   },
   created () {
     let vue = this
-    axios.get('https://api.timecrunchapp.com/users/all/' + vue.user.companyId, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+    axios.get('https://54.186.69.46:81/users/all/' + vue.user.companyId, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
       .then(function (response) {
         vue.users = response.data
         vue.populateCompanyClocks()
@@ -200,7 +197,7 @@ export default {
       vue.activeUser.email = user.email
       vue.activeUser.admin = user.admin
       vue.populateUserClocks()
-      axios.get('https://api.timecrunchapp.com/trips/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+      axios.get('https://54.186.69.46:81/trips/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
         .then(function (response) {
           vue.trips = []
           vue.trips = response.data
@@ -209,6 +206,7 @@ export default {
             if (vue.tripDays.length === 0) {
               vue.tripMatch = true
               let thing = response.data[j]
+              console.log(vue.tripDays)
               vue.tripDays.push({day: thing.start.day, month: thing.start.month, visible: false, trips: [thing]})
               break
             }
@@ -273,7 +271,7 @@ export default {
     },
     populateUserClocks () {
       let vue = this
-      axios.get('https://api.timecrunchapp.com/clocks/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+      axios.get('https://54.186.69.46:81/clocks/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
         .then(function (response) {
           vue.clocks = []
           vue.clocks = response.data
@@ -287,21 +285,28 @@ export default {
                 let clockLength = vue.days[q].clocks.length - 1
                 for (w = 0; w < vue.days[q].clocks.length; w++) {
                   if (vue.days[q].clocks[w].hours > response.data[j].hours) {
+                    console.log('splice')
+                    console.log(response.data[j])
                     vue.days[q].clocks.splice((w), 0, response.data[j])
                     break
                   } else if (vue.days[q].clocks[w].hours === response.data[j].hours && vue.days[q].clocks[w].minutes > response.data[j].minutes) {
+                    console.log('splice')
+                    console.log(response.data[j])
                     vue.days[q].clocks.splice((w), 0, response.data[j])
                     break
                   } else if (vue.days[q].clocks[w].hours === response.data[j].hours && vue.days[q].clocks[w].minutes === response.data[j].minutes) {
+                    console.log('splice')
+                    console.log(response.data[j])
                     vue.days[q].clocks.splice((w), 0, response.data[j])
                     break
                   } else if (vue.days[q].clocks[clockLength].hours < response.data[j].hours) {
-                    vue.days[q].clocks.push(response.data[j])
-                    break
-                  } else if (vue.days[q].clocks[clockLength].hours === response.data[j].hours && vue.days[q].clocks[clockLength].minutes < response.data[j].minutes) {
+                    console.log('push')
+                    console.log(response.data[j])
                     vue.days[q].clocks.push(response.data[j])
                     break
                   } else if (vue.days[q].clocks[clockLength].hours === response.data[j].hours && vue.days[q].clocks[clockLength].minutes === response.data[j].minutes) {
+                    console.log('push')
+                    console.log(response.data[j])
                     vue.days[q].clocks.push(response.data[j])
                     break
                   }
@@ -311,6 +316,7 @@ export default {
             if (vue.dayMatch === true) {
               vue.dayMatch = false
             } else if (vue.days.length === 0) {
+              console.log('push day')
               vue.days.push({day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
             } else {
               let z = 0
@@ -318,9 +324,6 @@ export default {
                 if (vue.days[z].month === response.data[j].month) {
                   if (vue.days[z].day > response.data[j].day) {
                     vue.days.splice((z), 0, {day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
-                    break
-                  } else {
-                    vue.days.push({day: response.data[j].day, month: response.data[j].month, visible: false, clocks: [response.data[j]]})
                     break
                   }
                 } else if (vue.days[z].month > response.data[j].month) {
@@ -369,15 +372,13 @@ export default {
               seconds: vue.days[q].clocks[i].seconds
             }
             vue.totalTime = {
-              hours: Decimal(Math.abs(Decimal(vue.endTime.hours).sub(vue.startTime.hours).toNumber())).add(vue.totalTime.hours).toNumber(),
-              minutes: Decimal(Math.abs(Decimal(vue.endTime.minutes).sub(vue.startTime.minutes).toNumber())).add(vue.totalTime.minutes).toNumber(),
-              seconds: Decimal(Math.abs(Decimal(vue.endTime.seconds).sub(vue.startTime.seconds).toNumber())).add(vue.totalTime.seconds).toNumber()
+              hours: Math.abs(vue.endTime.hours - vue.startTime.hours) + vue.totalTime.hours,
+              minutes: Math.abs(vue.endTime.minutes - vue.startTime.minutes) + vue.totalTime.minutes,
+              seconds: Math.abs(vue.endTime.seconds - vue.startTime.seconds) + vue.totalTime.seconds
             }
           }
         }
-        let secToMin = Math.floor(Decimal(vue.totalTime.seconds).div(60).toNumber())
-        let minToHour = Math.floor(Decimal(vue.totalTime.minutes).div(60).add(secToMin).toNumber())
-        vue.totalHours = Decimal(vue.totalTime.hours).add(minToHour).toNumber()
+        vue.totalHours = vue.totalTime.hours + Math.floor((vue.totalTime.minutes / 60) + Math.floor(vue.totalTime.seconds / 60))
       }
     },
     viewClock (clock) {
@@ -403,7 +404,7 @@ export default {
       vue.trips = []
       for (i = 0; i < vue.users.length; i++) {
         vue.activeUser.id = vue.users[i]._id
-        axios.get('https://api.timecrunchapp.com/trips/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+        axios.get('https://54.186.69.46:81/trips/' + vue.activeUser.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
           .then(function (response) {
             let j = 0
             for (j = 0; j < response.data.length; j++) {
@@ -424,8 +425,7 @@ export default {
       let i = 0
       for (i = 0; i < vue.trips.length; i++) {
         let distance = vue.trips[i].distance
-        let distanceConv = Math.floor(Decimal(distance).div(1609.34))
-        vue.totalDistance = Decimal(vue.totalDistance).add(distanceConv).toNumber()
+        vue.totalDistance = vue.totalDistance + Math.floor(distance / 1609.34)
       }
     },
     viewTrip (trip) {
@@ -453,118 +453,83 @@ export default {
     },
     tripZoom () {
       let vue = this
-      vue.x = vue.activeTrip.start.longitude
-      vue.y = vue.activeTrip.start.latitude
-      vue.a = vue.activeTrip.end.longitude
-      vue.b = vue.activeTrip.end.latitude
-      vue.x = Decimal(vue.x).toNumber()
-      vue.y = Decimal(vue.y).toNumber()
-      vue.a = Decimal(vue.a).toNumber()
-      vue.b = Decimal(vue.b).toNumber()
+      vue.x = vue.activeTrip.start.latitude
+      vue.y = vue.activeTrip.start.longitude
+      vue.a = vue.activeTrip.end.latitude
+      vue.b = vue.activeTrip.end.longitude
+      vue.x = parseInt(vue.x)
+      vue.y = parseInt(vue.y)
+      vue.a = parseInt(vue.a)
+      vue.b = parseInt(vue.b)
       if (vue.x > vue.a) {
         vue.minx = vue.a
-        vue.maxx = vue.x
       } else {
         vue.minx = vue.x
-        vue.maxx = vue.a
       }
       if (vue.y > vue.b) {
         vue.miny = vue.b
-        vue.maxy = vue.y
       } else {
         vue.miny = vue.y
-        vue.maxy = vue.b
       }
-      if (vue.maxx !== vue.minx) {
-        vue.diffx = Decimal(vue.maxx).sub(vue.minx).toNumber()
-      } else {
-        vue.diffx = 0
-      }
-      if (vue.maxy !== vue.miny) {
-        vue.diffy = Decimal(vue.maxy).sub(vue.miny).toNumber()
-      } else {
-        vue.diffy = 0
-      }
-      vue.cx = Decimal(vue.diffx).div(2).add(vue.minx).toNumber()
+      vue.diffx = Math.abs(vue.x - vue.a)
+      vue.diffy = Math.abs(vue.y - vue.b)
+      vue.cx = (vue.diffx / 2) + vue.minx
       vue.cx = vue.cx.toString()
-      vue.cy = Decimal(vue.diffy).div(2).add(vue.miny).toNumber()
+      vue.cy = (vue.diffy / 2) + vue.miny + (vue.diffy / 4)
       vue.cy = vue.cy.toString()
-      vue.zoomNum = Decimal(vue.diffx).add(vue.diffy).toNumber()
-      console.log(vue.zoomNum)
-      if (vue.zoomNum >= 20) {
+      vue.zoomNum = (vue.diffx + vue.diffy)
+      console.log(vue.x + 'long' + vue.y)
+      console.log(vue.a + 'long' + vue.b)
+      console.log(vue.cx + 'long' + vue.cy)
+      if (vue.zoomNum <= 1) {
         vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
-          zoom: 3
-        })
-      } else if (vue.zoomNum >= 10) {
-        vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
-          zoom: 4
-        })
-      } else if (vue.zoomNum >= 5) {
-        vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
-          zoom: 5
-        })
-      } else if (vue.zoomNum >= 1) {
-        vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
-          zoom: 6
-        })
-      } else if (vue.zoomNum >= 0.1) {
-        vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
+          center: [vue.cx, vue.cy],
           zoom: 7
         })
-      } else if (vue.zoomNum >= 0.001) {
+      } else if (vue.zoomNum <= 0.1) {
         vue.map.jumpTo({
           center: [vue.cx, vue.cy],
           zoom: 8
         })
-      } else if (vue.zoomNum >= 0.0001) {
+      } else if (vue.zoomNum <= 0.01) {
         vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
+          center: [vue.cx, vue.cy],
           zoom: 9
         })
-      } else if (vue.zoomNum >= 0.00001) {
+      } else if (vue.zoomNum <= 0.001) {
         vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
+          center: [vue.cx, vue.cy],
           zoom: 10
         })
-      } else if (vue.zoomNum >= 0.000001) {
+      } else if (vue.zoomNum <= 0.0001) {
         vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
+          center: [vue.cx, vue.cy],
           zoom: 11
         })
-      } else if (vue.zoomNum >= 0.0000001) {
+      } else if (vue.zoomNum <= 0.00001) {
         vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
+          center: [vue.cx, vue.cy],
           zoom: 12
         })
-      } else if (vue.zoomNum >= 0.00000001) {
+      } else if (vue.zoomNum <= 0.000001) {
         vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
+          center: [vue.cx, vue.cy],
           zoom: 13
         })
-      } else if (vue.zoomNum >= 0.000000001) {
+      } else if (vue.zoomNum <= 0.0000001) {
         vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
+          center: [vue.cx, vue.cy],
           zoom: 14
         })
-      } else if (vue.zoomNum >= 0.0000000001) {
+      } else if (vue.zoomNum <= 0.00000001) {
         vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
+          center: [vue.cx, vue.cy],
           zoom: 15
         })
-      } else if (vue.zoomNum >= 0.000000000001) {
+      } else if (vue.zoomNum <= 0.000000001) {
         vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
+          center: [vue.cx, vue.cy],
           zoom: 16
-        })
-      } else {
-        vue.map.jumpTo({
-          center: [vue.cy, vue.cx],
-          zoom: 5
         })
       }
     },

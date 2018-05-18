@@ -65,7 +65,7 @@ export default {
   methods: {
     updateUser () {
       let vue = this
-      axios.put('https://api.timecrunchapp.com/users/' + vue.user.id, {
+      axios.put('https://54.186.69.46:81/users/' + vue.user.id, {
         email: vue.activeUser.email,
         name: vue.activeUser.name
       }, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
@@ -80,7 +80,7 @@ export default {
     },
     updatePass () {
       let vue = this
-      axios.put('https://api.timecrunchapp.com/users/' + vue.user.id, {
+      axios.put('https://54.186.69.46:81/users/' + vue.user.id, {
         password: vue.activeUser.password
       }, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
         .then(function (user) {
@@ -97,7 +97,7 @@ export default {
     },
     populateActiveUser () {
       let vue = this
-      axios.get('https://api.timecrunchapp.com/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+      axios.get('https://54.186.69.46:81/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
         .then(function (response) {
           vue.activeUser.email = response.data.email
           vue.activeUser.name = response.data.name
@@ -108,7 +108,7 @@ export default {
     },
     registerUser () {
       let vue = this
-      axios.post('https://api.timecrunchapp.com/users', {
+      axios.post('https://54.186.69.46:81/users', {
         email: vue.activeUser.email,
         password: vue.activeUser.password,
         name: vue.activeUser.name

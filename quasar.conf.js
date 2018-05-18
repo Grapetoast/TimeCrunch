@@ -92,7 +92,7 @@ module.exports = function (ctx) {
       }
     },
     cordova: {
-       id: 'timecrunch.thumbnail.com'
+      // id: 'org.cordova.quasar.app'
     },
     electron: {
       extendWebpack (cfg) {

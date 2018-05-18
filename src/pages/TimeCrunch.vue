@@ -1,6 +1,6 @@
 <template>
   <div class="timecrunch">
-    <div v-bind:class="clockLogic">{{hours + ':' + minutes + ':' + seconds}}</div>
+    <div v-bind:class="clockLogic"></div>
     <div class="success" v-if="modal==='success'">
       <h4 class="succIn" v-if="lastClockType==='in'">Clocked In</h4>
       <div class="succInIcon" v-if="lastClockType==='in'"></div>
@@ -33,18 +33,16 @@ import axios from 'axios'
 
 export default {
   name: 'timecrunch',
-  props: ['logged', 'user', 'page'],
+  props: ['logged', 'user'],
   components: {
     'mapbox': Mapbox
   },
   created () {
     let vue = this
-    vue.updateClock()
-    setInterval(vue.updateClock, 1000)
     if (this.logged === false) {
       this.$router.push('/login')
     }
-    axios.get('https://api.timecrunchapp.com/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
+    axios.get('https://54.186.69.46:81/users/' + vue.user.id, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
       .then(function (response) {
         vue.lastClockType = response.data.lastClockType
       })
@@ -99,19 +97,6 @@ export default {
     }
   },
   methods: {
-    updateClock () {
-      let vue = this
-      vue.time = new Date()
-      vue.hours = harold(vue.time.getHours())
-      vue.minutes = harold(vue.time.getMinutes())
-      vue.seconds = harold(vue.time.getSeconds())
-      function harold (standIn) {
-        if (standIn < 10) {
-          standIn = '0' + standIn
-        }
-        return standIn
-      }
-    },
     prettyModal (message) {
       let vue = this
       vue.prettyMessage = message
@@ -119,6 +104,7 @@ export default {
     },
     recenter () {
       let vue = this
+      navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
       function locationSuccess (position) {
         vue.latitude = position.coords.latitude
         vue.longitude = position.coords.longitude
@@ -131,7 +117,6 @@ export default {
         vue.prettyModal('It seems we cant find you, please reload the page and try again.')
         this.locationError = true
       }
-      navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
       vue.startMarker()
       vue.mapJump()
     },
@@ -153,7 +138,7 @@ export default {
       let vue = this
       vue.map = map
       vue.map.jumpTo({
-        center: [vue.longitude, (vue.latitude - 0.002)],
+        center: [vue.longitude, vue.latitude],
         zoom: 15
       })
       vue.startMarker()
@@ -161,7 +146,7 @@ export default {
     mapJump () {
       let vue = this
       vue.map.jumpTo({
-        center: [vue.longitude, (vue.latitude - 0.002)],
+        center: [vue.longitude, vue.latitude],
         zoom: 15
       })
     },
@@ -173,7 +158,7 @@ export default {
     },
     updateLastClockType () {
       let vue = this
-      axios.put('https://api.timecrunchapp.com/users/' + vue.user.id, {
+      axios.put('https://54.186.69.46:81/users/' + vue.user.id, {
         lastClockType: vue.lastClockType
       }, {headers: { 'Authorization': 'JWT ' + vue.user.token }})
         .then(function (user) {
@@ -185,26 +170,14 @@ export default {
     },
     clock () {
       let vue = this
-      function locationSuccess (position) {
-        vue.latitude = position.coords.latitude
-        vue.longitude = position.coords.longitude
-        vue.altitude = position.coords.altitude
-        vue.accuracy = position.coords.accuracy
-        vue.altitudeAccuracy = position.coords.altitudeAccuracy
-        vue.coordinates = [vue.longitude, vue.latitude]
-      }
-      function locationFail () {
-        vue.prettyModal('It seems we cant find you, please reload the page and try again.')
-        this.locationError = true
-      }
-      navigator.geolocation.getCurrentPosition(locationSuccess, locationFail)
+      navigator.geolocation.getCurrentPosition(vue.locationSuccess, vue.locationFail)
       this.time = new Date()
       vue.month = vue.time.getMonth()
       vue.day = vue.time.getDate()
       vue.hours = vue.time.getHours()
       vue.minutes = vue.time.getMinutes()
       vue.seconds = vue.time.getSeconds()
-      axios.post('https://api.timecrunchapp.com/clocks', {
+      axios.post('https://54.186.69.46:81/clocks', {
         userId: vue.userId,
         clockType: vue.clockType,
         month: vue.month,
@@ -216,14 +189,9 @@ export default {
         longitude: vue.longitude,
         altitude: vue.altitude
       })
-        .then(function (clock) {
-          if (clock.status === 201) {
-            vue.lastClockType = vue.clockType
-            vue.$emit('clockUpdateType', vue.lastClockType)
-            vue.updateLastClockType()
-          } else {
-            console.log('failed to clock in')
-          }
+        .then(function () {
+          vue.lastClockType = vue.clockType
+          vue.updateLastClockType()
         })
         .catch(function (error) {
           console.log(error)
@@ -288,6 +256,20 @@ export default {
     }
   }
 }
+function clock () {
+  this.time = new Date()
+  this.hours = this.time.getHours()
+  this.minutes = this.time.getMinutes()
+  this.seconds = this.time.getSeconds()
+  document.querySelectorAll('.clock')[0].innerHTML = harold(this.hours) + ':' + harold(this.minutes) + ':' + harold(this.seconds)
+  function harold (standIn) {
+    if (standIn < 10) {
+      standIn = '0' + standIn
+    }
+    return standIn
+  }
+}
+setInterval(clock, 1000)
 </script>
 
 <style scoped lang="less">
@@ -308,8 +290,6 @@ export default {
 .recenter {
   position: fixed;
   width: 100%;
-  margin: 0;
-  padding: 0;
   font-size: 2em;
   height: 50px;
   background-color: @red;
@@ -323,11 +303,10 @@ export default {
   width: 100%;
   height: 100%;
   padding-top: none;
-  padding-bottom: 50px;
   z-index: 0;
   position: fixed;
   top: 224px;
-  bottom: 50px;
+  bottom: 0;
 }
 
 .clock {

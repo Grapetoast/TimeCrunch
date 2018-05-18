@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "decimal": "0.0.2",
     "less": "^3.0.1",
     "less-loader": "^4.1.0",
     "mapbox": "^1.0.0-beta9",

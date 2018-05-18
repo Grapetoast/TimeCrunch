@@ -74,7 +74,7 @@ export default {
     registerUser () {
       let vue = this
       if (vue.company === true) {
-        axios.post('https://api.timecrunchapp.com/companys', {
+        axios.post('https://54.186.69.46:81/companys', {
           companyId: vue.companyId,
           companyName: vue.companyName
         })
@@ -86,7 +86,7 @@ export default {
             vue.error = true
           })
       }
-      axios.post('https://api.timecrunchapp.com/users', {
+      axios.post('https://54.186.69.46:81/users', {
         email: vue.email,
         password: vue.password,
         name: vue.name,
@@ -105,7 +105,7 @@ export default {
     },
     submitCompanyId () {
       let vue = this
-      axios.get('https://api.timecrunchapp.com/companys/' + vue.companyId)
+      axios.get('https://54.186.69.46:81/companys/' + vue.companyId)
         .then(function (response) {
           vue.companyName = response.data[0].companyName
           vue.modal = 'register'
@@ -119,7 +119,7 @@ export default {
     },
     submitCompany () {
       let vue = this
-      axios.get('https://api.timecrunchapp.com/companys/' + vue.companyId)
+      axios.get('https://54.186.69.46:81/companys/' + vue.companyId)
         .then(function (response) {
           if (response.data.length === 0) {
             vue.company = true

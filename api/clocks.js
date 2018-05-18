@@ -52,7 +52,7 @@ router.post("/", (req,res) => {
     if(err) {
       res.send(err);
     } else {
-      res.status(201).send(result);
+      res.send(result);
     }
   });
 })
